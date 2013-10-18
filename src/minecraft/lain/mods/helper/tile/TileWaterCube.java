@@ -1,0 +1,60 @@
+package lain.mods.helper.tile;
+
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.TileFluidHandler;
+
+public class TileWaterCube extends TileFluidHandler
+{
+
+    private static final int capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 4.0);
+    private static final int tickGain = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.2);
+    private static final int tickFlow = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.1);
+
+    public TileWaterCube()
+    {
+        tank.setCapacity(capacity);
+    }
+
+    @Override
+    public boolean canFill(ForgeDirection from, Fluid fluid)
+    {
+        return false;
+    }
+
+    @Override
+    public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+    {
+        return 0;
+    }
+
+    @Override
+    public void updateEntity()
+    {
+        if (worldObj.isRemote)
+            return;
+
+        tank.fill(new FluidStack(FluidRegistry.WATER, tickGain), true);
+
+        for (ForgeDirection to : ForgeDirection.VALID_DIRECTIONS)
+        {
+            TileEntity tile = worldObj.getBlockTileEntity(xCoord + to.offsetX, yCoord + to.offsetY, zCoord + to.offsetZ);
+            if (tile != null && tile instanceof IFluidHandler)
+            {
+                IFluidHandler handler = (IFluidHandler) tile;
+                if (handler.canFill(to.getOpposite(), FluidRegistry.WATER))
+                {
+                    FluidStack stack = tank.drain(tickFlow, false);
+                    int filled = handler.fill(to.getOpposite(), stack, true);
+                    tank.drain(filled, true);
+                }
+            }
+        }
+    }
+
+}
