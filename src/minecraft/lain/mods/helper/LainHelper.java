@@ -126,21 +126,6 @@ public class LainHelper implements ITickHandler
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData)
     {
-        if (type.contains(TickType.PLAYER))
-        {
-            EntityPlayer plr = (EntityPlayer) tickData[0];
-            if (checkOwner(plr))
-                if (plr.isEntityAlive())
-                {
-                    if (plr.ticksExisted % 20 == 10)
-                        for (int i = 0; i < 5; i++)
-                        {
-                            ItemStack item = plr.getCurrentItemOrArmor(i);
-                            if (item != null && item.getItem().isRepairable() && item.isItemDamaged())
-                                item.setItemDamage(item.getItemDamage() - 1);
-                        }
-                }
-        }
     }
 
     @Override
