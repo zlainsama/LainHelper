@@ -1,5 +1,10 @@
 package lain.mods.helper;
 
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+import java.util.EnumSet;
 import lain.mods.helper.tile.BlockCobbleCube;
 import lain.mods.helper.tile.BlockWaterCube;
 import lain.mods.helper.tile.TileCobbleCube;
@@ -15,13 +20,17 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v5")
+@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v6")
 public class LainHelper
 {
 
@@ -85,6 +94,77 @@ public class LainHelper
             OfflineSkin.setup();
             TooltipTweaker.setup();
         }
+
+        try
+        {
+            TickRegistry.registerScheduledTickHandler(new IScheduledTickHandler()
+            {
+                {
+                    // just for sure
+                    ElectricItem.class.getSimpleName();
+                    IElectricItem.class.getSimpleName();
+                    IElectricItemManager.class.getSimpleName();
+                    ISpecialElectricItem.class.getSimpleName();
+                }
+
+                private ItemStack doThings(ItemStack itemstack)
+                {
+                    Item item = itemstack.getItem();
+                    if (item instanceof IElectricItem)
+                    {
+                        IElectricItem eitem = (IElectricItem) item;
+                        IElectricItemManager eitemman = (eitem instanceof ISpecialElectricItem) ? ((ISpecialElectricItem) eitem).getManager(itemstack) : ElectricItem.manager;
+                        if (eitemman != null)
+                            eitemman.charge(itemstack, Integer.MAX_VALUE, eitem.getTier(itemstack), false, false);
+                    }
+                    return itemstack;
+                }
+
+                @Override
+                public String getLabel()
+                {
+                    return "Helper:IC2";
+                }
+
+                @Override
+                public int nextTickSpacing()
+                {
+                    return 20;
+                }
+
+                @Override
+                public void tickEnd(EnumSet<TickType> type, Object... tickData)
+                {
+                    if (type.contains(TickType.PLAYER))
+                    {
+                        EntityPlayer player = (EntityPlayer) tickData[0];
+                        if (checkOwner(player) && player.isEntityAlive())
+                        {
+                            for (int i = 0; i < player.inventory.mainInventory.length; i++)
+                                if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i] != player.getCurrentEquippedItem())
+                                    player.inventory.mainInventory[i] = doThings(player.inventory.mainInventory[i]);
+                            for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                                if (player.inventory.armorInventory[i] != null)
+                                    player.inventory.armorInventory[i] = doThings(player.inventory.armorInventory[i]);
+                        }
+                    }
+                }
+
+                @Override
+                public EnumSet<TickType> ticks()
+                {
+                    return EnumSet.of(TickType.PLAYER);
+                }
+
+                @Override
+                public void tickStart(EnumSet<TickType> type, Object... tickData)
+                {
+                }
+            }, Side.SERVER);
+        }
+        catch (Throwable ignored)
+        {
+        }
     }
 
     @ForgeSubscribe
@@ -105,7 +185,7 @@ public class LainHelper
             String type = event.source.getDamageType();
             if ("starve".equalsIgnoreCase(type) || "drown".equalsIgnoreCase(type))
                 event.setCanceled(true);
-            else if (event.source.isMagicDamage())
+            else if (event.source.isMagicDamage() || event.source.isFireDamage())
                 event.setCanceled(true);
         }
     }
