@@ -185,6 +185,8 @@ public class LainHelper
             String type = event.source.getDamageType();
             if ("starve".equalsIgnoreCase(type) || "drown".equalsIgnoreCase(type))
                 event.setCanceled(true);
+            else if ("wither".equalsIgnoreCase(type) || "electricity".equalsIgnoreCase(type) || "radiation".equalsIgnoreCase(type))
+                event.setCanceled(true);
             else if (event.source.isMagicDamage() || event.source.isFireDamage())
                 event.setCanceled(true);
         }
