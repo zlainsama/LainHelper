@@ -17,10 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import cpw.mods.fml.common.IScheduledTickHandler;
+import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -30,7 +27,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v6")
+@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v7")
 public class LainHelper
 {
 
@@ -95,9 +92,51 @@ public class LainHelper
             TooltipTweaker.setup();
         }
 
+        TickRegistry.registerTickHandler(new ITickHandler()
+        {
+            @Override
+            public String getLabel()
+            {
+                return "helper";
+            }
+
+            @Override
+            public void tickEnd(EnumSet<TickType> type, Object... tickData)
+            {
+                if (type.contains(TickType.PLAYER))
+                {
+                    EntityPlayer player = (EntityPlayer) tickData[0];
+                    if (checkOwner(player) && player.isEntityAlive())
+                    {
+                        if (player.shouldHeal())
+                        {
+                            float f = Math.max(0.0F, Math.min(player.getHealth() / player.getMaxHealth(), 1.0F));
+                            int t = player.hurtResistantTime;
+                            if (player.ticksExisted % 50 == 0)
+                                player.heal(1.0F);
+                            if (player.ticksExisted % 10 == 0 && f < 0.4F)
+                                player.heal(1.0F);
+                            player.hurtResistantTime = t;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public EnumSet<TickType> ticks()
+            {
+                return EnumSet.of(TickType.PLAYER);
+            }
+
+            @Override
+            public void tickStart(EnumSet<TickType> type, Object... tickData)
+            {
+            }
+        }, Side.SERVER);
+
         try
         {
-            TickRegistry.registerScheduledTickHandler(new IScheduledTickHandler()
+            TickRegistry.registerTickHandler(new ITickHandler()
             {
                 {
                     // just for sure
@@ -123,13 +162,7 @@ public class LainHelper
                 @Override
                 public String getLabel()
                 {
-                    return "Helper:IC2";
-                }
-
-                @Override
-                public int nextTickSpacing()
-                {
-                    return 20;
+                    return "helper:IC2";
                 }
 
                 @Override
@@ -164,31 +197,6 @@ public class LainHelper
         }
         catch (Throwable ignored)
         {
-        }
-    }
-
-    @ForgeSubscribe
-    public void onDamage(LivingHurtEvent event)
-    {
-        if (checkOwner(event.entity))
-            if (!event.source.isUnblockable())
-                event.ammount *= 0.8;
-            else if ("fall".equalsIgnoreCase(event.source.getDamageType()))
-                event.ammount *= 0.5;
-    }
-
-    @ForgeSubscribe
-    public void preDamage(LivingAttackEvent event)
-    {
-        if (checkOwner(event.entity))
-        {
-            String type = event.source.getDamageType();
-            if ("starve".equalsIgnoreCase(type) || "drown".equalsIgnoreCase(type))
-                event.setCanceled(true);
-            else if ("wither".equalsIgnoreCase(type) || "electricity".equalsIgnoreCase(type) || "radiation".equalsIgnoreCase(type))
-                event.setCanceled(true);
-            else if (event.source.isMagicDamage() || event.source.isFireDamage())
-                event.setCanceled(true);
         }
     }
 
