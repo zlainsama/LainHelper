@@ -1,17 +1,16 @@
 package lain.mods.helper.tile;
 
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
+import lain.mods.helper.tile.base.BlockCubeBase;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockCobbleCube extends BlockContainer
+public class BlockCobbleCube extends BlockCubeBase
 {
 
-    public BlockCobbleCube(int par1, Material par2Material)
+    public BlockCobbleCube(int par1)
     {
-        super(par1, par2Material);
+        super(par1);
     }
 
     @Override
@@ -21,9 +20,12 @@ public class BlockCobbleCube extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
+    public void registerIcons(IconRegister par1)
     {
-        return true;
+        icons.put("top", par1.registerIcon("helper:cubeTopCobble"));
+        icons.put("side", par1.registerIcon("helper:cubeSide"));
+        icons.put("bottom", par1.registerIcon("helper:cubeBottom"));
+        icons.put("unknown", par1.registerIcon("helper:cubeUnknown"));
     }
 
 }

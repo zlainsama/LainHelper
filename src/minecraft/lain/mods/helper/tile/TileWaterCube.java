@@ -1,5 +1,6 @@
 package lain.mods.helper.tile;
 
+import lain.mods.helper.tile.base.BlockCubeBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -41,7 +42,7 @@ public class TileWaterCube extends TileFluidHandler
 
         tank.fill(new FluidStack(FluidRegistry.WATER, tickGain), true);
 
-        for (ForgeDirection to : ForgeDirection.VALID_DIRECTIONS)
+        for (ForgeDirection to : BlockCubeBase.VALID_DIRECTIONS)
         {
             TileEntity tile = worldObj.getBlockTileEntity(xCoord + to.offsetX, yCoord + to.offsetY, zCoord + to.offsetZ);
             if (tile != null && tile instanceof IFluidHandler)

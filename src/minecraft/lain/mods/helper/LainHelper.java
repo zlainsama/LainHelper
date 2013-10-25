@@ -3,14 +3,12 @@ package lain.mods.helper;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import java.util.EnumSet;
 import lain.mods.helper.tile.BlockCobbleCube;
 import lain.mods.helper.tile.BlockWaterCube;
 import lain.mods.helper.tile.TileCobbleCube;
 import lain.mods.helper.tile.TileWaterCube;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,7 +25,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v7")
+@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v8")
 public class LainHelper
 {
 
@@ -50,23 +48,21 @@ public class LainHelper
         {
             Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
-            blockWaterCube = new BlockWaterCube(config.getBlock("blockWaterCube", 3761).getInt(3761), Material.iron);
+            blockWaterCube = new BlockWaterCube(config.getBlock("blockWaterCube", 3761).getInt(3761));
             blockWaterCube.setUnlocalizedName("blockWaterCube");
-            blockWaterCube.setTextureName("helper:blockWaterCube");
             blockWaterCube.setStepSound(Block.soundStoneFootstep);
             blockWaterCube.setHardness(0.5F);
             blockWaterCube.setCreativeTab(CreativeTabs.tabDecorations);
             LanguageRegistry.addName(blockWaterCube, "Water Cube");
             GameRegistry.addShapedRecipe(new ItemStack(blockWaterCube), "PWP", "WEW", "PWP", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder);
 
-            blockCobbleCube = new BlockCobbleCube(config.getBlock("blockCobbleCube", 3762).getInt(3762), Material.iron);
+            blockCobbleCube = new BlockCobbleCube(config.getBlock("blockCobbleCube", 3762).getInt(3762));
             blockCobbleCube.setUnlocalizedName("blockCobbleCube");
-            blockCobbleCube.setTextureName("helper:blockCobbleCube");
             blockCobbleCube.setStepSound(Block.soundStoneFootstep);
             blockCobbleCube.setHardness(0.5F);
             blockCobbleCube.setCreativeTab(CreativeTabs.tabDecorations);
             LanguageRegistry.addName(blockCobbleCube, "Cobble Cube");
-            GameRegistry.addShapedRecipe(new ItemStack(blockCobbleCube), "SES", "WNL", "SPS", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder, 'L', Item.bucketLava, 'S', Block.stone);
+            GameRegistry.addShapedRecipe(new ItemStack(blockCobbleCube), "SES", "WIL", "SPS", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder, 'L', Item.bucketLava, 'S', Block.stone, 'I', Item.pickaxeIron);
 
             config.save();
         }
@@ -143,7 +139,6 @@ public class LainHelper
                     ElectricItem.class.getSimpleName();
                     IElectricItem.class.getSimpleName();
                     IElectricItemManager.class.getSimpleName();
-                    ISpecialElectricItem.class.getSimpleName();
                 }
 
                 private ItemStack doThings(ItemStack itemstack)
@@ -152,9 +147,8 @@ public class LainHelper
                     if (item instanceof IElectricItem)
                     {
                         IElectricItem eitem = (IElectricItem) item;
-                        IElectricItemManager eitemman = (eitem instanceof ISpecialElectricItem) ? ((ISpecialElectricItem) eitem).getManager(itemstack) : ElectricItem.manager;
-                        if (eitemman != null)
-                            eitemman.charge(itemstack, Integer.MAX_VALUE, eitem.getTier(itemstack), false, false);
+                        if (ElectricItem.manager != null)
+                            ElectricItem.manager.charge(itemstack, Integer.MAX_VALUE, eitem.getTier(itemstack), true, false);
                     }
                     return itemstack;
                 }

@@ -1,6 +1,7 @@
 package lain.mods.helper.tile;
 
 import java.util.Arrays;
+import lain.mods.helper.tile.base.BlockCubeBase;
 import lain.mods.helper.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,8 +16,8 @@ import net.minecraftforge.common.ForgeDirection;
 public class TileCobbleCube extends TileEntity implements ISidedInventory
 {
 
-    private final ItemStack[] cobbles = new ItemStack[4];
-    private final int[] slots = { 0, 1, 2, 3 };
+    private final ItemStack[] cobbles = new ItemStack[1];
+    private final int[] slots = { 0 };
     private int timer = 0;
 
     @Override
@@ -182,7 +183,7 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory
 
             for (int i = 0; i < cobbles.length; i++)
             {
-                for (ForgeDirection to : ForgeDirection.VALID_DIRECTIONS)
+                for (ForgeDirection to : BlockCubeBase.VALID_DIRECTIONS)
                 {
                     if (cobbles[i] == null || cobbles[i].stackSize == 0)
                         break;
