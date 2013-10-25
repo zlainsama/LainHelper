@@ -2,6 +2,7 @@ package lain.mods.helper.tile;
 
 import java.util.Arrays;
 import lain.mods.helper.tile.base.BlockCubeBase;
+import lain.mods.helper.tile.base.ISpecialCubeTile;
 import lain.mods.helper.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +14,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileCobbleCube extends TileEntity implements ISidedInventory
+public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpecialCubeTile
 {
+
+    private static final ItemStack ITEMTODISPLAY = new ItemStack(Block.cobblestone);
 
     private final ItemStack[] cobbles = new ItemStack[1];
     private final int[] slots = { 0 };
@@ -75,6 +78,12 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory
     public String getInvName()
     {
         return "";
+    }
+
+    @Override
+    public ItemStack getItemToDisplayOnTop()
+    {
+        return ITEMTODISPLAY;
     }
 
     @Override

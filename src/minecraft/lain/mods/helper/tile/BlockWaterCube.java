@@ -19,13 +19,4 @@ public class BlockWaterCube extends BlockCubeBase
         return new TileWaterCube();
     }
 
-    @Override
-    public void registerIcons(IconRegister par1)
-    {
-        icons.put("top", par1.registerIcon("helper:cubeTopWater"));
-        icons.put("side", par1.registerIcon("helper:cubeSide"));
-        icons.put("bottom", par1.registerIcon("helper:cubeBottom"));
-        icons.put("unknown", par1.registerIcon("helper:cubeUnknown"));
-    }
-
 }

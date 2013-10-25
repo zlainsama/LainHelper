@@ -8,13 +8,16 @@ import lain.mods.helper.tile.BlockCobbleCube;
 import lain.mods.helper.tile.BlockWaterCube;
 import lain.mods.helper.tile.TileCobbleCube;
 import lain.mods.helper.tile.TileWaterCube;
+import lain.mods.helper.tile.renderer.SpecialCubeTileRenderer;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.TickType;
@@ -84,6 +87,10 @@ public class LainHelper
 
         if (event.getSide().isClient())
         {
+            TileEntitySpecialRenderer renderer = new SpecialCubeTileRenderer();
+            ClientRegistry.bindTileEntitySpecialRenderer(TileWaterCube.class, renderer);
+            ClientRegistry.bindTileEntitySpecialRenderer(TileCobbleCube.class, renderer);
+
             OfflineSkin.setup();
             TooltipTweaker.setup();
         }

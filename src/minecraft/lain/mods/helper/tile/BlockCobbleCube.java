@@ -19,13 +19,4 @@ public class BlockCobbleCube extends BlockCubeBase
         return new TileCobbleCube();
     }
 
-    @Override
-    public void registerIcons(IconRegister par1)
-    {
-        icons.put("top", par1.registerIcon("helper:cubeTopCobble"));
-        icons.put("side", par1.registerIcon("helper:cubeSide"));
-        icons.put("bottom", par1.registerIcon("helper:cubeBottom"));
-        icons.put("unknown", par1.registerIcon("helper:cubeUnknown"));
-    }
-
 }

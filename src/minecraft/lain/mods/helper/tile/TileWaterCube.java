@@ -1,6 +1,9 @@
 package lain.mods.helper.tile;
 
 import lain.mods.helper.tile.base.BlockCubeBase;
+import lain.mods.helper.tile.base.ISpecialCubeTile;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -10,8 +13,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.TileFluidHandler;
 
-public class TileWaterCube extends TileFluidHandler
+public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile
 {
+
+    private static final ItemStack ITEMTODISPLAY = new ItemStack(Item.bucketWater);
 
     private static final int capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 4.0);
     private static final int tickGain = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.2);
@@ -32,6 +37,12 @@ public class TileWaterCube extends TileFluidHandler
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
     {
         return 0;
+    }
+
+    @Override
+    public ItemStack getItemToDisplayOnTop()
+    {
+        return ITEMTODISPLAY;
     }
 
     @Override
