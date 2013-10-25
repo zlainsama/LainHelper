@@ -23,12 +23,14 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v8")
+@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v9")
+@NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class LainHelper
 {
 

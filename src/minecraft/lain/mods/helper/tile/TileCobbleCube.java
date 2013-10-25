@@ -26,7 +26,19 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j)
     {
-        return true;
+        switch (j)
+        {
+            case 0:
+            case 1:
+                return false;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                return true;
+            default:
+                return true;
+        }
     }
 
     @Override

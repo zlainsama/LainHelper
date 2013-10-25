@@ -28,7 +28,10 @@ public class SpecialCubeTileRenderer extends TileEntitySpecialRenderer
                 float ticks = Minecraft.getMinecraft().renderViewEntity.ticksExisted + partialTicks;
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float) x + 0.5F, (float) y + 1.2F, (float) z + 0.5F);
-                GL11.glRotatef(ticks % 360.0F, 0.0F, 1.0F, 0.0F);
+                if (Minecraft.isFancyGraphicsEnabled())
+                    GL11.glRotatef(ticks % 360.0F, 0.0F, 1.0F, 0.0F);
+                else
+                    GL11.glRotatef(0.0F, 0.0F, 1.0F, 0.0F);
                 int b = tile.worldObj.getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord + 1, tile.zCoord, 0);
                 // GL11.glScalef(1.0F, 1.0F, 1.0F);
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) (int) (b % 65536) / 1.0F, (float) (int) (b / 65536)); // standard lighting: 240 240
