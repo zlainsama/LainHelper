@@ -26,19 +26,10 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j)
     {
-        switch (j)
-        {
-            case 0:
-            case 1:
-                return false;
-            case 2:
-            case 3:
-            case 4:
-            case 5:
+        for (ForgeDirection dir : BlockCubeBase.VALID_DIRECTIONS)
+            if (j == dir.ordinal())
                 return true;
-            default:
-                return true;
-        }
+        return false;
     }
 
     @Override

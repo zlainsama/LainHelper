@@ -36,9 +36,12 @@ public class SpecialCubeTileRenderer extends TileEntitySpecialRenderer
                 // GL11.glScalef(1.0F, 1.0F, 1.0F);
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) (int) (b % 65536) / 1.0F, (float) (int) (b / 65536)); // standard lighting: 240 240
                 // GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
                 ent = new EntityItem(tile.worldObj, 0.0D, 0.0D, 0.0D, stack);
                 ent.hoverStart = 0.0F;
                 RenderManager.instance.renderEntityWithPosYaw(ent, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+                GL11.glDisable(GL11.GL_BLEND);
                 GL11.glPopMatrix();
             }
         }

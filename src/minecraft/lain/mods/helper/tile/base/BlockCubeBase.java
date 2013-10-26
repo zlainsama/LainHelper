@@ -1,9 +1,12 @@
 package lain.mods.helper.tile.base;
 
 import java.util.Map;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import com.google.common.collect.Maps;
@@ -12,12 +15,16 @@ public abstract class BlockCubeBase extends BlockContainer
 {
 
     public static final ForgeDirection[] VALID_DIRECTIONS = new ForgeDirection[] { ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST };
+    public static final Material matCube = new MaterialCube(MapColor.airColor);
 
     protected Map<String, Icon> icons = Maps.newHashMap();
 
     protected BlockCubeBase(int par1)
     {
-        super(par1, Material.iron);
+        super(par1, matCube);
+        setStepSound(Block.soundStoneFootstep);
+        setHardness(1.0F);
+        setCreativeTab(CreativeTabs.tabDecorations);
     }
 
     @Override

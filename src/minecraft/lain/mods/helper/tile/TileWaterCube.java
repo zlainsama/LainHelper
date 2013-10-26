@@ -30,19 +30,10 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        switch (from)
-        {
-            case DOWN:
-            case UP:
-                return false;
-            case NORTH:
-            case SOUTH:
-            case WEST:
-            case EAST:
+        for (ForgeDirection dir : BlockCubeBase.VALID_DIRECTIONS)
+            if (from.ordinal() == dir.ordinal())
                 return true;
-            default:
-                return true;
-        }
+        return false;
     }
 
     @Override

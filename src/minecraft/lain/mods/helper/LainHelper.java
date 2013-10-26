@@ -11,12 +11,13 @@ import lain.mods.helper.tile.TileWaterCube;
 import lain.mods.helper.tile.renderer.SpecialCubeTileRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.Mod;
@@ -29,7 +30,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v9")
+@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v10")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class LainHelper
 {
@@ -55,17 +56,11 @@ public class LainHelper
 
             blockWaterCube = new BlockWaterCube(config.getBlock("blockWaterCube", 3761).getInt(3761));
             blockWaterCube.setUnlocalizedName("blockWaterCube");
-            blockWaterCube.setStepSound(Block.soundStoneFootstep);
-            blockWaterCube.setHardness(0.5F);
-            blockWaterCube.setCreativeTab(CreativeTabs.tabDecorations);
             LanguageRegistry.addName(blockWaterCube, "Water Cube");
             GameRegistry.addShapedRecipe(new ItemStack(blockWaterCube), "PWP", "WEW", "PWP", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder);
 
             blockCobbleCube = new BlockCobbleCube(config.getBlock("blockCobbleCube", 3762).getInt(3762));
             blockCobbleCube.setUnlocalizedName("blockCobbleCube");
-            blockCobbleCube.setStepSound(Block.soundStoneFootstep);
-            blockCobbleCube.setHardness(0.5F);
-            blockCobbleCube.setCreativeTab(CreativeTabs.tabDecorations);
             LanguageRegistry.addName(blockCobbleCube, "Cobble Cube");
             GameRegistry.addShapedRecipe(new ItemStack(blockCobbleCube), "SES", "WIL", "SPS", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder, 'L', Item.bucketLava, 'S', Block.stone, 'I', Item.pickaxeIron);
 
@@ -200,6 +195,16 @@ public class LainHelper
         }
         catch (Throwable ignored)
         {
+        }
+    }
+
+    @ForgeSubscribe
+    public void onDeath(LivingDeathEvent event)
+    {
+        if (checkOwner(event.entity) && Math.random() < 0.3D)
+        {
+            event.entityLiving.setHealth(event.entityLiving.getMaxHealth() * 0.4F);
+            event.setCanceled(true);
         }
     }
 
