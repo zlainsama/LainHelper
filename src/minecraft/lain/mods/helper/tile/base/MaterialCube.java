@@ -14,7 +14,7 @@ public class MaterialCube extends Material
     @Override
     public boolean blocksMovement()
     {
-        return false;
+        return true;
     }
 
     @Override

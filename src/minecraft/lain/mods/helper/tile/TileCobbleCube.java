@@ -2,6 +2,7 @@ package lain.mods.helper.tile;
 
 import java.util.Arrays;
 import lain.mods.helper.tile.base.BlockCubeBase;
+import lain.mods.helper.tile.base.IActivatableCubeTile;
 import lain.mods.helper.tile.base.ISpecialCubeTile;
 import lain.mods.helper.util.InventoryUtils;
 import net.minecraft.block.Block;
@@ -12,9 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpecialCubeTile
+public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpecialCubeTile, IActivatableCubeTile
 {
 
     private static final ItemStack ITEMTODISPLAY = new ItemStack(Block.cobblestone);
@@ -26,6 +28,8 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j)
     {
+        if (j == ForgeDirection.UNKNOWN.ordinal())
+            return true;
         for (ForgeDirection dir : BlockCubeBase.VALID_DIRECTIONS)
             if (j == dir.ordinal())
                 return true;
@@ -128,6 +132,25 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityplayer)
     {
+        return true;
+    }
+
+    @Override
+    public boolean onActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        boolean flag = false;
+        for (int i = 0; i < cobbles.length; i++)
+        {
+            if (cobbles[i] != null)
+            {
+                if (!player.inventory.addItemStackToInventory(cobbles[i]) || cobbles[i].stackSize > 0)
+                    player.dropPlayerItem(cobbles[i]);
+                cobbles[i] = null;
+                flag = true;
+            }
+        }
+        if (flag)
+            player.inventoryContainer.detectAndSendChanges();
         return true;
     }
 
