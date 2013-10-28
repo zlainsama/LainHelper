@@ -138,15 +138,10 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                             if (worldObj.getBlockMetadata(x, y, z) < 7)
                                 worldObj.setBlockMetadataWithNotify(x, y, z, 7, 2);
                         }
-                        else if (id == Block.crops.blockID || Block.blocksList[id] instanceof IPlantable)
+                        else if (id == Block.crops.blockID || Block.blocksList[id] instanceof BlockSapling || Block.blocksList[id] instanceof IPlantable)
                         {
-                            if (Block.blocksList[id].getTickRandomly())
-                                worldObj.scheduleBlockUpdate(x, y, z, id, worldObj.rand.nextInt(40));
-                        }
-                        else if (Block.blocksList[id] instanceof BlockSapling)
-                        {
-                            if (Block.blocksList[id].getTickRandomly())
-                                worldObj.scheduleBlockUpdate(x, y, z, id, worldObj.rand.nextInt(50));
+                            if (Block.blocksList[id].getTickRandomly() && worldObj.rand.nextInt(1000) < 5)
+                                worldObj.scheduleBlockUpdate(x, y, z, id, worldObj.rand.nextInt(20));
                         }
                     }
                 }
