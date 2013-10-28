@@ -30,7 +30,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v11")
+@Mod(modid = "LainHelper", name = "LainHelper", version = "1.6.x-v12")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class LainHelper
 {

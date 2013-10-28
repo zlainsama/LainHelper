@@ -3,12 +3,15 @@ package lain.mods.helper.tile;
 import lain.mods.helper.tile.base.BlockCubeBase;
 import lain.mods.helper.tile.base.IActivatableCubeTile;
 import lain.mods.helper.tile.base.ISpecialCubeTile;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -113,6 +116,39 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                     FluidStack stack = tank.drain(tickFlow, false);
                     int filled = handler.fill(to.getOpposite(), stack, true);
                     tank.drain(filled, true);
+                }
+            }
+        }
+
+        for (int x = xCoord - 4; x <= xCoord + 4; x++)
+        {
+            for (int y = yCoord - 1; y <= yCoord + 1; y++)
+            {
+                for (int z = zCoord - 4; z <= zCoord + 4; z++)
+                {
+                    int id = worldObj.getBlockId(x, y, z);
+                    if (id != 0 && Block.blocksList[id] != null)
+                    {
+                        if (id == Block.fire.blockID)
+                        {
+                            worldObj.setBlockToAir(x, y, z);
+                        }
+                        else if (id == Block.tilledField.blockID)
+                        {
+                            if (worldObj.getBlockMetadata(x, y, z) < 7)
+                                worldObj.setBlockMetadataWithNotify(x, y, z, 7, 2);
+                        }
+                        else if (id == Block.crops.blockID || Block.blocksList[id] instanceof IPlantable)
+                        {
+                            if (Block.blocksList[id].getTickRandomly())
+                                worldObj.scheduleBlockUpdate(x, y, z, id, worldObj.rand.nextInt(40));
+                        }
+                        else if (Block.blocksList[id] instanceof BlockSapling)
+                        {
+                            if (Block.blocksList[id].getTickRandomly())
+                                worldObj.scheduleBlockUpdate(x, y, z, id, worldObj.rand.nextInt(50));
+                        }
+                    }
                 }
             }
         }
