@@ -76,7 +76,7 @@ public final class OfflineSkin implements IWorldAccess, ResourceManagerReloadLis
             ThreadDownloadImageData texture = player.getTextureSkin();
             if (texture != null && !texture.isTextureUploaded())
             {
-                ResourceLocation location = new ResourceLocation("helper", String.format("skins/%s.png", StringUtils.stripControlCodes(player.username)));
+                ResourceLocation location = new ResourceLocation(String.format("skins/%s.png", StringUtils.stripControlCodes(player.username)));
                 BufferedImage image = getCachedImage(location);
                 if (image != null)
                     TextureUtil.uploadTextureImage(texture.getGlTextureId(), image);

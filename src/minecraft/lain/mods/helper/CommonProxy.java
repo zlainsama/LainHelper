@@ -1,8 +1,5 @@
 package lain.mods.helper;
 
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-import ic2.api.item.IElectricItemManager;
 import java.util.EnumSet;
 import lain.mods.helper.tile.BlockCobbleCube;
 import lain.mods.helper.tile.BlockWaterCube;
@@ -81,69 +78,6 @@ public class CommonProxy
             {
             }
         }, Side.SERVER);
-
-        try
-        {
-            TickRegistry.registerTickHandler(new ITickHandler()
-            {
-                {
-                    // just for sure
-                    ElectricItem.class.getSimpleName();
-                    IElectricItem.class.getSimpleName();
-                    IElectricItemManager.class.getSimpleName();
-                }
-
-                private ItemStack doThings(ItemStack itemstack)
-                {
-                    Item item = itemstack.getItem();
-                    if (item instanceof IElectricItem)
-                    {
-                        IElectricItem eitem = (IElectricItem) item;
-                        if (ElectricItem.manager != null)
-                            ElectricItem.manager.charge(itemstack, Integer.MAX_VALUE, eitem.getTier(itemstack), true, false);
-                    }
-                    return itemstack;
-                }
-
-                @Override
-                public String getLabel()
-                {
-                    return "helper:IC2";
-                }
-
-                @Override
-                public void tickEnd(EnumSet<TickType> type, Object... tickData)
-                {
-                    if (type.contains(TickType.PLAYER))
-                    {
-                        EntityPlayer player = (EntityPlayer) tickData[0];
-                        if (LainHelper.checkOwner(player) && player.isEntityAlive())
-                        {
-                            for (int i = 0; i < player.inventory.mainInventory.length; i++)
-                                if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i] != player.getCurrentEquippedItem())
-                                    player.inventory.mainInventory[i] = doThings(player.inventory.mainInventory[i]);
-                            for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                                if (player.inventory.armorInventory[i] != null)
-                                    player.inventory.armorInventory[i] = doThings(player.inventory.armorInventory[i]);
-                        }
-                    }
-                }
-
-                @Override
-                public EnumSet<TickType> ticks()
-                {
-                    return EnumSet.of(TickType.PLAYER);
-                }
-
-                @Override
-                public void tickStart(EnumSet<TickType> type, Object... tickData)
-                {
-                }
-            }, Side.SERVER);
-        }
-        catch (Throwable ignored)
-        {
-        }
     }
 
 }

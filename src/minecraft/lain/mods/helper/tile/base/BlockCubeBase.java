@@ -106,11 +106,11 @@ public abstract class BlockCubeBase extends BlockContainer
     @Override
     public void registerIcons(IconRegister par1)
     {
-        icons.put("top", par1.registerIcon("helper:cubeTop"));
-        icons.put("side", par1.registerIcon("helper:cubeSide"));
-        icons.put("sideValid", par1.registerIcon("helper:cubeSideValid"));
-        icons.put("bottom", par1.registerIcon("helper:cubeBottom"));
-        icons.put("unknown", par1.registerIcon("helper:cubeUnknown"));
+        icons.put("top", par1.registerIcon("cubeTop"));
+        icons.put("side", par1.registerIcon("cubeSide"));
+        icons.put("sideValid", par1.registerIcon("cubeSideValid"));
+        icons.put("bottom", par1.registerIcon("cubeBottom"));
+        icons.put("unknown", par1.registerIcon("cubeUnknown"));
     }
 
 }
