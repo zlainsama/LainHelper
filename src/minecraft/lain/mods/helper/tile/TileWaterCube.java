@@ -122,7 +122,7 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
 
         for (int x = xCoord - 4; x <= xCoord + 4; x++)
         {
-            for (int y = yCoord - 1; y <= yCoord + 1; y++)
+            for (int y = yCoord; y <= yCoord + 1; y++)
             {
                 for (int z = zCoord - 4; z <= zCoord + 4; z++)
                 {
