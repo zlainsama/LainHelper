@@ -36,7 +36,7 @@ public class LainHelper extends DummyModContainer
             if (checkOwner(event.entity))
             {
                 String a = event.source.getDamageType();
-                if ("fall".equalsIgnoreCase(a) || "starve".equalsIgnoreCase(a) || "drown".equalsIgnoreCase(a))
+                if ("fall".equalsIgnoreCase(a) || "thirst".equalsIgnoreCase(a) || "starve".equalsIgnoreCase(a) || "drown".equalsIgnoreCase(a))
                     event.setCanceled(true);
                 else if ("wither".equalsIgnoreCase(a) || "electricity".equalsIgnoreCase(a) || "radiation".equalsIgnoreCase(a))
                     event.setCanceled(true);

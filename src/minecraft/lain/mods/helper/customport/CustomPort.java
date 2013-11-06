@@ -11,15 +11,18 @@ public class CustomPort
 
     private static boolean checkPort(int port) throws IOException
     {
-        if (port == 0)
+        if (port <= 0)
             return false;
         ServerSocket serversocket = null;
-        boolean flag = true;
-        int i;
+        int i = -1;
         try
         {
             serversocket = new ServerSocket(port);
             i = serversocket.getLocalPort();
+        }
+        catch (IOException e)
+        {
+            i = -1;
         }
         finally
         {
@@ -36,8 +39,7 @@ public class CustomPort
     private static int getRandomPort() throws IOException
     {
         ServerSocket serversocket = null;
-        boolean flag = true;
-        int i;
+        int i = -1;
         try
         {
             serversocket = new ServerSocket(0);
