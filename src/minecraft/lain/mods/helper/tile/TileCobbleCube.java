@@ -23,17 +23,13 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
 
     private final ItemStack[] cobbles = new ItemStack[1];
     private final int[] slots = { 0 };
+    private final int[] noSlot = {};
     private int timer = 0;
 
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j)
     {
-        if (j == ForgeDirection.UNKNOWN.ordinal())
-            return true;
-        for (ForgeDirection dir : BlockCubeBase.VALID_DIRECTIONS)
-            if (j == dir.ordinal())
-                return true;
-        return false;
+        return getAccessibleSlotsFromSide(j) != noSlot;
     }
 
     @Override
@@ -72,7 +68,12 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public int[] getAccessibleSlotsFromSide(int var1)
     {
-        return slots;
+        if (var1 == ForgeDirection.UNKNOWN.ordinal())
+            return slots;
+        for (ForgeDirection dir : BlockCubeBase.VALID_DIRECTIONS)
+            if (var1 == dir.ordinal())
+                return slots;
+        return noSlot;
     }
 
     @Override
