@@ -8,7 +8,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import cpw.mods.fml.common.DummyModContainer;
@@ -35,15 +34,14 @@ public class LainHelper extends DummyModContainer
             {
                 if (!event.source.isUnblockable() || event.source.isProjectile() || event.source.isExplosion() || event.source.isMagicDamage() || event.source.isFireDamage())
                     event.ammount *= 0.2F;
-            }
-        }
-
-        @ForgeSubscribe
-        public void b(PlayerEvent.NameFormat event)
-        {
-            if (checkOwner(event.username))
-            {
-                event.displayname = "Lain";
+                else
+                {
+                    String a = event.source.getDamageType();
+                    if ("fall".equalsIgnoreCase(a) || "inWall".equalsIgnoreCase(a) || "wither".equalsIgnoreCase(a) || "outOfWorld".equalsIgnoreCase(a) || "generic".equalsIgnoreCase(a))
+                        event.ammount *= 0.2F;
+                    else if ("electricity".equalsIgnoreCase(a) || "radiation".equalsIgnoreCase(a))
+                        event.ammount *= 0.2F;
+                }
             }
         }
 
