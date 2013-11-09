@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 public class ClientProxy extends CommonProxy
 {
 
+    @Override
     public void load(FMLInitializationEvent event)
     {
         super.load(event);

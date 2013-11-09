@@ -2,12 +2,11 @@ package lain.mods.helper.customport;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import lain.mods.helper.LainHelper;
 import com.google.common.io.Closeables;
 
 public class CustomPort
 {
-
-    public static int port = 25565;
 
     private static boolean checkPort(int port) throws IOException
     {
@@ -33,7 +32,7 @@ public class CustomPort
 
     public static int getCustomPort() throws IOException
     {
-        return checkPort(port) ? port : getRandomPort();
+        return checkPort(LainHelper.customLANPort) ? LainHelper.customLANPort : getRandomPort();
     }
 
     private static int getRandomPort() throws IOException
