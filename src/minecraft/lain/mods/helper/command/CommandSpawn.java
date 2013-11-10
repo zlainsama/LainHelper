@@ -34,7 +34,7 @@ public class CommandSpawn extends CommandBase
         LainHelper.proxy.setPlayerLastPosition(player, new PositionData(player));
         if (player.dimension != 0)
             player.travelToDimension(0);
-        new PositionData(player.worldObj.getSpawnPoint()).teleportEntity(player);
+        new PositionData(player.worldObj.provider.getRandomizedSpawnPoint()).teleportEntity(player, true);
     }
 
 }

@@ -70,7 +70,23 @@ public class PositionData
 
     public void teleportEntity(Entity par1)
     {
+        teleportEntity(par1, false);
+    }
+
+    public void teleportEntity(Entity par1, boolean par2)
+    {
         Teleporter.teleport(par1, dimension, x, y, z, yaw, pitch);
+        if (par2)
+        {
+            boolean flag = false;
+            while (!par1.worldObj.getCollidingBoundingBoxes(par1, par1.boundingBox).isEmpty())
+            {
+                par1.setPosition(par1.posX, par1.posY + 1.0D, par1.posZ);
+                flag = true;
+            }
+            if (flag)
+                Teleporter.teleport(par1, -999, par1.posX, par1.posY, par1.posZ, par1.rotationYaw, par1.rotationPitch);
+        }
     }
 
     public void writeToNBT(NBTTagCompound par1)
