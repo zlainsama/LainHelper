@@ -202,7 +202,7 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                         {
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, filled);
                         }
-                        player.inventoryContainer.detectAndSendChanges();
+                        player.openContainer.detectAndSendChanges();
                     }
                     drain(ForgeDirection.UNKNOWN, fluid.amount, true);
                 }

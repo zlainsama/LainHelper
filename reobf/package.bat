@@ -1,2 +1,2 @@
 del *.jar
-jar cvfm "[1.6.x-v18] LainHelper.jar" resources/helper.mf -C minecraft lain/mods/helper/ -C resources/helper/ .
+jar cvfm "[1.6.x-v19] LainHelper.jar" resources/helper.mf -C minecraft lain/mods/helper/ -C resources/helper/ .
