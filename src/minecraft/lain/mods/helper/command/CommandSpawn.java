@@ -5,6 +5,7 @@ import lain.mods.helper.util.PositionData;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends CommandBase
 {
@@ -32,9 +33,7 @@ public class CommandSpawn extends CommandBase
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(par1);
         LainHelper.proxy.setPlayerLastPosition(player, new PositionData(player));
-        if (player.dimension != 0)
-            player.travelToDimension(0);
-        new PositionData(player.worldObj.provider.getRandomizedSpawnPoint()).teleportEntity(player, true);
+        new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getRandomizedSpawnPoint(), 0).teleportEntity(player, true);
     }
 
 }

@@ -22,6 +22,12 @@ public class PositionData
         this.z = (double) par1.posZ + 0.5D;
     }
 
+    public PositionData(ChunkCoordinates par1, int par2)
+    {
+        this(par1);
+        this.dimension = par2;
+    }
+
     public PositionData(double x, double y, double z)
     {
         this.x = x;

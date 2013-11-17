@@ -1,7 +1,14 @@
 package lain.mods.helper.util;
 
+import java.util.Iterator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet41EntityEffect;
+import net.minecraft.network.packet.Packet43Experience;
+import net.minecraft.network.packet.Packet9Respawn;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
@@ -10,37 +17,93 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class Teleporter
 {
 
-    public static void teleport(final Entity ent, final int dimension, final double posX, final double posY, final double posZ, final float yaw, final float pitch)
+    public static Entity teleport(Entity ent, int dimension, double posX, double posY, double posZ, float yaw, float pitch)
     {
-        if (-999 != dimension && ent.dimension != dimension)
+        if (ent.worldObj == null || ent.worldObj.isRemote || !(ent.worldObj instanceof WorldServer))
+            return null;
+
+        int d0 = ent.dimension;
+        int d1 = dimension == -999 ? d0 : dimension;
+        boolean worldChanges = d0 != d1;
+        MinecraftServer s = FMLCommonHandler.instance().getMinecraftServerInstance();
+        ServerConfigurationManager cm = s.getConfigurationManager();
+        WorldServer w0 = (WorldServer) ent.worldObj;
+        WorldServer w1 = worldChanges ? s.worldServerForDimension(d1) : w0;
+        EntityPlayerMP c = (ent instanceof EntityPlayerMP) ? (EntityPlayerMP) ent : null;
+
+        if (ent.ridingEntity != null)
         {
-            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-            ServerConfigurationManager conman = server.getConfigurationManager();
-            WorldServer oldworld = server.worldServerForDimension(ent.dimension);
-            WorldServer newworld = server.worldServerForDimension(dimension);
-            net.minecraft.world.Teleporter teleporter = new net.minecraft.world.Teleporter(newworld)
+            ent.ridingEntity.riddenByEntity = null;
+            ent.ridingEntity = null;
+        }
+        if (ent.riddenByEntity != null)
+        {
+            ent.riddenByEntity.ridingEntity = null;
+            ent.riddenByEntity = null;
+        }
+        if (c != null)
+            c.closeScreen();
+
+        w0.updateEntityWithOptionalForce(ent, false);
+
+        if (worldChanges && c != null)
+        {
+            c.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(d1, (byte) w1.difficultySetting, w1.getWorldInfo().getTerrainType(), w1.getHeight(), c.theItemInWorldManager.getGameType()));
+            w0.getPlayerManager().removePlayer(c);
+            w0.removePlayerEntityDangerously(c);
+            c.isDead = false;
+        }
+
+        ent.motionX = ent.motionY = ent.motionZ = 0D;
+        ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
+        if (c != null)
+            c.playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
+        w1.theChunkProviderServer.loadChunk(((int) posX) >> 4, ((int) posZ) >> 4);
+
+        w1.updateEntityWithOptionalForce(ent, false);
+
+        if (worldChanges)
+        {
+            if (c == null)
             {
-                @Override
-                public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
-                {
-                }
-            };
-            if (ent instanceof EntityPlayerMP)
-                conman.transferPlayerToDimension((EntityPlayerMP) ent, dimension, teleporter);
-            else
-                conman.transferEntityToWorld(ent, dimension, oldworld, newworld, teleporter);
-            if (1 == oldworld.provider.dimensionId) // it was the End
-            {
-                teleport(ent, -999, posX, posY, posZ, yaw, pitch);
-                newworld.updateEntityWithOptionalForce(ent, false);
+                NBTTagCompound data = new NBTTagCompound();
+                ent.writeToNBTOptional(data);
+                ent.isDead = true;
+                ent = EntityList.createEntityFromNBT(data, w1);
+                if (ent == null)
+                    return null;
             }
+            ent.dimension = d1;
+            w1.spawnEntityInWorld(ent);
+            ent.setWorld(w1);
         }
-        else
+
+        w1.updateEntityWithOptionalForce(ent, false);
+
+        ent.motionX = ent.motionY = ent.motionZ = 0D;
+        ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
+        if (c != null)
+            c.playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
+        w1.theChunkProviderServer.loadChunk(((int) posX) >> 4, ((int) posZ) >> 4);
+
+        w1.updateEntityWithOptionalForce(ent, false);
+
+        if (worldChanges && c != null)
         {
-            ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
-            ent.motionX = ent.motionY = ent.motionZ = 0D;
-            if (ent instanceof EntityPlayerMP)
-                ((EntityPlayerMP) ent).playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
+            w1.getPlayerManager().addPlayer(c);
+            c.theItemInWorldManager.setWorld(w1);
+            cm.updateTimeAndWeatherForPlayer(c, w1);
+            cm.syncPlayerInventory(c);
+            Iterator iterator = c.getActivePotionEffects().iterator();
+            while (iterator.hasNext())
+            {
+                PotionEffect effect = (PotionEffect) iterator.next();
+                c.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(c.entityId, effect));
+            }
+            c.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(c.experience, c.experienceTotal, c.experienceLevel));
         }
+
+        return ent;
     }
+
 }
