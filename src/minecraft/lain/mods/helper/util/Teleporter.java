@@ -23,7 +23,6 @@ public class Teleporter
                 @Override
                 public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
                 {
-                    par1Entity.setLocationAndAngles(posX, posY, posZ, yaw, pitch);
                 }
             };
             if (ent instanceof EntityPlayerMP)
@@ -31,7 +30,10 @@ public class Teleporter
             else
                 conman.transferEntityToWorld(ent, dimension, oldworld, newworld, teleporter);
             if (1 == oldworld.provider.dimensionId) // it was the End
+            {
                 teleport(ent, -999, posX, posY, posZ, yaw, pitch);
+                newworld.updateEntityWithOptionalForce(ent, false);
+            }
         }
         else
         {
