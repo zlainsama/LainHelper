@@ -30,6 +30,8 @@ public class Teleporter
                 conman.transferPlayerToDimension((EntityPlayerMP) ent, dimension, teleporter);
             else
                 conman.transferEntityToWorld(ent, dimension, oldworld, newworld, teleporter);
+            if (1 == oldworld.provider.dimensionId) // it was the End
+                teleport(ent, -999, posX, posY, posZ, yaw, pitch);
         }
         else
         {
@@ -39,5 +41,4 @@ public class Teleporter
                 ((EntityPlayerMP) ent).playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
         }
     }
-
 }
