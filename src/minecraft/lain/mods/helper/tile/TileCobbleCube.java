@@ -193,7 +193,7 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
         if (worldObj.isRemote)
             return;
 
-        if (++timer >= 30)
+        if (++timer >= 10)
         {
             timer = 0;
 
