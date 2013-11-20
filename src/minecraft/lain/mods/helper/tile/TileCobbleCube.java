@@ -1,7 +1,6 @@
 package lain.mods.helper.tile;
 
 import java.util.Arrays;
-import lain.mods.helper.tile.base.BlockCubeBase;
 import lain.mods.helper.tile.base.IActivatableCubeTile;
 import lain.mods.helper.tile.base.ISpecialCubeTile;
 import lain.mods.helper.util.InventoryUtils;
@@ -21,15 +20,17 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
 
     private static final ItemStack ITEMTODISPLAY = new ItemStack(Block.cobblestone);
 
-    private final ItemStack[] cobbles = new ItemStack[1];
-    private final int[] slots = { 0 };
-    private final int[] noSlot = {};
+    private static final int cobbleGen = 1;
+    private static final int cobbleGenTicks = 10;
+
+    private final ItemStack[] cobbles = new ItemStack[4];
+    private final int[] slots = { 0, 1, 2, 3 };
     private int timer = 0;
 
     @Override
     public boolean canExtractItem(int i, ItemStack itemstack, int j)
     {
-        return getAccessibleSlotsFromSide(j) != noSlot;
+        return true;
     }
 
     @Override
@@ -68,12 +69,7 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public int[] getAccessibleSlotsFromSide(int var1)
     {
-        if (var1 == ForgeDirection.UNKNOWN.ordinal())
-            return slots;
-        for (ForgeDirection dir : BlockCubeBase.VALID_DIRECTIONS)
-            if (var1 == dir.ordinal())
-                return slots;
-        return noSlot;
+        return slots;
     }
 
     @Override
@@ -193,11 +189,11 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
         if (worldObj.isRemote)
             return;
 
-        if (++timer >= 10)
+        if (++timer >= cobbleGenTicks)
         {
             timer = 0;
 
-            ItemStack stack = new ItemStack(Block.cobblestone);
+            ItemStack stack = new ItemStack(Block.cobblestone, cobbleGen);
             for (int i = 0; i < cobbles.length && stack != null && stack.stackSize > 0; i++)
             {
                 if (cobbles[i] == null || cobbles[i].itemID != Block.cobblestone.blockID)
@@ -219,7 +215,7 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
 
             for (int i = 0; i < cobbles.length; i++)
             {
-                for (ForgeDirection to : BlockCubeBase.VALID_DIRECTIONS)
+                for (ForgeDirection to : ForgeDirection.VALID_DIRECTIONS)
                 {
                     if (cobbles[i] == null || cobbles[i].stackSize == 0)
                         break;

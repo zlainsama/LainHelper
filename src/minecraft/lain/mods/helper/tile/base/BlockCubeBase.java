@@ -1,7 +1,6 @@
 package lain.mods.helper.tile.base;
 
 import java.util.Map;
-import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.MapColor;
@@ -16,18 +15,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import com.google.common.collect.Maps;
 
 public abstract class BlockCubeBase extends BlockContainer
 {
 
-    public static final ForgeDirection[] VALID_DIRECTIONS = new ForgeDirection[] { ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST };
     public static final Material matCube = new MaterialCube(MapColor.airColor);
 
     protected Map<String, Icon> icons = Maps.newHashMap();
-
-    private final Random rand = new Random();
 
     protected BlockCubeBase(int par1)
     {
@@ -49,20 +44,20 @@ public abstract class BlockCubeBase extends BlockContainer
                 ItemStack itemstack = inv.getStackInSlot(i);
                 if (itemstack != null)
                 {
-                    float f = rand.nextFloat() * 0.8F + 0.1F;
-                    float f1 = rand.nextFloat() * 0.8F + 0.1F;
+                    float f = par1World.rand.nextFloat() * 0.8F + 0.1F;
+                    float f1 = par1World.rand.nextFloat() * 0.8F + 0.1F;
                     EntityItem entityitem = null;
-                    for (float f2 = rand.nextFloat() * 0.8F + 0.1F; itemstack.stackSize > 0; par1World.spawnEntityInWorld(entityitem))
+                    for (float f2 = par1World.rand.nextFloat() * 0.8F + 0.1F; itemstack.stackSize > 0; par1World.spawnEntityInWorld(entityitem))
                     {
-                        int k1 = rand.nextInt(21) + 10;
+                        int k1 = par1World.rand.nextInt(21) + 10;
                         if (k1 > itemstack.stackSize)
                             k1 = itemstack.stackSize;
                         itemstack.stackSize -= k1;
                         entityitem = new EntityItem(par1World, (double) ((float) par2 + f), (double) ((float) par3 + f1), (double) ((float) par4 + f2), new ItemStack(itemstack.itemID, k1, itemstack.getItemDamage()));
                         float f3 = 0.05F;
-                        entityitem.motionX = (double) ((float) rand.nextGaussian() * f3);
-                        entityitem.motionY = (double) ((float) rand.nextGaussian() * f3 + 0.2F);
-                        entityitem.motionZ = (double) ((float) rand.nextGaussian() * f3);
+                        entityitem.motionX = (double) ((float) par1World.rand.nextGaussian() * f3);
+                        entityitem.motionY = (double) ((float) par1World.rand.nextGaussian() * f3 + 0.2F);
+                        entityitem.motionZ = (double) ((float) par1World.rand.nextGaussian() * f3);
                         if (itemstack.hasTagCompound())
                             entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
                     }
@@ -85,10 +80,8 @@ public abstract class BlockCubeBase extends BlockContainer
             case 3:
             case 4:
             case 5:
-                for (ForgeDirection dir : VALID_DIRECTIONS)
-                    if (par1 == dir.ordinal())
-                        return icons.get("sideValid");
-                return icons.get("side");
+                return icons.get("sideValid");
+                // return icons.get("side");
             default:
                 return icons.get("unknown");
         }
