@@ -16,12 +16,6 @@ public class FMLPlugin implements IFMLLoadingPlugin
     }
 
     @Override
-    public String[] getLibraryRequestClass()
-    {
-        return null;
-    }
-
-    @Override
     public String getModContainerClass()
     {
         return "lain.mods.helper.LainHelper";

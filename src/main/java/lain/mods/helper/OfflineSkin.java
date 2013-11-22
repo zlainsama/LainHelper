@@ -2,7 +2,7 @@ package lain.mods.helper;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
@@ -120,8 +120,13 @@ public final class OfflineSkin implements IWorldAccess, ResourceManagerReloadLis
     public void onResourceManagerReload(ResourceManager resourcemanager)
     {
         if (mc.theWorld != null)
-            for (Entity entity : (List<Entity>) mc.theWorld.loadedEntityList)
-                loadSkin(entity);
+        {
+            Iterator iterator = mc.theWorld.loadedEntityList.iterator();
+            while (iterator.hasNext())
+            {
+                loadSkin((Entity) iterator.next());
+            }
+        }
     }
 
     @Override

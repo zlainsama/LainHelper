@@ -3,10 +3,12 @@ package lain.mods.helper.command;
 import lain.mods.helper.LainHelper;
 import lain.mods.helper.util.PositionData;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandHome extends CommandBase
+public class CommandSpawn extends CommandBase
 {
 
     @Override
@@ -16,9 +18,17 @@ public class CommandHome extends CommandBase
     }
 
     @Override
+    public int compareTo(Object arg0)
+    {
+        if (arg0 instanceof ICommand)
+            return getCommandName().compareTo(((ICommand) arg0).getCommandName());
+        return 0;
+    }
+
+    @Override
     public String getCommandName()
     {
-        return "home";
+        return "spawn";
     }
 
     @Override
@@ -31,12 +41,8 @@ public class CommandHome extends CommandBase
     public void processCommand(ICommandSender par1, String[] par2)
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(par1);
-        PositionData home = LainHelper.proxy.getPlayerHomePosition(player);
-        if (home != null)
-        {
-            LainHelper.proxy.setPlayerLastPosition(player, new PositionData(player));
-            home.teleportEntity(player);
-        }
+        LainHelper.proxy.setPlayerLastPosition(player, new PositionData(player));
+        new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getRandomizedSpawnPoint(), 0).teleportEntity(player, true);
     }
 
 }
