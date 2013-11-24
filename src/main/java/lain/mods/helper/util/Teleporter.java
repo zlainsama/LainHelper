@@ -55,6 +55,7 @@ public class Teleporter
         }
 
         ent.motionX = ent.motionY = ent.motionZ = 0D;
+        ent.fallDistance = 0F;
         ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
         if (c != null)
             c.playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
@@ -81,6 +82,7 @@ public class Teleporter
         w1.updateEntityWithOptionalForce(ent, false);
 
         ent.motionX = ent.motionY = ent.motionZ = 0D;
+        ent.fallDistance = 0F;
         ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
         if (c != null)
             c.playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
