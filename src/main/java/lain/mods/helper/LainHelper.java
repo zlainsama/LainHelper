@@ -2,11 +2,8 @@ package lain.mods.helper;
 
 import java.util.Arrays;
 import net.minecraft.block.Block;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -40,7 +37,9 @@ public class LainHelper extends DummyModContainer
             {
                 if ("fall".equalsIgnoreCase(a))
                     event.setCanceled(true);
-                else if ("arrow".equalsIgnoreCase(a) && Math.random() > 0.5D)
+                else if ("arrow".equalsIgnoreCase(a))
+                    event.setCanceled(true);
+                else if (event.source.isFireDamage() || event.source.isMagicDamage() || "wither".equalsIgnoreCase(a))
                     event.setCanceled(true);
             }
         }
@@ -48,31 +47,14 @@ public class LainHelper extends DummyModContainer
         @ForgeSubscribe
         public void b(LivingHurtEvent event)
         {
-            String a = event.source.getDamageType();
             if (checkOwner(event.entity))
             {
-                if (Math.random() > 0.5D)
-                    event.ammount *= 0.5F;
-            }
-            else if (checkOwner(event.source.getEntity()))
-            {
-                if ("arrow".equalsIgnoreCase(a))
-                    event.ammount *= 3.0F;
-                else if ("player".equalsIgnoreCase(a))
-                {
-                    ItemStack b = ((EntityPlayer) event.source.getEntity()).getCurrentEquippedItem();
-                    if (b == null)
-                        event.ammount += 3.0F;
-                    else if (b.getItem() instanceof ItemSword)
-                        event.ammount += 8.0F;
-                    else if (b.getItem() instanceof ItemAxe)
-                        event.ammount += 4.0F;
-                    else if (b.getItem() instanceof ItemTool)
-                        event.ammount += 2.0F;
-                }
+                if (event.source.isExplosion())
+                    event.ammount *= 0.15F;
+                else
+                    event.ammount *= 0.50F;
             }
         }
-
     }
 
     public static int idBlockWaterCube;
@@ -92,8 +74,11 @@ public class LainHelper extends DummyModContainer
             return "zlainsama".equalsIgnoreCase((String) obj);
         if (obj instanceof EntityPlayer)
             return checkOwner(((EntityPlayer) obj).username);
-        // if (obj instanceof EntityTameable)
-        // return checkOwner(((EntityTameable) obj).getOwnerName());
+        if (obj instanceof EntityTameable)
+        {
+            EntityTameable tameable = (EntityTameable) obj;
+            return tameable.isTamed() && checkOwner(tameable.getOwnerName());
+        }
         return false;
     }
 
