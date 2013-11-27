@@ -100,6 +100,8 @@ public class CommonProxy
         LanguageRegistry.addName(LainHelper.blockCobbleCube, "Cobble Cube");
         GameRegistry.addShapedRecipe(new ItemStack(LainHelper.blockCobbleCube), "SES", "WIL", "SPS", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder, 'L', Item.bucketLava, 'S', Block.stone, 'I', Item.pickaxeIron);
 
+        GameRegistry.addShapedRecipe(new ItemStack(Item.monsterPlacer, 1, 95), "BEB", "BFB", "BSB", 'B', Item.bone, 'E', Item.eyeOfEnder, 'F', Item.rottenFlesh, 'S', Block.slowSand);
+
         GameRegistry.registerBlock(LainHelper.blockWaterCube, "blockWaterCube");
         GameRegistry.registerTileEntity(TileWaterCube.class, "tileWaterCube");
         GameRegistry.registerBlock(LainHelper.blockCobbleCube, "blockCobbleCube");
