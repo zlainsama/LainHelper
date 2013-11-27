@@ -59,7 +59,7 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                 }
                 if (flag)
                 {
-                    for (ItemStack item : event.drops)
+                    for (ItemStack item : event.drops.toArray(new ItemStack[0]))
                     {
                         if (event.world.rand.nextBoolean())
                             event.drops.add(item.copy());
