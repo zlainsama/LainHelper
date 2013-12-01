@@ -65,6 +65,7 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                         event.drops.add(new ItemStack(Item.seeds.itemID, 1, 0));
                         if (event.blockMetadata >= 7)
                         {
+                            event.drops.add(new ItemStack(Item.seeds.itemID, 1, 0));
                             for (int n = 0; n < 3 + event.fortuneLevel; n++)
                                 event.drops.add(new ItemStack(Item.wheat.itemID, 1, 0));
                         }
