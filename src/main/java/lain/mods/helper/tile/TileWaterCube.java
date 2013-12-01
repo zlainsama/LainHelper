@@ -29,7 +29,7 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
         @ForgeSubscribe
         public void onBlockHarvestDrops(BlockEvent.HarvestDropsEvent event)
         {
-            if (!event.world.isRemote && !event.isSilkTouching && event.block instanceof IPlantable)
+            if (!event.world.isRemote && !event.isSilkTouching && (event.block instanceof IPlantable || event.block.blockID == Block.melon.blockID))
             {
                 boolean flag = false;
                 for (int cX = (event.x >> 4) - 1; cX <= (event.x >> 4) + 1; cX++)
@@ -208,25 +208,6 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                     {
                         int filled = handler.fill(to.getOpposite(), stack, true);
                         tank.drain(filled, true);
-                    }
-                }
-            }
-        }
-
-        for (int x = xCoord - 4; x <= xCoord + 4; x++)
-        {
-            for (int y = yCoord - 0; y <= yCoord + 0; y++)
-            {
-                for (int z = zCoord - 4; z <= zCoord + 4; z++)
-                {
-                    int id = worldObj.getBlockId(x, y, z);
-                    if (id != 0 && Block.blocksList[id] != null)
-                    {
-                        if (id == Block.tilledField.blockID)
-                        {
-                            if (worldObj.getBlockMetadata(x, y, z) < 7)
-                                worldObj.setBlockMetadataWithNotify(x, y, z, 7, 2);
-                        }
                     }
                 }
             }
