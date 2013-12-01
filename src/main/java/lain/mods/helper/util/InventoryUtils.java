@@ -1,8 +1,11 @@
 package lain.mods.helper.util;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityChest;
 
 public class InventoryUtils
 {
@@ -24,6 +27,14 @@ public class InventoryUtils
 
     public static ItemStack insertStack(IInventory inventory, ItemStack itemstack, int side)
     {
+        if (inventory instanceof TileEntityChest)
+        {
+            TileEntityChest chest = (TileEntityChest) inventory;
+            Block block = chest.getBlockType();
+            if (block instanceof BlockChest)
+                inventory = ((BlockChest) block).getInventory(chest.worldObj, chest.xCoord, chest.yCoord, chest.zCoord);
+        }
+
         if (inventory instanceof ISidedInventory && side > -1)
         {
             ISidedInventory sided = (ISidedInventory) inventory;
