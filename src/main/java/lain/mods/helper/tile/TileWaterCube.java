@@ -59,10 +59,51 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                 }
                 if (flag)
                 {
-                    for (ItemStack item : event.drops.toArray(new ItemStack[0]))
+                    if (event.block.blockID == Block.crops.blockID)
                     {
-                        if (event.world.rand.nextBoolean())
-                            event.drops.add(item.copy());
+                        event.drops.clear();
+                        event.drops.add(new ItemStack(Item.seeds.itemID, 1, 0));
+                        if (event.blockMetadata >= 7)
+                        {
+                            for (int n = 0; n < 3 + event.fortuneLevel; n++)
+                                event.drops.add(new ItemStack(Item.wheat.itemID, 1, 0));
+                        }
+                    }
+                    else if (event.block.blockID == Block.carrot.blockID)
+                    {
+                        event.drops.clear();
+                        event.drops.add(new ItemStack(Item.carrot.itemID, 1, 0));
+                        if (event.blockMetadata >= 7)
+                        {
+                            for (int n = 0; n < 3 + event.fortuneLevel; n++)
+                                event.drops.add(new ItemStack(Item.carrot.itemID, 1, 0));
+                        }
+                    }
+                    else if (event.block.blockID == Block.potato.blockID)
+                    {
+                        event.drops.clear();
+                        event.drops.add(new ItemStack(Item.potato.itemID, 1, 0));
+                        if (event.blockMetadata >= 7)
+                        {
+                            for (int n = 0; n < 3 + event.fortuneLevel; n++)
+                                event.drops.add(new ItemStack(Item.potato.itemID, 1, 0));
+                        }
+                    }
+                    else if (event.block.blockID == Block.melon.blockID)
+                    {
+                        event.drops.clear();
+                        for (int n = 0; n < 7; n++)
+                            event.drops.add(new ItemStack(Item.melon.itemID, 1, 0));
+                    }
+                    else if (event.block.blockID == Block.netherStalk.blockID)
+                    {
+                        event.drops.clear();
+                        event.drops.add(new ItemStack(Item.netherStalkSeeds.itemID, 1, 0));
+                        if (event.blockMetadata >= 3)
+                        {
+                            for (int n = 0; n < 3 + event.fortuneLevel; n++)
+                                event.drops.add(new ItemStack(Item.netherStalkSeeds.itemID, 1, 0));
+                        }
                     }
                     event.dropChance = 1.0F;
                 }
