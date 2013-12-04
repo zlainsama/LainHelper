@@ -107,7 +107,7 @@ public class CommonProxy
         GameRegistry.registerBlock(LainHelper.blockCobbleCube, "blockCobbleCube");
         GameRegistry.registerTileEntity(TileCobbleCube.class, "tileCobbleCube");
 
-        SunlightDebuff.setup();
+        Vampirism.setup();
     }
 
     public void load(FMLServerStartingEvent event)
