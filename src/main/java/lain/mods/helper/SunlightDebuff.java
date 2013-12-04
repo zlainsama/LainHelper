@@ -38,17 +38,18 @@ public class SunlightDebuff implements ITickHandler
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData)
     {
-        if (type.contains(TickType.PLAYER))
+        if (type.contains(TickType.PLAYER) && LainHelper.sunlightDebuff)
         {
             EntityPlayer player = (EntityPlayer) tickData[0];
-            if (player.worldObj != null && !player.worldObj.isRemote && player.worldObj.isDaytime())
+            if (player.worldObj != null && !player.worldObj.isRemote && player.worldObj.getTotalWorldTime() % 50L == 0L && player.worldObj.isDaytime())
             {
                 float brightness = player.getBrightness(1.0F);
-                if (brightness > 0.5F && player.worldObj.getTotalWorldTime() % 50L == 0L && player.worldObj.canBlockSeeTheSky(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ)))
+                if (brightness > 0.5F && player.worldObj.canBlockSeeTheSky(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ)))
                 {
                     player.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0, true));
-                    player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 100, 1, false));
-                    player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 2, false));
+                    player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 100, 1, true));
+                    player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 2, true));
+                    player.addPotionEffect(new PotionEffect(Potion.weakness.id, 100, 0, true));
                 }
             }
         }
