@@ -19,7 +19,6 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileWaterCube.class, renderer);
         ClientRegistry.bindTileEntitySpecialRenderer(TileCobbleCube.class, renderer);
 
-        OfflineSkin.setup();
         TooltipTweaker.setup();
     }
 
