@@ -20,8 +20,8 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
 
     private static final ItemStack ITEMTODISPLAY = new ItemStack(Block.cobblestone);
 
-    private static final int cobbleGen = 1;
-    private static final int cobbleGenTicks = 10;
+    private static final int cobbleGen = 4;
+    private static final int cobbleGenTicks = 20;
 
     private final ItemStack[] cobbles = new ItemStack[4];
     private final int[] slots = { 0, 1, 2, 3 };
@@ -135,6 +135,8 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
     @Override
     public boolean onActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
+        if (player.getCurrentEquippedItem() != null)
+            return false;
         boolean flag = false;
         for (int i = 0; i < cobbles.length; i++)
         {
@@ -142,8 +144,9 @@ public class TileCobbleCube extends TileEntity implements ISidedInventory, ISpec
             {
                 if (!player.inventory.addItemStackToInventory(cobbles[i]) || cobbles[i].stackSize > 0)
                     player.dropPlayerItem(cobbles[i]);
+                else
+                    flag = true;
                 cobbles[i] = null;
-                flag = true;
             }
         }
         if (flag)

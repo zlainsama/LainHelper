@@ -29,7 +29,7 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
         @ForgeSubscribe
         public void onBlockHarvestDrops(BlockEvent.HarvestDropsEvent event)
         {
-            if (!event.world.isRemote && !event.isSilkTouching && (event.block instanceof IPlantable || event.block.blockID == Block.melon.blockID))
+            if (!event.world.isRemote && !event.isSilkTouching && event.block instanceof IPlantable)
             {
                 boolean flag = false;
                 for (int cX = (event.x >> 4) - 1; cX <= (event.x >> 4) + 1; cX++)
@@ -46,10 +46,14 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                                     if (tile instanceof TileWaterCube)
                                     {
                                         TileWaterCube cube = (TileWaterCube) tile;
-                                        if (Math.abs(cube.xCoord - event.x) <= 4 && Math.abs(cube.zCoord - event.z) <= 4 && Math.abs(cube.yCoord - event.y) <= 4)
+                                        if (Math.abs(cube.xCoord - event.x) <= 4 && Math.abs(cube.zCoord - event.z) <= 4)
                                         {
-                                            flag = true;
-                                            break;
+                                            int diffY = event.y - cube.yCoord;
+                                            if (diffY >= 0 && diffY <= 8)
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -90,22 +94,6 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
                                 event.drops.add(new ItemStack(Item.potato.itemID, 1, 0));
                         }
                     }
-                    else if (event.block.blockID == Block.melon.blockID)
-                    {
-                        event.drops.clear();
-                        for (int n = 0; n < 7; n++)
-                            event.drops.add(new ItemStack(Item.melon.itemID, 1, 0));
-                    }
-                    else if (event.block.blockID == Block.netherStalk.blockID)
-                    {
-                        event.drops.clear();
-                        event.drops.add(new ItemStack(Item.netherStalkSeeds.itemID, 1, 0));
-                        if (event.blockMetadata >= 3)
-                        {
-                            for (int n = 0; n < 3 + event.fortuneLevel; n++)
-                                event.drops.add(new ItemStack(Item.netherStalkSeeds.itemID, 1, 0));
-                        }
-                    }
                     event.dropChance = 1.0F;
                 }
             }
@@ -114,9 +102,9 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
 
     private static final ItemStack ITEMTODISPLAY = new ItemStack(Item.bucketWater);
 
-    private static final int capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 8.0);
-    private static final int tickGain = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.4);
-    private static final int tickFlow = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.2);
+    private static final int capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 4.0);
+    private static final int tickGain = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.2);
+    private static final int tickFlow = (int) (FluidContainerRegistry.BUCKET_VOLUME * 0.1);
 
     static
     {
@@ -156,6 +144,8 @@ public class TileWaterCube extends TileFluidHandler implements ISpecialCubeTile,
     public boolean onActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
         ItemStack holding = player.getCurrentEquippedItem();
+        if (!FluidContainerRegistry.isContainer(holding))
+            return false;
         if (FluidContainerRegistry.isEmptyContainer(holding))
         {
             FluidStack fluid = getTankInfo(ForgeDirection.UNKNOWN)[0].fluid;

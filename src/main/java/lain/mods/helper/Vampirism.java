@@ -15,7 +15,8 @@ public class Vampirism implements ITickHandler
 
     public static void setup()
     {
-        TickRegistry.registerTickHandler(new Vampirism(), Side.SERVER);
+        if (LainHelper.sunlightDebuff || LainHelper.vampirePower)
+            TickRegistry.registerTickHandler(new Vampirism(), Side.SERVER);
     }
 
     @Override
@@ -52,9 +53,12 @@ public class Vampirism implements ITickHandler
                         if (LainHelper.sunlightDebuff)
                         {
                             player.addPotionEffect(new PotionEffect(Potion.blindness.id, 200, 0, true));
-                            player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 200, 2, true));
-                            player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 2, true));
-                            player.addPotionEffect(new PotionEffect(Potion.weakness.id, 200, 2, true));
+                            if (LainHelper.vampirePower)
+                            {
+                                player.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 200, 2, true));
+                                player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 2, true));
+                                player.addPotionEffect(new PotionEffect(Potion.weakness.id, 200, 2, true));
+                            }
                         }
                     }
                     else

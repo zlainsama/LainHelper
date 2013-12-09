@@ -13,8 +13,8 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.6.x-v31"
-group= "lain.mods.helper" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.6.x-v32"
+group= "lain.mods.helper"
 archivesBaseName = "LainHelper"
 
 minecraft {
