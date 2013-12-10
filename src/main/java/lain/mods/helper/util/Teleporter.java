@@ -6,7 +6,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet41EntityEffect;
-import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
@@ -103,9 +102,10 @@ public class Teleporter
                 PotionEffect effect = (PotionEffect) iterator.next();
                 c.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(c.entityId, effect));
             }
-            c.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(c.experience, c.experienceTotal, c.experienceLevel));
-
             GameRegistry.onPlayerChangedDimension(c);
+
+            c.addExperienceLevel(0);
+            c.setPlayerHealthUpdated();
         }
 
         return ent;
