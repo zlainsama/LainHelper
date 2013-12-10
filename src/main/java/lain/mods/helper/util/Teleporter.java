@@ -41,7 +41,7 @@ public class Teleporter
             ent.riddenByEntity.ridingEntity = null;
             ent.riddenByEntity = null;
         }
-        if (c != null)
+        if (c != null && c.openContainer != c.inventoryContainer)
             c.closeScreen();
 
         w0.updateEntityWithOptionalForce(ent, false);
@@ -49,7 +49,6 @@ public class Teleporter
         if (worldChanges && c != null)
         {
             c.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(d1, (byte) w1.difficultySetting, w1.getWorldInfo().getTerrainType(), w1.getHeight(), c.theItemInWorldManager.getGameType()));
-            w0.getPlayerManager().removePlayer(c);
             w0.removePlayerEntityDangerously(c);
             c.isDead = false;
         }
@@ -92,6 +91,7 @@ public class Teleporter
 
         if (worldChanges && c != null)
         {
+            w0.getPlayerManager().removePlayer(c);
             w1.getPlayerManager().addPlayer(c);
             c.theItemInWorldManager.setWorld(w1);
             cm.updateTimeAndWeatherForPlayer(c, w1);
