@@ -1,6 +1,5 @@
 package lain.mods.helper;
 
-import java.io.File;
 import lain.mods.helper.command.CommandBack;
 import lain.mods.helper.command.CommandHome;
 import lain.mods.helper.command.CommandSetHome;
@@ -9,7 +8,7 @@ import lain.mods.helper.tile.BlockCobbleCube;
 import lain.mods.helper.tile.BlockWaterCube;
 import lain.mods.helper.tile.TileCobbleCube;
 import lain.mods.helper.tile.TileWaterCube;
-import lain.mods.helper.util.CustomPlayerData;
+import lain.mods.helper.util.DataStorage;
 import lain.mods.helper.util.PositionData;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,41 +16,24 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy
 {
 
-    private static final String identifier = "fd2f83d9-eb08-4bec-864f-70c10520865b";
-
-    public File getActiveSaveDirectory()
-    {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        if (server == null)
-            return null;
-        if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-            return new File(server.getFile("saves"), server.worldServerForDimension(0).getSaveHandler().getWorldDirectoryName());
-        else
-            return server.getFile(server.getFolderName());
-    }
+    private DataStorage playerData;
 
     public NBTTagCompound getCustomPlayerData(EntityPlayer player)
     {
-        IExtendedEntityProperties obj = player.getExtendedProperties(identifier);
-        if (obj instanceof CustomPlayerData)
-            return ((CustomPlayerData) obj).getCustomPlayerData();
-        return new NBTTagCompound("");
+        return playerData.load("player." + player.username);
     }
 
     public PositionData getPlayerHomePosition(EntityPlayer player)
@@ -88,46 +70,62 @@ public class CommonProxy
 
     public void load(FMLInitializationEvent event)
     {
+        playerData = new DataStorage("helper")
+        {
+            @Override
+            protected void handleException(Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        };
+        GameRegistry.registerPlayerTracker(new IPlayerTracker()
+        {
+            @Override
+            public void onPlayerChangedDimension(EntityPlayer player)
+            {
+            }
+
+            @Override
+            public void onPlayerLogin(EntityPlayer player)
+            {
+                playerData.load("player." + player.username);
+            }
+
+            @Override
+            public void onPlayerLogout(EntityPlayer player)
+            {
+                playerData.unload("player." + player.username);
+            }
+
+            @Override
+            public void onPlayerRespawn(EntityPlayer player)
+            {
+            }
+        });
+
         MinecraftForge.EVENT_BUS.register(this);
 
-        LainHelper.blockWaterCube = new BlockWaterCube(LainHelper.idBlockWaterCube);
-        LainHelper.blockWaterCube.setUnlocalizedName("blockWaterCube");
-        LanguageRegistry.addName(LainHelper.blockWaterCube, "Water Cube");
-        GameRegistry.addShapedRecipe(new ItemStack(LainHelper.blockWaterCube), "PWP", "WEW", "PWP", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder);
+        if (LainHelper.idBlockWaterCube != 0)
+        {
+            LainHelper.blockWaterCube = new BlockWaterCube(LainHelper.idBlockWaterCube);
+            LainHelper.blockWaterCube.setUnlocalizedName("blockWaterCube");
+            LanguageRegistry.addName(LainHelper.blockWaterCube, "Water Cube");
+            GameRegistry.addShapedRecipe(new ItemStack(LainHelper.blockWaterCube), "PWP", "WEW", "PWP", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder);
+            GameRegistry.registerBlock(LainHelper.blockWaterCube, "blockWaterCube");
+            GameRegistry.registerTileEntity(TileWaterCube.class, "tileWaterCube");
+        }
 
-        LainHelper.blockCobbleCube = new BlockCobbleCube(LainHelper.idBlockCobbleCube);
-        LainHelper.blockCobbleCube.setUnlocalizedName("blockCobbleCube");
-        LanguageRegistry.addName(LainHelper.blockCobbleCube, "Cobble Cube");
-        GameRegistry.addShapedRecipe(new ItemStack(LainHelper.blockCobbleCube), "SES", "WIL", "SPS", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder, 'L', Item.bucketLava, 'S', Block.stone, 'I', Item.pickaxeIron);
-
-        GameRegistry.addShapedRecipe(new ItemStack(Item.monsterPlacer, 1, 95), "BEB", "BFB", "BSB", 'B', Item.bone, 'E', Item.eyeOfEnder, 'F', Item.rottenFlesh, 'S', Block.slowSand);
-
-        GameRegistry.registerBlock(LainHelper.blockWaterCube, "blockWaterCube");
-        GameRegistry.registerTileEntity(TileWaterCube.class, "tileWaterCube");
-        GameRegistry.registerBlock(LainHelper.blockCobbleCube, "blockCobbleCube");
-        GameRegistry.registerTileEntity(TileCobbleCube.class, "tileCobbleCube");
+        if (LainHelper.idBlockCobbleCube != 0)
+        {
+            LainHelper.blockCobbleCube = new BlockCobbleCube(LainHelper.idBlockCobbleCube);
+            LainHelper.blockCobbleCube.setUnlocalizedName("blockCobbleCube");
+            LanguageRegistry.addName(LainHelper.blockCobbleCube, "Cobble Cube");
+            GameRegistry.addShapedRecipe(new ItemStack(LainHelper.blockCobbleCube), "SES", "WIL", "SPS", 'P', Block.pistonBase, 'W', Item.bucketWater, 'E', Item.eyeOfEnder, 'L', Item.bucketLava, 'S', Block.stone, 'I', Item.pickaxeIron);
+            GameRegistry.registerBlock(LainHelper.blockCobbleCube, "blockCobbleCube");
+            GameRegistry.registerTileEntity(TileCobbleCube.class, "tileCobbleCube");
+        }
 
         Vampirism.setup();
-    }
-
-    public void load(FMLServerStartingEvent event)
-    {
-        if (LainHelper.enableHelperCommands)
-        {
-            event.registerServerCommand(new CommandBack());
-            event.registerServerCommand(new CommandHome());
-            event.registerServerCommand(new CommandSetHome());
-            event.registerServerCommand(new CommandSpawn());
-        }
-    }
-
-    @ForgeSubscribe
-    public void onPlayerConstruction(EntityEvent.EntityConstructing event)
-    {
-        if (event.entity instanceof EntityPlayerMP)
-        {
-            event.entity.registerExtendedProperties(identifier, new CustomPlayerData());
-        }
     }
 
     @ForgeSubscribe
@@ -139,6 +137,22 @@ public class CommonProxy
         }
     }
 
+    public void onServerStarting(FMLServerStartingEvent event)
+    {
+        if (LainHelper.enableHelperCommands)
+        {
+            event.registerServerCommand(new CommandBack());
+            event.registerServerCommand(new CommandHome());
+            event.registerServerCommand(new CommandSetHome());
+            event.registerServerCommand(new CommandSpawn());
+        }
+    }
+
+    public void onServerStopping(FMLServerStoppingEvent event)
+    {
+        playerData.unloadAll();
+    }
+
     public void setPlayerHomePosition(EntityPlayer player, PositionData position)
     {
         NBTTagCompound data = getCustomPlayerData(player);
@@ -148,10 +162,6 @@ public class CommonProxy
         data = new NBTTagCompound("homePosition");
         position.writeToNBT(data);
         dir.setCompoundTag("homePosition", data);
-
-        IExtendedEntityProperties obj = player.getExtendedProperties(identifier);
-        if (obj instanceof CustomPlayerData)
-            ((CustomPlayerData) obj).save();
     }
 
     public void setPlayerLastPosition(EntityPlayer player, PositionData position)
@@ -163,10 +173,6 @@ public class CommonProxy
         data = new NBTTagCompound("lastPosition");
         position.writeToNBT(data);
         dir.setCompoundTag("lastPosition", data);
-
-        IExtendedEntityProperties obj = player.getExtendedProperties(identifier);
-        if (obj instanceof CustomPlayerData)
-            ((CustomPlayerData) obj).save();
     }
 
 }

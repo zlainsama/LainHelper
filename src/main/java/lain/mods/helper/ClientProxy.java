@@ -18,8 +18,6 @@ public class ClientProxy extends CommonProxy
         TileEntitySpecialRenderer renderer = new SpecialCubeTileRenderer();
         ClientRegistry.bindTileEntitySpecialRenderer(TileWaterCube.class, renderer);
         ClientRegistry.bindTileEntitySpecialRenderer(TileCobbleCube.class, renderer);
-
-        TooltipTweaker.setup();
     }
 
 }
