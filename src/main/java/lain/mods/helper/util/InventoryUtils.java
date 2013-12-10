@@ -35,6 +35,9 @@ public class InventoryUtils
                 inventory = ((BlockChest) block).getInventory(chest.worldObj, chest.xCoord, chest.yCoord, chest.zCoord);
         }
 
+        if (inventory == null)
+            return itemstack;
+
         if (inventory instanceof ISidedInventory && side > -1)
         {
             ISidedInventory sided = (ISidedInventory) inventory;
