@@ -41,7 +41,7 @@ public class Teleporter
             ent.riddenByEntity.ridingEntity = null;
             ent.riddenByEntity = null;
         }
-        if (c != null && c.openContainer != c.inventoryContainer)
+        if (c != null && c.openContainer != null && c.openContainer != c.inventoryContainer)
             c.closeScreen();
 
         w0.updateEntityWithOptionalForce(ent, false);
@@ -56,11 +56,7 @@ public class Teleporter
         ent.motionX = ent.motionY = ent.motionZ = 0D;
         ent.fallDistance = 0F;
         ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
-        if (c != null)
-            c.playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
         w1.theChunkProviderServer.loadChunk(((int) posX) >> 4, ((int) posZ) >> 4);
-
-        w1.updateEntityWithOptionalForce(ent, false);
 
         if (worldChanges)
         {
@@ -78,14 +74,8 @@ public class Teleporter
             ent.setWorld(w1);
         }
 
-        w1.updateEntityWithOptionalForce(ent, false);
-
-        ent.motionX = ent.motionY = ent.motionZ = 0D;
-        ent.fallDistance = 0F;
-        ent.setPositionAndRotation(posX, posY, posZ, yaw, pitch);
         if (c != null)
             c.playerNetServerHandler.setPlayerLocation(posX, posY, posZ, yaw, pitch);
-        w1.theChunkProviderServer.loadChunk(((int) posX) >> 4, ((int) posZ) >> 4);
 
         w1.updateEntityWithOptionalForce(ent, false);
 
