@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Teleporter
 {
@@ -103,6 +104,8 @@ public class Teleporter
                 c.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(c.entityId, effect));
             }
             c.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(c.experience, c.experienceTotal, c.experienceLevel));
+
+            GameRegistry.onPlayerChangedDimension(c);
         }
 
         return ent;
