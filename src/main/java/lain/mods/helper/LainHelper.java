@@ -3,7 +3,7 @@ package lain.mods.helper;
 import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.Configuration;
@@ -38,29 +38,34 @@ public class LainHelper extends DummyModContainer
             Entity b = event.source.getEntity();
             if (checkOwner(event.entity))
             {
-                event.ammount *= "fall".equalsIgnoreCase(a) ? 0.05F : ((event.source.isExplosion() || event.source.isMagicDamage()) ? 0.15F : 0.50F);
-                float c = event.entityLiving.getMaxHealth() * 0.50F;
-                if (event.ammount > c)
-                    event.ammount = c;
+                int n = 0;
+                float p = 0F;
+                for (int i = 1; i < 5; i++)
+                    if (event.entityLiving.getCurrentItemOrArmor(i) != null)
+                        n += 1;
+                if ("fall".equalsIgnoreCase(a))
+                    p += ((6 + n * n) / 3F) * 2.5F;
+                if (event.source.isFireDamage())
+                    p += ((6 + n * n) / 3F) * 1.25F;
+                if (event.source.isExplosion())
+                    p += ((6 + n * n) / 3F) * 1.5F;
+                if (event.source.isProjectile())
+                    p += ((6 + n * n) / 3F) * 1.5F;
+                p += ((6 + n * n) / 3F) * 0.75F;
+                if (p < 0F)
+                    p = 0F;
+                if (p > 25F)
+                    p = 25F;
+                event.ammount *= (25F - p) / 25F;
             }
             else if (checkOwner(b))
             {
-                if ("arrow".equalsIgnoreCase(a))
-                    event.ammount *= 2.00F;
+                if (event.source.isProjectile())
+                    event.ammount *= 1.20F;
                 else
-                {
-                    event.ammount *= 1.50F;
-                    if (b instanceof EntityLivingBase)
-                    {
-                        EntityLivingBase c = (EntityLivingBase) b;
-                        if (c.getHealth() < c.getMaxHealth())
-                        {
-                            int d = b.hurtResistantTime;
-                            c.heal(Math.min(event.ammount * 0.15F, c.getMaxHealth() * 0.30F));
-                            b.hurtResistantTime = d;
-                        }
-                    }
-                }
+                    event.ammount *= 1.05F;
+                if (event.entityLiving.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD)
+                    event.ammount *= 3.00F;
             }
         }
 
