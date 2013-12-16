@@ -4,7 +4,7 @@ import java.util.Map;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.Name("LainHelper:CorePlugin")
-@IFMLLoadingPlugin.MCVersion("1.6.4")
+@IFMLLoadingPlugin.MCVersion("")
 @IFMLLoadingPlugin.TransformerExclusions({ "lain.mods.helper.core.", "lain.mods.helper.customport." })
 public class FMLPlugin implements IFMLLoadingPlugin
 {
