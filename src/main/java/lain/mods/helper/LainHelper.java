@@ -3,6 +3,7 @@ package lain.mods.helper;
 import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +11,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import cpw.mods.fml.common.DummyModContainer;
@@ -69,6 +71,26 @@ public class LainHelper extends DummyModContainer
             }
         }
 
+        @ForgeSubscribe
+        public void b(LivingSetAttackTargetEvent event)
+        {
+            boolean a = event.entityLiving.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
+            if (event.entityLiving instanceof EntityLiving)
+            {
+                EntityLiving b = (EntityLiving) event.entityLiving;
+                if (checkOwner(b.getAttackTarget()))
+                {
+                    if (a)
+                        b.setAttackTarget(null);
+                }
+            }
+            if (checkOwner(event.entityLiving.getAITarget()))
+            {
+                if (a)
+                    event.entityLiving.setRevengeTarget(null);
+            }
+        }
+
     }
 
     public static int idBlockWaterCube;
@@ -86,6 +108,8 @@ public class LainHelper extends DummyModContainer
 
     private static boolean checkOwner(Object obj)
     {
+        if (obj == null)
+            return false;
         if (obj instanceof String)
             return "zlainsama".equalsIgnoreCase((String) obj);
         if (obj instanceof EntityPlayer)
