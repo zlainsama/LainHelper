@@ -110,7 +110,7 @@ public class LainHelper extends DummyModContainer
                     p += ((6 + n * n) / 3F) * 1.5F;
                 if (event.source.isProjectile())
                     p += ((6 + n * n) / 3F) * 1.5F;
-                p += ((6 + n * n) / 3F) * 0.75F;
+                p += ((24 + n * n) / 3F) * 0.75F;
                 if (p < 0F)
                     p = 0F;
                 if (p > 25F)
