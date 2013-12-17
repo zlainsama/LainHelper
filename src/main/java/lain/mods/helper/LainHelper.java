@@ -3,15 +3,12 @@ package lain.mods.helper;
 import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import cpw.mods.fml.common.DummyModContainer;
@@ -31,21 +28,6 @@ public class LainHelper extends DummyModContainer
         private a()
         {
             MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        public boolean b(EntityLivingBase entityLiving)
-        {
-            switch (entityLiving.getCreatureAttribute())
-            {
-                case ARTHROPOD:
-                case UNDEAD:
-                    return true;
-                default:
-                    if (entityLiving instanceof EntityLiving)
-                        if (!((EntityLiving) entityLiving).canAttackClass(entityLiving.getClass()))
-                            return true;
-                    return false;
-            }
         }
 
         @ForgeSubscribe
@@ -84,32 +66,20 @@ public class LainHelper extends DummyModContainer
                     event.ammount *= 1.20F;
                 else
                     event.ammount *= 1.05F;
-                if (b(event.entityLiving))
+                switch (event.entityLiving.getCreatureAttribute())
                 {
-                    event.ammount *= 3.00F;
-                    if (event.ammount > 0F && event.ammount < 4F)
-                        event.ammount = 4F;
+                    case ARTHROPOD:
+                        event.ammount *= 1.50F;
+                        break;
+                    case UNDEAD:
+                        event.ammount *= 2.00F;
+                        break;
+                    case UNDEFINED:
+                        event.ammount *= 1.15F;
+                        break;
+                    default:
+                        break;
                 }
-            }
-        }
-
-        @ForgeSubscribe
-        public void b(LivingSetAttackTargetEvent event)
-        {
-            boolean a = b(event.entityLiving);
-            if (event.entityLiving instanceof EntityLiving)
-            {
-                EntityLiving b = (EntityLiving) event.entityLiving;
-                if (checkOwner(b.getAttackTarget()))
-                {
-                    if (a)
-                        b.setAttackTarget(null);
-                }
-            }
-            if (checkOwner(event.entityLiving.getAITarget()))
-            {
-                if (a)
-                    event.entityLiving.setRevengeTarget(null);
             }
         }
 
