@@ -41,6 +41,9 @@ public class LainHelper extends DummyModContainer
                 case UNDEAD:
                     return true;
                 default:
+                    if (entityLiving instanceof EntityLiving)
+                        if (!((EntityLiving) entityLiving).canAttackClass(entityLiving.getClass()))
+                            return true;
                     return false;
             }
         }
@@ -97,8 +100,6 @@ public class LainHelper extends DummyModContainer
             if (event.entityLiving instanceof EntityLiving)
             {
                 EntityLiving b = (EntityLiving) event.entityLiving;
-                if (!a && !b.canAttackClass(b.getClass()))
-                    a = true;
                 if (checkOwner(b.getAttackTarget()))
                 {
                     if (a)
