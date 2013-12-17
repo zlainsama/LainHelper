@@ -45,6 +45,9 @@ public class LainHelper extends DummyModContainer
                 for (int i = 1; i < 5; i++)
                     if (event.entityLiving.getCurrentItemOrArmor(i) != null)
                         n += 1;
+                if (event.entity instanceof EntityPlayer)
+                    if (((EntityPlayer) event.entity).isBlocking())
+                        n += 1;
                 if ("fall".equalsIgnoreCase(a))
                     p += ((6 + n * n) / 3F) * 2.5F;
                 if (event.source.isFireDamage())
@@ -67,7 +70,11 @@ public class LainHelper extends DummyModContainer
                 else
                     event.ammount *= 1.05F;
                 if (event.entityLiving.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD)
+                {
                     event.ammount *= 3.00F;
+                    if (event.ammount > 0F && event.ammount < 4F)
+                        event.ammount = 4F;
+                }
             }
         }
 
@@ -78,6 +85,8 @@ public class LainHelper extends DummyModContainer
             if (event.entityLiving instanceof EntityLiving)
             {
                 EntityLiving b = (EntityLiving) event.entityLiving;
+                if (!a && !b.canAttackClass(b.getClass()))
+                    a = true;
                 if (checkOwner(b.getAttackTarget()))
                 {
                     if (a)
