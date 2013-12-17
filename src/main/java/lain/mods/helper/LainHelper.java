@@ -4,7 +4,7 @@ import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.Configuration;
@@ -31,6 +31,18 @@ public class LainHelper extends DummyModContainer
         private a()
         {
             MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        public boolean b(EntityLivingBase entityLiving)
+        {
+            switch (entityLiving.getCreatureAttribute())
+            {
+                case ARTHROPOD:
+                case UNDEAD:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         @ForgeSubscribe
@@ -69,7 +81,7 @@ public class LainHelper extends DummyModContainer
                     event.ammount *= 1.20F;
                 else
                     event.ammount *= 1.05F;
-                if (event.entityLiving.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD)
+                if (b(event.entityLiving))
                 {
                     event.ammount *= 3.00F;
                     if (event.ammount > 0F && event.ammount < 4F)
@@ -81,7 +93,7 @@ public class LainHelper extends DummyModContainer
         @ForgeSubscribe
         public void b(LivingSetAttackTargetEvent event)
         {
-            boolean a = event.entityLiving.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD;
+            boolean a = b(event.entityLiving);
             if (event.entityLiving instanceof EntityLiving)
             {
                 EntityLiving b = (EntityLiving) event.entityLiving;

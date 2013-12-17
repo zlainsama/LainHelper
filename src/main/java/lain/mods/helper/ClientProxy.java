@@ -16,8 +16,10 @@ public class ClientProxy extends CommonProxy
         super.load(event);
 
         TileEntitySpecialRenderer renderer = new SpecialCubeTileRenderer();
-        ClientRegistry.bindTileEntitySpecialRenderer(TileWaterCube.class, renderer);
-        ClientRegistry.bindTileEntitySpecialRenderer(TileCobbleCube.class, renderer);
+        if (LainHelper.idBlockWaterCube != 0)
+            ClientRegistry.bindTileEntitySpecialRenderer(TileWaterCube.class, renderer);
+        if (LainHelper.idBlockCobbleCube != 0)
+            ClientRegistry.bindTileEntitySpecialRenderer(TileCobbleCube.class, renderer);
     }
 
 }
