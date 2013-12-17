@@ -42,11 +42,11 @@ public class LainHelper extends DummyModContainer
             if (s.isItemStackDamageable() && s.getItem().isRepairable())
             {
                 int a = s.getItemDamage();
-                if (a > 0)
+                if (a > 1)
                 {
-                    a -= r.nextInt(4) + 1;
-                    if (a < 0)
-                        a = 0;
+                    a -= r.nextInt(8) + 1;
+                    if (a < 1)
+                        a = 1;
                     s.setItemDamage(a);
                 }
             }
