@@ -1,13 +1,17 @@
 package lain.mods.helper;
 
 import java.util.Arrays;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -25,14 +29,67 @@ public class LainHelper extends DummyModContainer
     public class a
     {
 
+        private final Random r;
+
         private a()
         {
+            r = new Random();
             MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        public ItemStack b(ItemStack s)
+        {
+            if (s.isItemStackDamageable() && s.getItem().isRepairable())
+            {
+                int a = s.getItemDamage();
+                if (a > 0)
+                {
+                    a -= r.nextInt(4) + 1;
+                    if (a < 0)
+                        a = 0;
+                    s.setItemDamage(a);
+                }
+            }
+            return s;
+        }
+
+        @ForgeSubscribe
+        public void b(LivingEvent.LivingUpdateEvent event)
+        {
+            if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
+                return;
+            if (checkOwner(event.entity))
+            {
+                if (event.entity.ticksExisted % 80 == 0)
+                {
+                    if (event.entity instanceof EntityPlayer)
+                    {
+                        EntityPlayer a = (EntityPlayer) event.entity;
+                        for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < a.inventory.mainInventory.length; i++)
+                            if (a.inventory.mainInventory[i] != null)
+                                a.inventory.mainInventory[i] = b(a.inventory.mainInventory[i]);
+                        for (int i = 0; i < a.inventory.armorInventory.length; i++)
+                            if (a.inventory.armorInventory[i] != null)
+                                a.inventory.armorInventory[i] = b(a.inventory.armorInventory[i]);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            ItemStack a = event.entityLiving.getCurrentItemOrArmor(i);
+                            if (a != null)
+                                event.entityLiving.setCurrentItemOrArmor(i, b(a));
+                        }
+                    }
+                }
+            }
         }
 
         @ForgeSubscribe
         public void b(LivingHurtEvent event)
         {
+            if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
+                return;
             String a = event.source.getDamageType();
             Entity b = event.source.getEntity();
             if (checkOwner(event.entity))
@@ -78,6 +135,7 @@ public class LainHelper extends DummyModContainer
                         event.ammount *= 1.15F;
                         break;
                     default:
+                        event.ammount *= 1.05F;
                         break;
                 }
             }
