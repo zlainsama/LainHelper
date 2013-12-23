@@ -64,6 +64,21 @@ public class PositionData
         this.pitch = pitch;
     }
 
+    public PositionData(PositionData par1)
+    {
+        this.dimension = par1.dimension;
+        this.x = par1.x;
+        this.y = par1.y;
+        this.z = par1.z;
+        this.yaw = par1.yaw;
+        this.pitch = par1.pitch;
+    }
+
+    public PositionData align()
+    {
+        return new PositionData(dimension, (Math.round(x) + 0.5D), (Math.round(y) + 0.5D), (Math.round(z) + 0.5D), (Math.round(yaw / 90.0F) * 90.0F), (pitch > 60.0F ? 90.0F : (pitch < -60.0F ? -90.0F : 0.0F)));
+    }
+
     public void readFromNBT(NBTTagCompound par1)
     {
         dimension = par1.getInteger("dimension");
