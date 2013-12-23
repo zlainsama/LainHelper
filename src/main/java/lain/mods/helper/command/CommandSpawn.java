@@ -38,6 +38,12 @@ public class CommandSpawn extends CommandBase
     }
 
     @Override
+    public int getRequiredPermissionLevel()
+    {
+        return 0;
+    }
+
+    @Override
     public void processCommand(ICommandSender par1, String[] par2)
     {
         EntityPlayerMP player = getCommandSenderAsPlayer(par1);

@@ -11,9 +11,9 @@ public class CommandSetHome extends CommandBase
 {
 
     @Override
-    public String getCommandName()
+    public boolean canCommandSenderUseCommand(ICommandSender par1)
     {
-        return "sethome";
+        return true;
     }
 
     @Override
@@ -25,10 +25,9 @@ public class CommandSetHome extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender par1, String[] par2)
+    public String getCommandName()
     {
-        EntityPlayerMP player = getCommandSenderAsPlayer(par1);
-        LainHelper.proxy.setPlayerHomePosition(player, new PositionData(player));
+        return "sethome";
     }
 
     @Override
@@ -38,9 +37,16 @@ public class CommandSetHome extends CommandBase
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender par1)
+    public int getRequiredPermissionLevel()
     {
-        return true;
+        return 0;
+    }
+
+    @Override
+    public void processCommand(ICommandSender par1, String[] par2)
+    {
+        EntityPlayerMP player = getCommandSenderAsPlayer(par1);
+        LainHelper.proxy.setPlayerHomePosition(player, new PositionData(player));
     }
 
 }
