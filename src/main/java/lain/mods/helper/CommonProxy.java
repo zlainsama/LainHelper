@@ -10,6 +10,7 @@ import lain.mods.helper.tile.TileCobbleCube;
 import lain.mods.helper.tile.TileWaterCube;
 import lain.mods.helper.util.DataStorage;
 import lain.mods.helper.util.PositionData;
+import lain.mods.helper.util.SimpleLanguageFileLoader;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -126,6 +127,9 @@ public class CommonProxy
         }
 
         Vampirism.setup();
+
+        SimpleLanguageFileLoader.loadSafe("/assets/minecraft/lang/helper/en_US.lang", "en_US");
+        SimpleLanguageFileLoader.loadSafe("/assets/minecraft/lang/helper/zh_CN.lang", "zh_CN");
     }
 
     @ForgeSubscribe

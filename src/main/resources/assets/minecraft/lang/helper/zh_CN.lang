@@ -1,0 +1,9 @@
+﻿#zh_CN
+
+LH_NotPlayer = 你需要加入游戏才能这么做.
+LH_LastPosNotFound = 不存在上一个位置.
+LH_BackDone = 传送到了上一个位置.
+LH_HomeNotFound = 不存在家.
+LH_HomeDone = 传送到了家.
+LH_SetHomeDone = 已设置了家.
+LH_SpawnDone = 传送到了出生点.

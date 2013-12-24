@@ -76,7 +76,7 @@ public class PositionData
 
     public PositionData align()
     {
-        return new PositionData(dimension, (Math.round(x) + 0.5D), (Math.round(y) + 0.5D), (Math.round(z) + 0.5D), (Math.round(yaw / 90.0F) * 90.0F), (pitch > 60.0F ? 90.0F : (pitch < -60.0F ? -90.0F : 0.0F)));
+        return new PositionData(dimension, (Math.floor(x) + 0.5D), (Math.floor(y) + 0.5D), (Math.floor(z) + 0.5D), (Math.round(yaw / 90.0F) * 90.0F), (pitch > 60.0F ? 90.0F : (pitch < -60.0F ? -90.0F : 0.0F)));
     }
 
     public void readFromNBT(NBTTagCompound par1)
