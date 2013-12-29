@@ -12,6 +12,7 @@ public class CommandSetHome extends AbstractPublicCommand
 
     Translator msgNotPlayer = new Translator("LH_NotPlayer");
     Translator msgSetHomeDone = new Translator("LH_SetHomeDone");
+    Translator msgOverworldHomeOnly = new Translator("LH_OverworldHomeOnly");
 
     @Override
     public String getCommandName()
@@ -31,8 +32,14 @@ public class CommandSetHome extends AbstractPublicCommand
         if (par1 instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) par1;
-            LainHelper.proxy.setPlayerHomePosition(player, new PositionData(player).align());
-            msgSetHomeDone.sendWithColor(par1, EnumChatFormatting.DARK_RED);
+            PositionData pos = new PositionData(player).align();
+            if (!LainHelper.overworldHomeOnly || pos.dimension == 0)
+            {
+                LainHelper.proxy.setPlayerHomePosition(player, pos);
+                msgSetHomeDone.sendWithColor(par1, EnumChatFormatting.DARK_RED);
+            }
+            else
+                msgOverworldHomeOnly.sendWithColor(par1, EnumChatFormatting.DARK_RED);
         }
         else
             msgNotPlayer.sendWithColor(par1, EnumChatFormatting.DARK_RED);

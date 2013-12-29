@@ -45,4 +45,5 @@ public class CommandBack extends AbstractPublicCommand
         else
             msgNotPlayer.sendWithColor(par1, EnumChatFormatting.DARK_RED);
     }
+
 }

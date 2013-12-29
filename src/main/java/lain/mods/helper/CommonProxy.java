@@ -11,12 +11,14 @@ import lain.mods.helper.tile.TileWaterCube;
 import lain.mods.helper.util.DataStorage;
 import lain.mods.helper.util.PositionData;
 import lain.mods.helper.util.SimpleLanguageFileLoader;
+import lain.mods.helper.util.Translator;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -29,6 +31,8 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class CommonProxy
 {
+
+    Translator msgBackDeath = new Translator("LH_BackDeath");
 
     private DataStorage playerData;
 
@@ -137,7 +141,12 @@ public class CommonProxy
     {
         if (event.entity instanceof EntityPlayerMP)
         {
-            setPlayerLastPosition((EntityPlayerMP) event.entity, new PositionData(event.entity));
+            EntityPlayerMP player = (EntityPlayerMP) event.entity;
+            if (LainHelper.enableHelperCommands)
+            {
+                setPlayerLastPosition(player, new PositionData(event.entity));
+                msgBackDeath.sendWithColor(player, EnumChatFormatting.DARK_RED);
+            }
         }
     }
 
