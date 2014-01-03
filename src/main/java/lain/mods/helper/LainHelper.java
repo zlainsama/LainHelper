@@ -27,131 +27,6 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 public class LainHelper extends DummyModContainer
 {
 
-    public class a
-    {
-
-        private final Random r;
-
-        private a()
-        {
-            r = new Random();
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        public ItemStack b(ItemStack s)
-        {
-            if (s.isItemStackDamageable() && s.getItem().isRepairable())
-            {
-                int a = s.getItemDamage();
-                if (a > 1)
-                {
-                    a -= r.nextInt(8) + 1;
-                    if (a < 1)
-                        a = 1;
-                    s.setItemDamage(a);
-                }
-            }
-            return s;
-        }
-
-        @ForgeSubscribe
-        public void b(LivingEvent.LivingUpdateEvent event)
-        {
-            if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
-                return;
-            if (checkOwner(event.entity))
-            {
-                if (event.entity.ticksExisted % 80 == 0)
-                {
-                    if (event.entity instanceof EntityPlayer)
-                    {
-                        EntityPlayer a = (EntityPlayer) event.entity;
-                        for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < a.inventory.mainInventory.length; i++)
-                            if (a.inventory.mainInventory[i] != null)
-                                a.inventory.mainInventory[i] = b(a.inventory.mainInventory[i]);
-                        for (int i = 0; i < a.inventory.armorInventory.length; i++)
-                            if (a.inventory.armorInventory[i] != null)
-                                a.inventory.armorInventory[i] = b(a.inventory.armorInventory[i]);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 5; i++)
-                        {
-                            ItemStack a = event.entityLiving.getCurrentItemOrArmor(i);
-                            if (a != null)
-                                event.entityLiving.setCurrentItemOrArmor(i, b(a));
-                        }
-                    }
-                }
-            }
-        }
-
-        @ForgeSubscribe
-        public void b(LivingHurtEvent event)
-        {
-            if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
-                return;
-            String a = event.source.getDamageType();
-            Entity b = event.source.getEntity();
-            if (checkOwner(event.entity))
-            {
-                int n = 0;
-                float p = 0F;
-                for (int i = 1; i < 5; i++)
-                    if (event.entityLiving.getCurrentItemOrArmor(i) != null)
-                        n += 1;
-                if (event.entity instanceof EntityPlayer)
-                    if (((EntityPlayer) event.entity).isBlocking())
-                        n += 1;
-                if ("fall".equalsIgnoreCase(a))
-                    p += ((6 + n * n) / 3F) * 2.5F;
-                if (event.source.isFireDamage())
-                    p += ((6 + n * n) / 3F) * 1.25F;
-                if (event.source.isExplosion())
-                    p += ((6 + n * n) / 3F) * 1.5F;
-                if (event.source.isProjectile())
-                    p += ((6 + n * n) / 3F) * 1.5F;
-                if (event.source.isMagicDamage())
-                    p += ((6 + n * n) / 3F) * 1.5F;
-                p += ((24 + n * n) / 3F) * 0.75F;
-                if (p < 0F)
-                    p = 0F;
-                if (p > 25F)
-                    p = 25F;
-                event.ammount *= (25F - p) / 25F;
-            }
-            else if (checkOwner(b))
-            {
-                if (event.source.isProjectile())
-                    event.ammount *= 1.20F;
-                else
-                    event.ammount *= 1.05F;
-                switch (event.entityLiving.getCreatureAttribute())
-                {
-                    case ARTHROPOD:
-                        event.ammount *= 1.50F;
-                        break;
-                    case UNDEAD:
-                        event.ammount *= 2.00F;
-                        break;
-                    case UNDEFINED:
-                        event.ammount *= 1.15F;
-                        break;
-                    default:
-                        event.ammount *= 1.05F;
-                        break;
-                }
-                if (b == event.source.getSourceOfDamage() && b instanceof EntityLiving && !event.source.isExplosion() && !event.source.isFireDamage() && !event.source.isMagicDamage() && !event.source.isProjectile())
-                {
-                    int c = b.hurtResistantTime;
-                    ((EntityLiving) b).heal(event.ammount * 0.15F);
-                    b.hurtResistantTime = c;
-                }
-            }
-        }
-
-    }
-
     public static int idBlockWaterCube;
     public static int idBlockCobbleCube;
 
@@ -166,22 +41,6 @@ public class LainHelper extends DummyModContainer
 
     public static CommonProxy proxy;
 
-    private static boolean checkOwner(Object obj)
-    {
-        if (obj == null)
-            return false;
-        if (obj instanceof String)
-            return "zlainsama".equalsIgnoreCase((String) obj);
-        if (obj instanceof EntityPlayer)
-            return checkOwner(((EntityPlayer) obj).username);
-        if (obj instanceof EntityTameable)
-        {
-            EntityTameable tameable = (EntityTameable) obj;
-            return tameable.isTamed() && checkOwner(tameable.getOwnerName());
-        }
-        return false;
-    }
-
     public LainHelper()
     {
         super(new ModMetadata());
@@ -194,7 +53,7 @@ public class LainHelper extends DummyModContainer
         ModMetadata md = super.getMetadata();
         md.modId = "LainHelper";
         md.name = "LainHelper";
-        md.version = "1.6.x-v38";
+        md.version = "1.6.x-v39";
         md.authorList = Arrays.asList("zlainsama");
         md.autogenerated = false;
         return md;
@@ -227,7 +86,6 @@ public class LainHelper extends DummyModContainer
     @Subscribe
     public void load(FMLInitializationEvent event)
     {
-        new a();
         proxy.load(event);
     }
 

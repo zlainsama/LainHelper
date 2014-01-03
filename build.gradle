@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.6.x-v38"
+version = "1.6.x-v39"
 group= "lain.mods.helper"
 archivesBaseName = "LainHelper"
 
