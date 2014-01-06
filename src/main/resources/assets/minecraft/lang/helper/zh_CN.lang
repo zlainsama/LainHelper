@@ -9,3 +9,9 @@ LH_HomeDone = 传送到了家.
 LH_SetHomeDone = 已设置了家.
 LH_OverworldHomeOnly = 你只能在主世界设置家.
 LH_SpawnDone = 传送到了出生点.
+
+LH_Tooltip_KillingSwords_HumanKilling = 杀人
+LH_Tooltip_KillingSwords_MonsterKilling = 杀怪
+LH_Tooltip_KillingSwords_AnimalKilling = 杀动物
+LH_Tooltip_KillingSwords_OtherKilling = 杀其他
+LH_Tooltip_KillingSwords_LivingKilling = 杀生

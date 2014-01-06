@@ -9,3 +9,9 @@ LH_HomeDone = Teleported to home position.
 LH_SetHomeDone = Home set.
 LH_OverworldHomeOnly = You can only set home in overworld.
 LH_SpawnDone = Teleported to spawn.
+
+LH_Tooltip_KillingSwords_HumanKilling = Kills Human
+LH_Tooltip_KillingSwords_MonsterKilling = Kills Monster
+LH_Tooltip_KillingSwords_AnimalKilling = Kills Animal
+LH_Tooltip_KillingSwords_OtherKilling = Kills Other
+LH_Tooltip_KillingSwords_LivingKilling = Kills Living

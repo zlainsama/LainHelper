@@ -73,6 +73,11 @@ public class CommonProxy
         return null;
     }
 
+    public boolean isClient()
+    {
+        return false;
+    }
+
     public void load(FMLInitializationEvent event)
     {
         playerData = new DataStorage("helper")
@@ -131,6 +136,7 @@ public class CommonProxy
         }
 
         Vampirism.setup();
+        Treasures.setup();
 
         SimpleLanguageFileLoader.loadSafe("/assets/minecraft/lang/helper/en_US.lang", "en_US");
         SimpleLanguageFileLoader.loadSafe("/assets/minecraft/lang/helper/zh_CN.lang", "zh_CN");
