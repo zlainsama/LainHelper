@@ -78,16 +78,16 @@ public final class Cheater
                 if (((EntityPlayer) event.entity).isBlocking())
                     n += 1;
             if ("fall".equalsIgnoreCase(a))
-                p += ((6 + n * n) / 3F) * 2.5F;
+                p += ((12 + n * n) / 3F) * 3.0F;
             if (event.source.isFireDamage())
-                p += ((6 + n * n) / 3F) * 1.25F;
+                p += ((12 + n * n) / 3F) * 1.4F;
             if (event.source.isExplosion())
-                p += ((6 + n * n) / 3F) * 1.5F;
+                p += ((12 + n * n) / 3F) * 1.6F;
             if (event.source.isProjectile())
-                p += ((6 + n * n) / 3F) * 1.5F;
+                p += ((12 + n * n) / 3F) * 1.6F;
             if (event.source.isMagicDamage())
-                p += ((6 + n * n) / 3F) * 1.5F;
-            p += ((24 + n * n) / 3F) * 0.75F;
+                p += ((12 + n * n) / 3F) * 1.6F;
+            p += ((24 + n * n) / 3F) * 0.8F;
             if (p < 0F)
                 p = 0F;
             if (p > 25F)
@@ -115,10 +115,10 @@ public final class Cheater
                     event.ammount *= 1.05F;
                     break;
             }
-            if (b == event.source.getSourceOfDamage() && b instanceof EntityLiving && !event.source.isExplosion() && !event.source.isFireDamage() && !event.source.isMagicDamage() && !event.source.isProjectile())
+            if (b == event.source.getSourceOfDamage() && b instanceof EntityLiving)
             {
                 int c = b.hurtResistantTime;
-                ((EntityLiving) b).heal(event.ammount * 0.15F);
+                ((EntityLiving) b).heal(event.ammount * 0.1F);
                 b.hurtResistantTime = c;
             }
         }
