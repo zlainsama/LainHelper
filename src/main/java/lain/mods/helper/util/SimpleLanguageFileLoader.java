@@ -3,7 +3,7 @@ package lain.mods.helper.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import net.minecraftforge.common.Configuration.UnicodeInputStreamReader;
+import lain.mods.helper.io.UnicodeInputStreamReader;
 import com.google.common.io.CharStreams;
 import com.google.common.io.LineProcessor;
 import cpw.mods.fml.common.registry.LanguageRegistry;

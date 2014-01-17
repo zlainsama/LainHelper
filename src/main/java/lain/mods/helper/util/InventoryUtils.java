@@ -1,18 +1,16 @@
 package lain.mods.helper.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntity;
 
 public class InventoryUtils
 {
 
     private static boolean areItemStacksEqualItem(ItemStack a, ItemStack b)
     {
-        return a.itemID != b.itemID ? false : (a.getItemDamage() != b.getItemDamage() ? false : (a.stackSize > a.getMaxStackSize() ? false : ItemStack.areItemStackTagsEqual(a, b)));
+        return a.getItem() != b.getItem() ? false : (a.getItemDamage() != b.getItemDamage() ? false : (a.stackSize > a.getMaxStackSize() ? false : ItemStack.areItemStackTagsEqual(a, b)));
     }
 
     public static boolean canExtractItemFromInventory(IInventory inventory, ItemStack itemstack, int slot, int side)
@@ -27,13 +25,8 @@ public class InventoryUtils
 
     public static ItemStack insertStack(IInventory inventory, ItemStack itemstack, int side)
     {
-        if (inventory instanceof TileEntityChest)
-        {
-            TileEntityChest chest = (TileEntityChest) inventory;
-            Block block = chest.getBlockType();
-            if (block instanceof BlockChest)
-                inventory = ((BlockChest) block).getInventory(chest.worldObj, chest.xCoord, chest.yCoord, chest.zCoord);
-        }
+        if (inventory instanceof TileEntity)
+            inventory = Utils.getTileInventory((TileEntity) inventory);
 
         if (inventory == null)
             return itemstack;
