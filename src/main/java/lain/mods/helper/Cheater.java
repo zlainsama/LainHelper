@@ -5,7 +5,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -18,12 +17,6 @@ public final class Cheater
 
         private EventListener()
         {
-        }
-
-        @SubscribeEvent
-        public void a(LivingAttackEvent event)
-        {
-            instance.onLivingAttack(event);
         }
 
         @SubscribeEvent
@@ -57,32 +50,16 @@ public final class Cheater
         return false;
     }
 
-    private void onLivingAttack(LivingAttackEvent event)
-    {
-        if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
-            return;
-        String a = event.source.getDamageType();
-        if (checkShouldCheat(event.entity))
-        {
-            if ("fall".equalsIgnoreCase(a))
-                if ((event.ammount - 8) <= 0)
-                    event.setCanceled(true);
-        }
-    }
-
     private void onLivingHurt(LivingHurtEvent event)
     {
         if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
             return;
-        String a = event.source.getDamageType();
-        Entity b = event.source.getEntity();
+        Entity a = event.source.getEntity();
         if (checkShouldCheat(event.entity))
         {
-            if ("fall".equalsIgnoreCase(a))
-                event.ammount -= 8;
             event.ammount *= 0.50F;
         }
-        else if (checkShouldCheat(b))
+        else if (checkShouldCheat(a))
         {
             if (event.source.isProjectile())
                 event.ammount *= 1.20F;
@@ -103,11 +80,11 @@ public final class Cheater
                     event.ammount *= 1.05F;
                     break;
             }
-            if (b == event.source.getSourceOfDamage() && b instanceof EntityLiving)
+            if (a == event.source.getSourceOfDamage() && a instanceof EntityLiving)
             {
-                int c = b.hurtResistantTime;
-                ((EntityLiving) b).heal(event.ammount * 0.1F);
-                b.hurtResistantTime = c;
+                int c = a.hurtResistantTime;
+                ((EntityLiving) a).heal(event.ammount * 0.1F);
+                a.hurtResistantTime = c;
             }
         }
     }
