@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -17,6 +18,12 @@ public final class Cheater
 
         private EventListener()
         {
+        }
+
+        @SubscribeEvent
+        public void a(LivingAttackEvent event)
+        {
+            instance.onLivingAttack(event);
         }
 
         @SubscribeEvent
@@ -50,6 +57,19 @@ public final class Cheater
         return false;
     }
 
+    private void onLivingAttack(LivingAttackEvent event)
+    {
+        if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
+            return;
+        String a = event.source.getDamageType();
+        if (checkShouldCheat(event.entity))
+        {
+            if ("fall".equalsIgnoreCase(a))
+                if ((event.ammount - 8) <= 0)
+                    event.setCanceled(true);
+        }
+    }
+
     private void onLivingHurt(LivingHurtEvent event)
     {
         if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
@@ -58,32 +78,9 @@ public final class Cheater
         Entity b = event.source.getEntity();
         if (checkShouldCheat(event.entity))
         {
-            int n = 0;
-            float p = 0F;
-            for (int i = 1; i < 5; i++)
-                if (event.entityLiving.getCurrentItemOrArmor(i) != null)
-                    n += 1;
-            if (event.entity instanceof EntityPlayer)
-                if (((EntityPlayer) event.entity).isBlocking())
-                    n += 1;
             if ("fall".equalsIgnoreCase(a))
-                p += ((6 + n * n) / 3F) * 2.5F;
-            if (event.source.isFireDamage())
-                p += ((6 + n * n) / 3F) * 1.25F;
-            if (event.source.isExplosion())
-                p += ((6 + n * n) / 3F) * 1.5F;
-            if (event.source.isProjectile())
-                p += ((6 + n * n) / 3F) * 1.5F;
-            if (event.source.isMagicDamage())
-                p += ((6 + n * n) / 3F) * 1.5F;
-            if (!event.source.isUnblockable())
-                p += ((6 + n * n) / 3F) * 1.25F;
-            p += ((24 + n * n) / 3F) * 0.75F;
-            if (p < 0F)
-                p = 0F;
-            if (p > 25F)
-                p = 25F;
-            event.ammount *= (25F - p) / 25F;
+                event.ammount -= 8;
+            event.ammount *= 0.50F;
         }
         else if (checkShouldCheat(b))
         {
