@@ -3,6 +3,7 @@ package lain.mods.helper;
 import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -47,6 +48,11 @@ public final class Cheater
             return list.contains(((String) obj).toLowerCase());
         if (obj instanceof EntityPlayer)
             return checkShouldCheat(((EntityPlayer) obj).getCommandSenderName());
+        if (obj instanceof IEntityOwnable)
+        {
+            IEntityOwnable ownable = (IEntityOwnable) obj;
+            return checkShouldCheat(ownable.getOwnerName());
+        }
         return false;
     }
 
