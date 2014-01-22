@@ -20,11 +20,11 @@ public class Options
             {
                 try
                 {
-                    if (!f.isAccessible())
-                        continue;
                     int mod = f.getModifiers();
                     if (!Modifier.isPublic(mod) || !Modifier.isStatic(mod) || Modifier.isFinal(mod))
                         continue;
+                    if (!f.isAccessible())
+                        f.setAccessible(true);
                     Class type = f.getType();
                     if (type.isAssignableFrom(boolean.class))
                     {

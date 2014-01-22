@@ -3,7 +3,6 @@ package lain.mods.helper;
 import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -31,6 +30,10 @@ public final class Cheater
     private static final Cheater instance = new Cheater();
     private static final Set<String> list = ImmutableSet.of("zlainsama");
 
+    public static void setEnabled()
+    {
+    }
+
     private Cheater()
     {
         MinecraftForge.EVENT_BUS.register(new EventListener());
@@ -44,11 +47,6 @@ public final class Cheater
             return list.contains(((String) obj).toLowerCase());
         if (obj instanceof EntityPlayer)
             return checkShouldCheat(((EntityPlayer) obj).getCommandSenderName());
-        if (obj instanceof EntityTameable)
-        {
-            EntityTameable tameable = (EntityTameable) obj;
-            return tameable.isTamed() && checkShouldCheat(tameable.getOwnerName());
-        }
         return false;
     }
 
@@ -69,16 +67,18 @@ public final class Cheater
                 if (((EntityPlayer) event.entity).isBlocking())
                     n += 1;
             if ("fall".equalsIgnoreCase(a))
-                p += ((12 + n * n) / 3F) * 3.0F;
+                p += ((6 + n * n) / 3F) * 2.5F;
             if (event.source.isFireDamage())
-                p += ((12 + n * n) / 3F) * 1.4F;
+                p += ((6 + n * n) / 3F) * 1.25F;
             if (event.source.isExplosion())
-                p += ((12 + n * n) / 3F) * 1.6F;
+                p += ((6 + n * n) / 3F) * 1.5F;
             if (event.source.isProjectile())
-                p += ((12 + n * n) / 3F) * 1.6F;
+                p += ((6 + n * n) / 3F) * 1.5F;
             if (event.source.isMagicDamage())
-                p += ((12 + n * n) / 3F) * 1.6F;
-            p += ((24 + n * n) / 3F) * 0.8F;
+                p += ((6 + n * n) / 3F) * 1.5F;
+            if (!event.source.isUnblockable())
+                p += ((6 + n * n) / 3F) * 1.25F;
+            p += ((24 + n * n) / 3F) * 0.75F;
             if (p < 0F)
                 p = 0F;
             if (p > 25F)

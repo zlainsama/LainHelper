@@ -1,5 +1,6 @@
 package lain.mods.helper;
 
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
@@ -26,7 +27,13 @@ public class PeacefulSurface
     @SubscribeEvent
     public void CheckSpawn(LivingSpawnEvent.CheckSpawn event)
     {
-        if (event.entity instanceof IMob && event.world.getSavedLightValue(EnumSkyBlock.Sky, MathHelper.floor_float(event.x), MathHelper.floor_float(event.y), MathHelper.floor_float(event.z)) > 0)
+        if (!(event.entity instanceof IMob))
+            return;
+        if (event.entity instanceof EntitySlime)
+            return;
+        if (event.world.provider.dimensionId == -1 || event.world.provider.dimensionId == 1)
+            return;
+        if (event.world.getSavedLightValue(EnumSkyBlock.Sky, MathHelper.floor_float(event.x), MathHelper.floor_float(event.y), MathHelper.floor_float(event.z)) > 0)
             event.setResult(Result.DENY);
     }
 
