@@ -1,0 +1,16 @@
+[
+{
+  "modid": "LainHelper",
+  "name": "LainHelper",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/zlainsama/lainhelper",
+  "updateUrl": "https://github.com/zlainsama/lainhelper/releases",
+  "authors": ["zlainsama"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

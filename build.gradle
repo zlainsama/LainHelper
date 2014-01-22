@@ -22,12 +22,21 @@ group= "lain.mods.helper"
 archivesBaseName = "LainHelper"
 
 minecraft {
-    version = "1.7.2-10.12.0.1003"
+    version = "1.7.2-10.12.0.1012"
+    assetDir = "eclipse/assets"
 }
 
-jar
+processResources
 {
-    manifest {
-	    attributes 'FMLCorePlugin': 'lain.mods.helper.core.FMLPlugin'
-	}
+    from(sourceSets.main.resources.srcDirs)
+    {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs)
+    {
+        exclude 'mcmod.info'
+    }
 }
