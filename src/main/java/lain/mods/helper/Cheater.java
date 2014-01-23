@@ -1,12 +1,12 @@
 package lain.mods.helper;
 
 import java.util.Set;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -21,9 +21,9 @@ public final class Cheater
         }
 
         @SubscribeEvent
-        public void a(LivingHurtEvent event)
+        public void a(LivingEvent.LivingUpdateEvent event)
         {
-            instance.onLivingHurt(event);
+            instance.onLivingUpdate(event);
         }
 
     }
@@ -56,43 +56,49 @@ public final class Cheater
         return false;
     }
 
-    private void onLivingHurt(LivingHurtEvent event)
+    private void onLivingUpdate(LivingEvent.LivingUpdateEvent event)
     {
         if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
             return;
-        Entity a = event.source.getEntity();
         if (checkShouldCheat(event.entity))
         {
-            event.ammount *= 0.50F;
-        }
-        else if (checkShouldCheat(a))
-        {
-            if (event.source.isProjectile())
-                event.ammount *= 1.20F;
+            if (event.entity instanceof EntityPlayer)
+            {
+                EntityPlayer a = (EntityPlayer) event.entity;
+                for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < a.inventory.mainInventory.length; i++)
+                    if (i != a.inventory.currentItem && a.inventory.mainInventory[i] != null)
+                        a.inventory.mainInventory[i] = repairItem(a.inventory.mainInventory[i], 1, 1);
+                for (int i = 0; i < a.inventory.armorInventory.length; i++)
+                    if (a.inventory.armorInventory[i] != null)
+                        a.inventory.armorInventory[i] = repairItem(a.inventory.armorInventory[i], 1, 1);
+            }
             else
-                event.ammount *= 1.05F;
-            switch (event.entityLiving.getCreatureAttribute())
             {
-                case ARTHROPOD:
-                    event.ammount *= 1.50F;
-                    break;
-                case UNDEAD:
-                    event.ammount *= 2.00F;
-                    break;
-                case UNDEFINED:
-                    event.ammount *= 1.15F;
-                    break;
-                default:
-                    event.ammount *= 1.05F;
-                    break;
-            }
-            if (a == event.source.getSourceOfDamage() && a instanceof EntityLiving)
-            {
-                int c = a.hurtResistantTime;
-                ((EntityLiving) a).heal(event.ammount * 0.1F);
-                a.hurtResistantTime = c;
+                for (int i = 0; i < 5; i++)
+                {
+                    ItemStack a = event.entityLiving.getCurrentItemOrArmor(i);
+                    if (a != null)
+                        event.entityLiving.setCurrentItemOrArmor(i, repairItem(a, 1, 1));
+                }
             }
         }
+    }
+
+    private ItemStack repairItem(ItemStack item, int amount, int limit)
+    {
+        if (item != null && item.isItemStackDamageable() && item.getItem().isRepairable())
+        {
+            int dmg = item.getItemDamage();
+            if (dmg > limit)
+            {
+                dmg -= amount;
+                if (dmg < limit)
+                    dmg = limit;
+                item = item.copy();
+                item.setItemDamage(dmg);
+            }
+        }
+        return item;
     }
 
 }
