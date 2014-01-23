@@ -49,13 +49,15 @@ public class Options
                 }
                 catch (Exception e)
                 {
-                    logger.catching(Level.WARN, e);
+                    if (logger != null)
+                        logger.catching(Level.WARN, e);
                 }
             }
         }
         catch (Exception e)
         {
-            logger.catching(Level.ERROR, e);
+            if (logger != null)
+                logger.catching(Level.ERROR, e);
         }
     }
 
