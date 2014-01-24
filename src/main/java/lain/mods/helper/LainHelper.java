@@ -36,9 +36,6 @@ public class LainHelper
     public void setEnabled(FMLInitializationEvent event)
     {
         Cheater.setEnabled();
-
-        if (Options.PeacefulSurface)
-            PeacefulSurface.setEnabled();
     }
 
 }

@@ -9,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 public class Options
 {
 
-    public static boolean PeacefulSurface = false;
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void loadConfig(Configuration config, Logger logger)
     {
