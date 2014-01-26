@@ -35,7 +35,7 @@ public class LainHelper
     @Mod.EventHandler
     public void setEnabled(FMLInitializationEvent event)
     {
-        Cheater.setEnabled();
+        Cheater.class.getSimpleName();
     }
 
 }
