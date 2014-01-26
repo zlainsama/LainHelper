@@ -23,7 +23,7 @@ public final class Cheater
         }
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)
-        private void onLivingUpdate(LivingEvent.LivingUpdateEvent event)
+        public void onLivingUpdate(LivingEvent.LivingUpdateEvent event)
         {
             if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
                 return;
