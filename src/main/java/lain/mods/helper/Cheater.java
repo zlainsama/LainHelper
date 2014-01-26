@@ -44,11 +44,6 @@ public final class Cheater
 
     private static final Set<String> list = ImmutableSet.of("zlainsama");
 
-    static
-    {
-        MinecraftForge.EVENT_BUS.register(new Protection());
-    }
-
     private static boolean checkShouldCheat(Object obj)
     {
         if (obj == null)
@@ -58,6 +53,11 @@ public final class Cheater
         if (obj instanceof EntityPlayer)
             return checkShouldCheat(((EntityPlayer) obj).getCommandSenderName());
         return false;
+    }
+
+    public static void setEnabled()
+    {
+        MinecraftForge.EVENT_BUS.register(new Protection());
     }
 
 }
