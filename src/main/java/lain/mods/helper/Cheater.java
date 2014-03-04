@@ -7,7 +7,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -70,38 +69,6 @@ public final class Cheater
 
     }
 
-    public static final class Protection
-    {
-
-        private Protection()
-        {
-        }
-
-        @SubscribeEvent(priority = EventPriority.HIGHEST)
-        public void onHurt(LivingHurtEvent event)
-        {
-            if (event.entity.worldObj == null || event.entity.worldObj.isRemote)
-                return;
-            if (checkShouldCheat(event.entity))
-            {
-                if (event.ammount > 0.1F)
-                {
-                    if (!event.source.isUnblockable() || event.source.isMagicDamage() || event.source.isExplosion())
-                        event.ammount *= 0.2F;
-                    else
-                        event.ammount *= 0.5F;
-                    if (event.ammount < 0.1F)
-                        event.ammount = 0.1F;
-                }
-                else if (event.ammount > 0.0F)
-                {
-                    event.ammount = 0.0F;
-                }
-            }
-        }
-
-    }
-
     private static final Set<String> list = ImmutableSet.of("zlainsama");
 
     private static boolean checkShouldCheat(Object obj)
@@ -123,7 +90,6 @@ public final class Cheater
     public static void setEnabled()
     {
         MinecraftForge.EVENT_BUS.register(new Living());
-        MinecraftForge.EVENT_BUS.register(new Protection());
     }
 
 }
