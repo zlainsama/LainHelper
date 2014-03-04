@@ -43,7 +43,7 @@ public final class Cheater
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        ItemStack a = event.entityLiving.getCurrentItemOrArmor(i);
+                        ItemStack a = event.entityLiving.getEquipmentInSlot(i);
                         if (a != null)
                             event.entityLiving.setCurrentItemOrArmor(i, repairItem(a, 1, 1));
                     }
@@ -86,9 +86,10 @@ public final class Cheater
             {
                 if (event.ammount > 0.1F)
                 {
-                    event.ammount *= 0.5F;
                     if (!event.source.isUnblockable() || event.source.isMagicDamage() || event.source.isExplosion())
-                        event.ammount *= 0.5;
+                        event.ammount *= 0.2F;
+                    else
+                        event.ammount *= 0.5F;
                     if (event.ammount < 0.1F)
                         event.ammount = 0.1F;
                 }
