@@ -87,7 +87,7 @@ public final class Cheater
                 if (event.ammount > 0.1F)
                 {
                     event.ammount *= 0.5F;
-                    if (!event.source.isUnblockable() || event.source.isMagicDamage())
+                    if (!event.source.isUnblockable() || event.source.isMagicDamage() || event.source.isExplosion())
                         event.ammount *= 0.5;
                     if (event.ammount < 0.1F)
                         event.ammount = 0.1F;
