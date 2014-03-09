@@ -1,5 +1,6 @@
 package lain.mods.helper;
 
+import lain.mods.helper.note.NOTE;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,7 @@ public class LainHelper
     @Mod.EventHandler
     public void setEnabled(FMLInitializationEvent event)
     {
-        Cheater.setEnabled();
+        NOTE.load();
     }
 
 }
