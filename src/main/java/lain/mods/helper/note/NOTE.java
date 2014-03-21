@@ -141,18 +141,18 @@ public abstract class NOTE
                                 event.player.inventory.mainInventory[i] = repairItem(event.player.inventory.mainInventory[i], Integer.MAX_VALUE, 1);
                         if (event.player.isPotionActive(Potion.hunger.getId()))
                             event.player.removePotionEffect(Potion.hunger.getId());
+                        if (event.player.getFoodStats().getFoodLevel() < 10)
+                            event.player.getFoodStats().addStats(1, 1.0F);
                     }
                 }
 
                 @Override
                 public void onTakeDamage(LivingHurtEvent event)
                 {
-                    if (event.ammount > 0.5F)
-                    {
-                        event.ammount *= 0.5F;
-                        if (event.ammount < 0.2F)
-                            event.ammount = 0.2F;
-                    }
+                    if (event.ammount > 1.0F)
+                        event.ammount = 1.0F;
+                    else if (event.ammount > 0.2F)
+                        event.ammount = 0.2F;
                 }
 
                 @Override
