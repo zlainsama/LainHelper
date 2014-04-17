@@ -11,6 +11,7 @@ public class Options
 
     public static boolean enableHelperCommands = true;
     public static boolean overworldHomeOnly = true;
+    public static boolean enableSharedStorage = true;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void loadConfig(Configuration config, Logger logger)

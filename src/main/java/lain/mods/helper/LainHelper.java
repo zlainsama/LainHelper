@@ -5,6 +5,8 @@ import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSpawn;
 import lain.mods.helper.handlers.PlayerDeathHandler;
+import lain.mods.helper.utils.DataStorage;
+import lain.mods.helper.utils.MinecraftUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
@@ -13,10 +15,14 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 @Mod(modid = "LainHelper", useMetadata = true)
 public class LainHelper
 {
+
+    @Mod.Instance("LainHelper")
+    public static LainHelper instance;
 
     Logger logger;
     Configuration config;
@@ -30,6 +36,23 @@ public class LainHelper
             event.registerServerCommand(new CommandHome());
             event.registerServerCommand(new CommandSetHome());
             event.registerServerCommand(new CommandSpawn());
+        }
+        if (Options.enableSharedStorage)
+        {
+            SharedStorage.storage = new DataStorage(MinecraftUtils.getSaveDirFile("SharedStorage.dat"));
+            SharedStorage.storage.load();
+            event.registerServerCommand(SharedStorage.createCommandOpenStorage());
+        }
+    }
+
+    @Mod.EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event)
+    {
+        if (Options.enableSharedStorage)
+        {
+            SharedStorage.storage.save();
+            SharedStorage.storage = null;
+            SharedStorage.inventory = null;
         }
     }
 
