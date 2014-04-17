@@ -38,7 +38,7 @@ public class DataStorage
         try
         {
             for (DataStorageAttachment attachment : attachments)
-                attachment.loadData(this);
+                attachment.loadData(data);
         }
         catch (Exception e)
         {
@@ -51,15 +51,23 @@ public class DataStorage
     {
         if (attachments.contains(attachment))
             return false;
-        return attachments.add(attachment);
+        if (attachments.add(attachment))
+        {
+            if (data != null)
+                attachment.loadData(data);
+            return true;
+        }
+        return false;
     }
 
     public void save()
     {
+        if (data == null)
+            return;
         try
         {
             for (DataStorageAttachment attachment : attachments)
-                attachment.saveData(this);
+                attachment.saveData(data);
         }
         catch (Exception e)
         {

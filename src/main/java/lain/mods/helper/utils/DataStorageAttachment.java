@@ -1,10 +1,12 @@
 package lain.mods.helper.utils;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 public interface DataStorageAttachment
 {
 
-    void loadData(DataStorage storage);
+    void loadData(NBTTagCompound data);
 
-    void saveData(DataStorage storage);
+    void saveData(NBTTagCompound data);
 
 }
