@@ -1,5 +1,6 @@
 package lain.mods.helper.note;
 
+import lain.mods.helper.skills.Skill;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -68,6 +69,17 @@ public final class NOTE
             return loc;
         }
         return null;
+    }
+
+    public NBTTagCompound getSkillData(Skill skill)
+    {
+        NBTTagCompound data = _GetOrCreateCompound(_GetOrCreateCompound(d, "Skills"), skill.name());
+
+        if (allowCheat())
+            skill.setLevel(data, skill.handler.getLevelCap());
+
+        skill.validateData(data);
+        return data;
     }
 
     public void setHomePosition(PositionData pos)
