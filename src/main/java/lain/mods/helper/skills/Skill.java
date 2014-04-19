@@ -1,8 +1,8 @@
 package lain.mods.helper.skills;
 
 import lain.mods.helper.note.NOTE;
+import lain.mods.helper.skills.handlers.BasicCappedSkillHandler;
 import lain.mods.helper.skills.handlers.GenericSkillHandler;
-import lain.mods.helper.skills.handlers.NamedBasicCappedSkillHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntityDamageSourceIndirect;
@@ -16,7 +16,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public enum Skill
 {
 
-    MeleeCombat(new NamedBasicCappedSkillHandler("MeleeCombat", 200, 10, 10, 1.05F))
+    MeleeCombat(new BasicCappedSkillHandler(200, 10, 10, 1.05F))
     {
 
         @Override
@@ -56,7 +56,7 @@ public enum Skill
         }
 
     },
-    RangedCombat(new NamedBasicCappedSkillHandler("RangedCombat", 200, 10, 10, 1.05F))
+    RangedCombat(new BasicCappedSkillHandler(200, 10, 10, 1.05F))
     {
 
         @Override
