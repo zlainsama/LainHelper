@@ -7,11 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public enum Skill
 {
@@ -20,12 +16,6 @@ public enum Skill
     {
 
         @Override
-        protected void load()
-        {
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @SubscribeEvent
         public void onLivingHurt(LivingHurtEvent event)
         {
             if (event.ammount > 0 && !(event.source instanceof EntityDamageSourceIndirect) && event.source.getEntity() instanceof EntityPlayerMP)
@@ -49,23 +39,11 @@ public enum Skill
             }
         }
 
-        @Override
-        protected void unload()
-        {
-            MinecraftForge.EVENT_BUS.unregister(this);
-        }
-
     },
     RangedCombat(new BasicCappedSkillHandler(200, 10, 10, 1.05F))
     {
 
         @Override
-        protected void load()
-        {
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @SubscribeEvent
         public void onLivingHurt(LivingHurtEvent event)
         {
             if (event.ammount > 0 && (event.source instanceof EntityDamageSourceIndirect) && event.source.getEntity() instanceof EntityPlayerMP)
@@ -89,25 +67,7 @@ public enum Skill
             }
         }
 
-        @Override
-        protected void unload()
-        {
-            MinecraftForge.EVENT_BUS.unregister(this);
-        }
-
     };
-
-    public static void setDisabled(FMLServerStoppingEvent event)
-    {
-        for (Skill skill : values())
-            skill.unload();
-    }
-
-    public static void setEnabled(FMLServerStartingEvent event)
-    {
-        for (Skill skill : values())
-            skill.load();
-    }
 
     public final SkillHandler handler;
 
@@ -139,7 +99,9 @@ public enum Skill
         return data.getInteger("xp");
     }
 
-    protected abstract void load();
+    public void onLivingHurt(LivingHurtEvent event)
+    {
+    }
 
     public void setLevel(NBTTagCompound data, int level)
     {
@@ -150,8 +112,6 @@ public enum Skill
     {
         data.setInteger("xp", xp);
     }
-
-    protected abstract void unload();
 
     public void updateLevel(NBTTagCompound data)
     {

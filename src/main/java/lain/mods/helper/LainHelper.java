@@ -4,8 +4,8 @@ import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSpawn;
+import lain.mods.helper.handlers.LivingHurtHandler;
 import lain.mods.helper.handlers.PlayerDeathHandler;
-import lain.mods.helper.skills.Skill;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,10 +42,6 @@ public class LainHelper
             SharedStorage.storage.load();
             event.registerServerCommand(SharedStorage.createCommandOpenStorage());
         }
-        if (Options.enableSkills)
-        {
-            Skill.setEnabled(event);
-        }
     }
 
     @Mod.EventHandler
@@ -58,10 +54,6 @@ public class LainHelper
                 SharedStorage.storage.unregisterAttachment(SharedStorage.inventory);
             SharedStorage.storage = null;
             SharedStorage.inventory = null;
-        }
-        if (Options.enableSkills)
-        {
-            Skill.setDisabled(event);
         }
     }
 
@@ -87,6 +79,7 @@ public class LainHelper
     public void setEnabled(FMLInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
+        MinecraftForge.EVENT_BUS.register(new LivingHurtHandler());
     }
 
 }
