@@ -5,6 +5,7 @@ import lain.mods.helper.skills.handlers.BasicCappedSkillHandler;
 import lain.mods.helper.skills.handlers.GenericSkillHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -18,7 +19,7 @@ public enum Skill
         @Override
         public void onLivingHurt(LivingHurtEvent event)
         {
-            if (event.ammount > 0 && !(event.source instanceof EntityDamageSourceIndirect) && event.source.getEntity() instanceof EntityPlayerMP)
+            if (event.ammount > 0 && (event.source instanceof EntityDamageSource) && !(event.source instanceof EntityDamageSourceIndirect) && event.source.getEntity() instanceof EntityPlayerMP)
             {
                 NOTE n = NOTE.get((EntityPlayerMP) event.source.getEntity());
                 NBTTagCompound data = n.getSkillData(this);
@@ -26,16 +27,16 @@ public enum Skill
                 addXP(data, (int) (event.ammount * 0.3F));
                 event.ammount *= 1.0F + (4.0F * (level / 200));
             }
-            if (event.ammount > 0 && !(event.source instanceof EntityDamageSourceIndirect) && event.entity instanceof EntityPlayerMP)
+            if (event.ammount > 0 && (event.source instanceof EntityDamageSource) && !(event.source instanceof EntityDamageSourceIndirect) && event.entity instanceof EntityPlayerMP)
             {
                 NOTE n = NOTE.get((EntityPlayerMP) event.entity);
                 NBTTagCompound data = n.getSkillData(this);
                 int level = getLevel(data);
-                addXP(data, (int) (event.ammount * 0.1F));
                 if (!event.source.isUnblockable())
                     event.ammount *= 1.0F - (0.8F * (level / 200));
                 else if (level >= 100)
                     event.ammount *= 1.0F - (0.4F * (level / 200));
+                addXP(data, (int) (event.ammount * 0.5F));
             }
         }
 
@@ -46,7 +47,7 @@ public enum Skill
         @Override
         public void onLivingHurt(LivingHurtEvent event)
         {
-            if (event.ammount > 0 && (event.source instanceof EntityDamageSourceIndirect) && event.source.getEntity() instanceof EntityPlayerMP)
+            if (event.ammount > 0 && (event.source instanceof EntityDamageSource) && (event.source instanceof EntityDamageSourceIndirect) && event.source.getEntity() instanceof EntityPlayerMP)
             {
                 NOTE n = NOTE.get((EntityPlayerMP) event.source.getEntity());
                 NBTTagCompound data = n.getSkillData(this);
@@ -54,16 +55,34 @@ public enum Skill
                 addXP(data, (int) (event.ammount * 0.3F));
                 event.ammount *= 1.0F + (4.0F * (level / 200));
             }
-            if (event.ammount > 0 && (event.source instanceof EntityDamageSourceIndirect) && event.entity instanceof EntityPlayerMP)
+            if (event.ammount > 0 && (event.source instanceof EntityDamageSource) && (event.source instanceof EntityDamageSourceIndirect) && event.entity instanceof EntityPlayerMP)
             {
                 NOTE n = NOTE.get((EntityPlayerMP) event.entity);
                 NBTTagCompound data = n.getSkillData(this);
                 int level = getLevel(data);
-                addXP(data, (int) (event.ammount * 0.1F));
                 if (!event.source.isUnblockable())
                     event.ammount *= 1.0F - (0.8F * (level / 200));
                 else if (level >= 100)
                     event.ammount *= 1.0F - (0.4F * (level / 200));
+                addXP(data, (int) (event.ammount * 0.5F));
+            }
+        }
+
+    },
+    Flexibility(new BasicCappedSkillHandler(200, 10, 10, 1.05F))
+    {
+
+        @Override
+        public void onLivingHurt(LivingHurtEvent event)
+        {
+            String type = event.source.getDamageType();
+            if (event.ammount > 0 && ("fall".equals(type) || "cactus".equals(type) || "inWall".equals(type) || "anvil".equals(type) || "fallingBlock".equals(type) || event.source.isExplosion()) && event.entity instanceof EntityPlayerMP)
+            {
+                NOTE n = NOTE.get((EntityPlayerMP) event.entity);
+                NBTTagCompound data = n.getSkillData(this);
+                int level = getLevel(data);
+                event.ammount *= 1.0F - (0.8F * (level / 200));
+                addXP(data, (int) (event.ammount * 0.8F));
             }
         }
 
