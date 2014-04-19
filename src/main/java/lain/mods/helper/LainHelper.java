@@ -21,9 +21,6 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 public class LainHelper
 {
 
-    @Mod.Instance("LainHelper")
-    public static LainHelper instance;
-
     Logger logger;
     Configuration config;
 
@@ -40,6 +37,7 @@ public class LainHelper
         if (Options.enableSharedStorage)
         {
             SharedStorage.storage = new DataStorage(MinecraftUtils.getSaveDirFile("SharedStorage.dat"));
+            SharedStorage.storage.logger = logger;
             SharedStorage.storage.load();
             event.registerServerCommand(SharedStorage.createCommandOpenStorage());
         }
@@ -51,6 +49,8 @@ public class LainHelper
         if (Options.enableSharedStorage)
         {
             SharedStorage.storage.save();
+            if (SharedStorage.inventory != null)
+                SharedStorage.storage.unregisterAttachment(SharedStorage.inventory);
             SharedStorage.storage = null;
             SharedStorage.inventory = null;
         }
