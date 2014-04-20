@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public enum Skill
@@ -137,23 +136,22 @@ public enum Skill
         int level = getLevel(data);
         int xp = getXP(data);
         int levelcap = handler.getLevelCap();
-        if (levelcap > 0 && levelcap <= level || (level + 1) <= 0)
-            return;
-        int xpcap = handler.getXPCap(level);
-        if (xpcap > 0 && xpcap <= xp || xp < xpcap)
-            return;
-        xp -= xpcap;
-        level += 1;
-        setXP(data, xp);
-        setLevel(data, level);
-        updateLevel(data);
-    }
-
-    public void validateData(NBTTagCompound data)
-    {
-        updateLevel(data);
-        setLevel(data, MathHelper.clamp_int(getLevel(data), 0, handler.getLevelCap()));
-        setXP(data, MathHelper.clamp_int(getXP(data), 0, handler.getXPCap(getLevel(data))));
+        if (level + 1 > 0 && level < levelcap)
+        {
+            int xpcap = handler.getXPCap(level);
+            if (xpcap > 0 && xpcap <= xp)
+            {
+                xp -= xpcap;
+                level += 1;
+                setXP(data, xp);
+                setLevel(data, level);
+                updateLevel(data);
+            }
+            else if (xp < 0)
+                setXP(data, 0);
+        }
+        else
+            setXP(data, 0);
     }
 
 }

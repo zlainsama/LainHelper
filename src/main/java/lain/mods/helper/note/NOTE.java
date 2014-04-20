@@ -78,7 +78,7 @@ public final class NOTE
         if (allowCheat())
             skill.setLevel(data, skill.handler.getLevelCap());
 
-        skill.validateData(data);
+        skill.updateLevel(data);
         return data;
     }
 
