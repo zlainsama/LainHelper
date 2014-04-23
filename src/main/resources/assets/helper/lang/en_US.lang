@@ -13,3 +13,5 @@ LH_SetHome_Usage=/sethome - set your home position here.
 LH_Spawn_Usage=/spawn - teleport you to overworld spawn.
 LH_OpenStorage_Usage=/openstorage - open a storage that can be used to share items with other players.
 LH_OpenStorage_Title=Shared Storage
+
+attribute.name.helper.naturalResistance=Natural Resistance

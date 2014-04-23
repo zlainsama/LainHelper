@@ -13,3 +13,5 @@ LH_SetHome_Usage=/sethome - 在这设置你的家.
 LH_Spawn_Usage=/spawn - 传送你到主世界出生点.
 LH_OpenStorage_Usage=/openstorage - 打开一个能用来与其他玩家分享物品的储藏库.
 LH_OpenStorage_Title=分享的储藏库
+
+attribute.name.helper.naturalResistance=自然抗性
