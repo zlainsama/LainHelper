@@ -3,6 +3,7 @@ package lain.mods.helper.note;
 import java.util.UUID;
 import lain.mods.helper.ModAttributes;
 import lain.mods.helper.utils.PositionData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +13,7 @@ public final class NOTE
 {
 
     private static final String _ID = "92c98451-a0c6-4899-bce6-c5cc0f75e447";
+    private static final UUID _MYID = UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49");
     private static final UUID _SAID = UUID.fromString("5f2cab81-58e7-43f0-9ae0-ba6a58e0ae20");
 
     private static NBTTagCompound _GetOrCreateCompound(NBTTagCompound base, String name)
@@ -50,11 +52,18 @@ public final class NOTE
 
     public void applySpecialAttributes(EntityPlayer player)
     {
-        if ("zlainsama".equalsIgnoreCase(player.getCommandSenderName()))
+        if (_MYID.equals(player.getUniqueID()))
         {
             IAttributeInstance ai = player.getEntityAttribute(ModAttributes.naturalResistance);
             if (ai != null && ai.getModifier(_SAID) == null)
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.95D, 0));
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.5D, 0));
+            ai = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
+            if (ai != null && ai.getModifier(_SAID) == null)
+            {
+                float mh = player.getMaxHealth();
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 1.0D, 2));
+                player.heal(player.getMaxHealth() - mh);
+            }
         }
     }
 

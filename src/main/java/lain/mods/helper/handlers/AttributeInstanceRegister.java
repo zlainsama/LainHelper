@@ -14,9 +14,9 @@ public class AttributeInstanceRegister
     {
         if (event.entity instanceof EntityLivingBase)
         {
-            BaseAttributeMap am = ((EntityLivingBase) event.entity).getAttributeMap();
+            BaseAttributeMap bam = ((EntityLivingBase) event.entity).getAttributeMap();
 
-            am.registerAttribute(ModAttributes.naturalResistance);
+            bam.registerAttribute(ModAttributes.naturalResistance);
         }
     }
 
