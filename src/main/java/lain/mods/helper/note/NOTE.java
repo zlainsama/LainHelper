@@ -56,17 +56,17 @@ public final class NOTE
         {
             IAttributeInstance ai = player.getEntityAttribute(ModAttributes.naturalResistance);
             if (ai != null && ai.getModifier(_SAID) == null)
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.5D, 0));
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.8D, 0));
             ai = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
             if (ai != null && ai.getModifier(_SAID) == null)
             {
                 float mh = player.getMaxHealth();
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 1.0D, 2));
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.2D, 2));
                 player.heal(player.getMaxHealth() - mh);
             }
             ai = player.getEntityAttribute(SharedMonsterAttributes.attackDamage);
             if (ai != null && ai.getModifier(_SAID) == null)
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 1.0D, 2));
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 1.5D, 1));
         }
     }
 
