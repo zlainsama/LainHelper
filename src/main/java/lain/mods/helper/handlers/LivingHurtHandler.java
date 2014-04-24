@@ -12,7 +12,7 @@ public class LivingHurtHandler
     {
         if (!event.source.canHarmInCreative() && !event.source.isDamageAbsolute())
         {
-            double var1 = event.entityLiving.getAttributeMap().getAttributeInstance(ModAttributes.naturalResistance).getAttributeValue();
+            double var1 = event.entityLiving.getAttributeMap().getAttributeInstance(ModAttributes.damageResistance).getAttributeValue();
             event.ammount *= (1.0D - var1);
         }
     }
