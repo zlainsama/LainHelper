@@ -64,6 +64,9 @@ public final class NOTE
                 ai.applyModifier(new AttributeModifier(_SAID, _ID, 1.0D, 2));
                 player.heal(player.getMaxHealth() - mh);
             }
+            ai = player.getEntityAttribute(SharedMonsterAttributes.attackDamage);
+            if (ai != null && ai.getModifier(_SAID) == null)
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 1.0D, 2));
         }
     }
 
