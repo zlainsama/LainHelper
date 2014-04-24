@@ -53,7 +53,7 @@ public final class NOTE
     {
         if (_MYID.equals(player.getUniqueID()))
         {
-            IAttributeInstance ai = player.getEntityAttribute(ModAttributes.damageResistance);
+            IAttributeInstance ai = player.getEntityAttribute(ModAttributes.damageReduction);
             if (ai != null && ai.getModifier(_SAID) == null)
                 ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.2D, 0));
         }

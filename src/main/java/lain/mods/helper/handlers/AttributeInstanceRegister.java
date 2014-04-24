@@ -16,7 +16,7 @@ public class AttributeInstanceRegister
         {
             BaseAttributeMap bam = ((EntityLivingBase) event.entity).getAttributeMap();
 
-            bam.registerAttribute(ModAttributes.damageResistance);
+            bam.registerAttribute(ModAttributes.damageReduction);
         }
     }
 
