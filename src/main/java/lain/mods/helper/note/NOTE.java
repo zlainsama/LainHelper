@@ -55,7 +55,7 @@ public final class NOTE
         {
             IAttributeInstance ai = player.getEntityAttribute(ModAttributes.damageResistance);
             if (ai != null && ai.getModifier(_SAID) == null)
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.8D, 0));
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.2D, 0));
         }
     }
 
