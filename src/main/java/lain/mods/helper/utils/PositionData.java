@@ -96,8 +96,6 @@ public class PositionData
 
     public void teleportEntity(Entity par1, boolean par2)
     {
-        par1.mountEntity(null);
-        
         Teleporter.teleport(par1, dimension, x, y, z, yaw, pitch, 0, 0, 0);
         if (par2)
         {

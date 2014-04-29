@@ -30,6 +30,7 @@ public class Teleporter
                 mp.motionZ = mz;
                 mp.playerNetServerHandler.sendPacket(new S12PacketEntityVelocity(mp));
             }
+            mp.fallDistance = 0F;
         }
         else
         {
@@ -37,6 +38,7 @@ public class Teleporter
             ent.motionX = mx;
             ent.motionY = my;
             ent.motionZ = mz;
+            ent.fallDistance = 0F;
         }
     }
 
@@ -56,18 +58,10 @@ public class Teleporter
         if (ent.isDead || ent.worldObj.isRemote)
             return null;
 
-        Entity riding = ent.ridingEntity;
-        if (riding != null)
-        {
-            riding.riddenByEntity = null;
-            riding = teleport(riding, dimension, px, py, pz, yaw, pitch, mx, my, mz);
-        }
-        Entity ridden = ent.riddenByEntity;
-        if (ridden != null)
-        {
-            ridden.ridingEntity = null;
-            ridden = teleport(ridden, dimension, px, py, pz, yaw, pitch, mx, my, mz);
-        }
+        if (ent.ridingEntity != null)
+            ent.mountEntity(null);
+        if (ent.riddenByEntity != null)
+            ent.riddenByEntity.mountEntity(null);
 
         int oldD = ent.dimension;
         int newD = dimension == -999 ? oldD : dimension;
@@ -111,7 +105,7 @@ public class Teleporter
                 scm.updateTimeAndWeatherForPlayer(mp, newW);
                 scm.syncPlayerInventory(mp);
                 syncPlayerPotionEffect(mp);
-                FMLCommonHandler.instance().firePlayerChangedDimensionEvent(mp, oldD, newD);    //inform other mods
+                FMLCommonHandler.instance().firePlayerChangedDimensionEvent(mp, oldD, newD); // inform other mods
             }
             else
             {
@@ -124,13 +118,6 @@ public class Teleporter
                 ent = newE;
             }
         }
-
-        ent.ridingEntity = riding;
-        if (riding != null)
-            riding.riddenByEntity = ent;
-        ent.riddenByEntity = ridden;
-        if (ridden != null)
-            ridden.ridingEntity = ent;
 
         return ent;
     }
