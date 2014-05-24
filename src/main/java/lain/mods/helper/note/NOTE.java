@@ -3,7 +3,6 @@ package lain.mods.helper.note;
 import java.util.UUID;
 import lain.mods.helper.ModAttributes;
 import lain.mods.helper.utils.PositionData;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
@@ -57,26 +56,7 @@ public final class NOTE
         {
             IAttributeInstance ai = player.getEntityAttribute(ModAttributes.damageReduction);
             if (ai instanceof ModifiableAttributeInstance && ai.getModifier(_SAID) == null)
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.2D, 0));
-            ai = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
-            if (ai instanceof ModifiableAttributeInstance)
-            {
-                double base = ((ModifiableAttributeInstance) ai).getBaseValue();
-                AttributeModifier mod = ai.getModifier(_SAID);
-                float maxhealth = player.getMaxHealth();
-                if (mod != null && (mod.getAmount() != base || mod.getOperation() != 0))
-                {
-                    ai.removeModifier(mod);
-                    mod = ai.getModifier(_SAID);
-                    player.heal(player.getMaxHealth() - maxhealth);
-                    maxhealth = player.getMaxHealth();
-                }
-                if (mod == null)
-                {
-                    ai.applyModifier(new AttributeModifier(_SAID, _ID, base, 0));
-                    player.heal(player.getMaxHealth() - maxhealth);
-                }
-            }
+                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.4D, 0));
         }
     }
 
