@@ -27,10 +27,10 @@ public class AutoRepair
                 {
                     for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
                         if (player.inventory.mainInventory[i] != null)
-                            player.inventory.mainInventory[i] = repairItem(player.inventory.mainInventory[i], 1, 1);
+                            player.inventory.mainInventory[i] = repairItem(player.inventory.mainInventory[i], 0xFFFF, 0x1);
                     for (int i = 0; i < player.inventory.armorInventory.length; i++)
                         if (player.inventory.armorInventory[i] != null)
-                            player.inventory.armorInventory[i] = repairItem(player.inventory.armorInventory[i], 1, 1);
+                            player.inventory.armorInventory[i] = repairItem(player.inventory.armorInventory[i], 0xFFFF, 0x1);
                 }
             }
             else if (event.player instanceof EntityClientPlayerMP)
@@ -42,10 +42,10 @@ public class AutoRepair
                 {
                     for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
                         if (player.inventory.mainInventory[i] != null)
-                            player.inventory.mainInventory[i] = repairItem(player.inventory.mainInventory[i], 1, 1);
+                            player.inventory.mainInventory[i] = repairItem(player.inventory.mainInventory[i], 0xFFFF, 0x1);
                     for (int i = 0; i < player.inventory.armorInventory.length; i++)
                         if (player.inventory.armorInventory[i] != null)
-                            player.inventory.armorInventory[i] = repairItem(player.inventory.armorInventory[i], 1, 1);
+                            player.inventory.armorInventory[i] = repairItem(player.inventory.armorInventory[i], 0xFFFF, 0x1);
                 }
             }
         }
