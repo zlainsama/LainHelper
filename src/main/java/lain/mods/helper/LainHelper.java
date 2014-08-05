@@ -1,13 +1,12 @@
 package lain.mods.helper;
 
+import lain.mods.helper.cheat.AutoRepair;
 import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSpawn;
-import lain.mods.helper.handlers.AttributeInstanceRegister;
-import lain.mods.helper.handlers.LivingHurtHandler;
 import lain.mods.helper.handlers.PlayerDeathHandler;
-import lain.mods.helper.handlers.PlayerTickHandler;
+import lain.mods.helper.note.network.NoteSync;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,6 +15,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -27,6 +27,9 @@ public class LainHelper
 
     Logger logger;
     Configuration config;
+
+    @SidedProxy(clientSide = "lain.mods.helper.note.network.NoteSyncClient", serverSide = "lain.mods.helper.note.network.NoteSync")
+    public static NoteSync managerNoteSync;
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
@@ -81,10 +84,9 @@ public class LainHelper
     @Mod.EventHandler
     public void setEnabled(FMLInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(new AttributeInstanceRegister());
-        MinecraftForge.EVENT_BUS.register(new LivingHurtHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
-        FMLCommonHandler.instance().bus().register(new PlayerTickHandler());
+        FMLCommonHandler.instance().bus().register(new AutoRepair());
+        managerNoteSync.setEnabled();
     }
 
 }

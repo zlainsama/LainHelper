@@ -1,6 +1,6 @@
 package lain.mods.helper.commands;
 
-import lain.mods.helper.note.NOTE;
+import lain.mods.helper.PlayerData;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,10 +34,10 @@ public class CommandHome extends GeneralHelperCommand
         if (par1 instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) par1;
-            PositionData home = NOTE.get(player).getHomePosition();
+            PositionData home = PlayerData.get(player).getHomePosition();
             if (home != null)
             {
-                NOTE.get(player).setLastPosition(new PositionData(player));
+                PlayerData.get(player).setLastPosition(new PositionData(player));
                 home.teleportEntity(player);
                 par1.addChatMessage(msgHomeDone);
             }

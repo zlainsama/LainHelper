@@ -1,94 +1,126 @@
 package lain.mods.helper.note;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
-import lain.mods.helper.ModAttributes;
-import lain.mods.helper.utils.PositionData;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import lain.mods.helper.utils.MinecraftUtils;
+import net.minecraft.entity.player.EntityPlayerMP;
+import com.google.common.collect.Maps;
+import com.google.common.io.Closeables;
 
-public final class NOTE
+public class Note implements Serializable
 {
 
-    private static final String _ID = "92c98451-a0c6-4899-bce6-c5cc0f75e447";
+    private static final long serialVersionUID = -4182182350393617149L;
+
     private static final UUID _MYID = UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49");
-    private static final UUID _SAID = UUID.fromString("5f2cab81-58e7-43f0-9ae0-ba6a58e0ae20");
 
-    private static NBTTagCompound _GetOrCreateCompound(NBTTagCompound base, String name)
+    private static final Map<UUID, Note> notes = Maps.newHashMap();
+
+    private static void closeQuietly(Closeable closeable)
     {
-        if (!base.hasKey(name))
-            base.setTag(name, new NBTTagCompound());
-        return base.getCompoundTag(name);
-    }
-
-    private static NBTTagCompound _GetPlayerPersistedData(EntityPlayer p)
-    {
-        return _GetOrCreateCompound(p.getEntityData(), EntityPlayer.PERSISTED_NBT_TAG);
-    }
-
-    private static NBTTagCompound _GetRawData(EntityPlayer p)
-    {
-        return _GetOrCreateCompound(_GetPlayerPersistedData(p), _ID);
-    }
-
-    public static NOTE get(EntityPlayer p)
-    {
-        return new NOTE(_GetRawData(p));
-    }
-
-    private final NBTTagCompound d;
-
-    private NOTE(NBTTagCompound data)
-    {
-        d = data;
-    }
-
-    public void applySpecialAttributes(EntityPlayer player)
-    {
-        if (_MYID.equals(player.getUniqueID()))
+        try
         {
-            IAttributeInstance ai = player.getEntityAttribute(ModAttributes.damageReduction);
-            if (ai instanceof ModifiableAttributeInstance && ai.getModifier(_SAID) == null)
-                ai.applyModifier(new AttributeModifier(_SAID, _ID, 0.4D, 0));
+            Closeables.close(closeable, true);
+        }
+        catch (IOException ignored)
+        {
         }
     }
 
-    public PositionData getHomePosition()
+    public static Note getNote(EntityPlayerMP player)
     {
-        if (d.hasKey("homePosition"))
+        UUID uuid = player.getUniqueID();
+        if (notes.containsKey(uuid))
+            return notes.get(uuid);
+        File f = getNoteFile(player);
+        ObjectInputStream ois = null;
+        try
         {
-            PositionData loc = new PositionData();
-            loc.readFromNBT(d.getCompoundTag("homePosition"));
-            return loc;
+            ois = new ObjectInputStream(new FileInputStream(f));
+            notes.put(uuid, (Note) ois.readObject());
         }
-        return null;
-    }
-
-    public PositionData getLastPosition()
-    {
-        if (d.hasKey("lastPosition"))
+        catch (Exception e)
         {
-            PositionData loc = new PositionData();
-            loc.readFromNBT(d.getCompoundTag("lastPosition"));
-            return loc;
+            Note note = new Note();
+            note.put("Note", new NoteOption("Note", true, "loaded"));
+            if (_MYID.equals(uuid))
+                note.put("AutoRepair", new NoteOption("AutoRepair", true, ""));
+            notes.put(uuid, note);
+            save(player);
         }
-        return null;
+        finally
+        {
+            closeQuietly(ois);
+        }
+        return notes.get(uuid);
     }
 
-    public void setHomePosition(PositionData pos)
+    private static File getNoteFile(EntityPlayerMP player)
     {
-        NBTTagCompound data = new NBTTagCompound();
-        pos.writeToNBT(data);
-        d.setTag("homePosition", data);
+        File dir = MinecraftUtils.getSaveDirFile("notes");
+        if ((dir.exists() && dir.isDirectory()) || (dir.isFile() && dir.delete() && dir.mkdirs()) || dir.mkdirs())
+            return new File(dir, String.format("%s.object", player.getUniqueID().toString()));
+        throw new RuntimeException("check your save directory, can not access notes directory");
     }
 
-    public void setLastPosition(PositionData pos)
+    public static void save(EntityPlayerMP player)
     {
-        NBTTagCompound data = new NBTTagCompound();
-        pos.writeToNBT(data);
-        d.setTag("lastPosition", data);
+        Note note = getNote(player);
+        File f = getNoteFile(player);
+        ObjectOutputStream oos = null;
+        try
+        {
+            oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos.writeObject(note);
+        }
+        catch (IOException ignored)
+        {
+        }
+        finally
+        {
+            closeQuietly(oos);
+        }
+    }
+
+    public static void unload(EntityPlayerMP player) // WARNING: if you unload you need to save manually
+    {
+        notes.remove(player.getUniqueID());
+    }
+
+    private Map<String, NoteOption> options = Maps.newHashMap();
+
+    public void clear()
+    {
+        options.clear();
+    }
+
+    public NoteOption get(String name)
+    {
+        return options.get(name);
+    }
+
+    public Set<String> names()
+    {
+        return options.keySet();
+    }
+
+    public void put(String name, NoteOption option)
+    {
+        options.put(name, option);
+    }
+
+    public void remove(String name)
+    {
+        options.remove(name);
     }
 
 }

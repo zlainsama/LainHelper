@@ -1,6 +1,6 @@
 package lain.mods.helper.commands;
 
-import lain.mods.helper.note.NOTE;
+import lain.mods.helper.PlayerData;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,10 +34,10 @@ public class CommandBack extends GeneralHelperCommand
         if (par1 instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) par1;
-            PositionData loc = NOTE.get(player).getLastPosition();
+            PositionData loc = PlayerData.get(player).getLastPosition();
             if (loc != null)
             {
-                NOTE.get(player).setLastPosition(new PositionData(player));
+                PlayerData.get(player).setLastPosition(new PositionData(player));
                 loc.teleportEntity(player);
                 par1.addChatMessage(msgBackDone);
             }

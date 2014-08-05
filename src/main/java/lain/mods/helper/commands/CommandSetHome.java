@@ -1,7 +1,7 @@
 package lain.mods.helper.commands;
 
 import lain.mods.helper.Options;
-import lain.mods.helper.note.NOTE;
+import lain.mods.helper.PlayerData;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -38,7 +38,7 @@ public class CommandSetHome extends GeneralHelperCommand
             PositionData pos = new PositionData(player).align();
             if (!Options.overworldHomeOnly || pos.dimension == 0)
             {
-                NOTE.get(player).setHomePosition(pos);
+                PlayerData.get(player).setHomePosition(pos);
                 par1.addChatMessage(msgSetHomeDone);
             }
             else

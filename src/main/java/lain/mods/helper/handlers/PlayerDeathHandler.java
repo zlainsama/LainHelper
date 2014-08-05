@@ -1,7 +1,7 @@
 package lain.mods.helper.handlers;
 
 import lain.mods.helper.Options;
-import lain.mods.helper.note.NOTE;
+import lain.mods.helper.PlayerData;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
@@ -24,7 +24,7 @@ public class PlayerDeathHandler
             EntityPlayerMP player = (EntityPlayerMP) event.entity;
             if (Options.enableHelperCommands)
             {
-                NOTE.get(player).setLastPosition(new PositionData(event.entity));
+                PlayerData.get(player).setLastPosition(new PositionData(event.entity));
                 player.addChatMessage(msgBackDeath);
             }
         }
