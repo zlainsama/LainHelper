@@ -2,7 +2,6 @@ package lain.mods.helper.cheat;
 
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
-import lain.mods.helper.note.NoteOption;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -10,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class AutoRepair
+public class Cheater
 {
 
     @SubscribeEvent
@@ -22,8 +21,8 @@ public class AutoRepair
             {
                 EntityPlayerMP player = (EntityPlayerMP) event.player;
                 Note note = Note.getNote(player);
-                NoteOption option = note.get("AutoRepair");
-                if (option != null)
+
+                if (note.get("AutoRepair") != null)
                 {
                     for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
                         if (player.inventory.mainInventory[i] != null)
@@ -32,13 +31,18 @@ public class AutoRepair
                         if (player.inventory.armorInventory[i] != null)
                             player.inventory.armorInventory[i] = repairItem(player.inventory.armorInventory[i], Integer.MAX_VALUE, 1);
                 }
+
+                if (note.get("AllowFlight") != null)
+                {
+                    player.capabilities.allowFlying = true;
+                }
             }
             else if (event.player instanceof EntityClientPlayerMP)
             {
                 EntityClientPlayerMP player = (EntityClientPlayerMP) event.player;
                 Note note = NoteClient.instance();
-                NoteOption option = note.get("AutoRepair");
-                if (option != null)
+
+                if (note.get("AutoRepair") != null)
                 {
                     for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
                         if (player.inventory.mainInventory[i] != null)
@@ -46,6 +50,11 @@ public class AutoRepair
                     for (int i = 0; i < player.inventory.armorInventory.length; i++)
                         if (player.inventory.armorInventory[i] != null)
                             player.inventory.armorInventory[i] = repairItem(player.inventory.armorInventory[i], Integer.MAX_VALUE, 1);
+                }
+
+                if (note.get("AllowFlight") != null)
+                {
+                    player.capabilities.allowFlying = true;
                 }
             }
         }

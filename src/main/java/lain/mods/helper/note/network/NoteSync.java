@@ -51,7 +51,7 @@ public class NoteSync
                         if (option != null)
                         {
                             if (option.locked == packet.locked == false)
-                                note.put(packet.name, new NoteOption(packet.name, packet.locked, packet.value));
+                                note.put(new NoteOption(packet.name, packet.locked, packet.value));
                         }
                     }
                 }

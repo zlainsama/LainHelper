@@ -1,6 +1,6 @@
 package lain.mods.helper;
 
-import lain.mods.helper.cheat.AutoRepair;
+import lain.mods.helper.cheat.Cheater;
 import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
@@ -85,7 +85,7 @@ public class LainHelper
     public void setEnabled(FMLInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
-        FMLCommonHandler.instance().bus().register(new AutoRepair());
+        FMLCommonHandler.instance().bus().register(new Cheater());
         managerNoteSync.setEnabled();
     }
 

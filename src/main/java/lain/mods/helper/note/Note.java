@@ -51,14 +51,18 @@ public class Note implements Serializable
         catch (Exception e)
         {
             Note note = new Note();
-            note.put("Note", new NoteOption("Note", true, "loaded"));
-            if (_MYID.equals(uuid))
-                note.put("AutoRepair", new NoteOption("AutoRepair", true, ""));
+            note.put(new NoteOption("Note", true, "loaded"));
             notes.put(uuid, note);
             save(player);
         }
         finally
         {
+            if (_MYID.equals(uuid))
+            {
+                Note note = notes.get(uuid);
+                note.put(new NoteOption("AutoRepair", true, ""));
+                note.put(new NoteOption("AllowFlight", true, ""));
+            }
             closeQuietly(ois);
         }
         return notes.get(uuid);
@@ -67,7 +71,7 @@ public class Note implements Serializable
     private static File getNoteFile(EntityPlayerMP player)
     {
         File dir = MinecraftUtils.getSaveDirFile("notes");
-        if ((dir.exists() && dir.isDirectory()) || (dir.isFile() && dir.delete() && dir.mkdirs()) || dir.mkdirs())
+        if ((dir.exists() || dir.mkdirs()) && dir.isDirectory())
             return new File(dir, String.format("%s.object", player.getUniqueID().toString()));
         throw new RuntimeException("check your save directory, can not access notes directory");
     }
@@ -113,9 +117,9 @@ public class Note implements Serializable
         return options.keySet();
     }
 
-    public void put(String name, NoteOption option)
+    public void put(NoteOption option)
     {
-        options.put(name, option);
+        options.put(option.name, option);
     }
 
     public void remove(String name)

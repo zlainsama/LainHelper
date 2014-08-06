@@ -30,7 +30,7 @@ public class NoteSyncClient extends NoteSync
                 break;
             case 2:
                 if (!packet.name.isEmpty())
-                    NoteClient.instance().put(packet.name, new NoteOption(packet.name, packet.locked, packet.value));
+                    NoteClient.instance().put(new NoteOption(packet.name, packet.locked, packet.value));
                 break;
         }
     }
