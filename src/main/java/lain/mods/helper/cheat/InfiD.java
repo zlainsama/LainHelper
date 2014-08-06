@@ -42,11 +42,11 @@ public class InfiD
                         if (item.isItemStackDamageable() && item.getItem().isRepairable())
                         {
                             int dmg = item.getItemDamage();
-                            if (dmg > 0)
+                            if (dmg > 1)
                             {
                                 dmg -= 1;
-                                if (dmg < 0)
-                                    dmg = 0;
+                                if (dmg < 1)
+                                    dmg = 1;
                                 item.setItemDamage(dmg);
                             }
                         }
