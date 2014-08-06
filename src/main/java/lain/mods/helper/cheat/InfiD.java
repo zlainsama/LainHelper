@@ -40,7 +40,16 @@ public class InfiD
                     public void doProc(ItemStack item)
                     {
                         if (item.isItemStackDamageable() && item.getItem().isRepairable())
-                            item.setItemDamage(0);
+                        {
+                            int dmg = item.getItemDamage();
+                            if (dmg > 0)
+                            {
+                                dmg -= 1;
+                                if (dmg < 0)
+                                    dmg = 0;
+                                item.setItemDamage(dmg);
+                            }
+                        }
                     }
                 });
             }
@@ -57,7 +66,7 @@ public class InfiD
                         public void doProc(ItemStack item)
                         {
                             if (ElectricItem.manager != null && item.getItem() instanceof IElectricItem)
-                                ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), true, false);
+                                ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), false, false);
                         }
                     });
             }
