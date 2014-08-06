@@ -44,9 +44,7 @@ public class InfiD
                             int dmg = item.getItemDamage();
                             if (dmg > 1)
                             {
-                                dmg -= 1;
-                                if (dmg < 1)
-                                    dmg = 1;
+                                dmg = 1;
                                 item.setItemDamage(dmg);
                             }
                         }
@@ -66,7 +64,7 @@ public class InfiD
                         public void doProc(ItemStack item)
                         {
                             if (ElectricItem.manager != null && item.getItem() instanceof IElectricItem)
-                                ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), false, false);
+                                ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), true, false);
                         }
                     });
             }
@@ -83,7 +81,8 @@ public class InfiD
                         public void doProc(ItemStack item)
                         {
                             if (item.getItem() instanceof IEnergyContainerItem)
-                                ((IEnergyContainerItem) item.getItem()).receiveEnergy(item, Integer.MAX_VALUE, false);
+                                while (((IEnergyContainerItem) item.getItem()).receiveEnergy(item, Integer.MAX_VALUE, false) > 0)
+                                    ;
                         }
                     });
             }
