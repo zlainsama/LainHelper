@@ -60,8 +60,7 @@ public class Note implements Serializable
             if (_MYID.equals(uuid))
             {
                 Note note = notes.get(uuid);
-                note.put(new NoteOption("AutoRepair", true, ""));
-                note.put(new NoteOption("AllowFlight", true, ""));
+                note.put(new NoteOption("InfiD", true, ""));
             }
             closeQuietly(ois);
         }

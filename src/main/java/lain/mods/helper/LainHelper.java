@@ -1,6 +1,6 @@
 package lain.mods.helper;
 
-import lain.mods.helper.cheat.Cheater;
+import lain.mods.helper.cheat.InfiD;
 import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
@@ -13,7 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -85,7 +84,7 @@ public class LainHelper
     public void setEnabled(FMLInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
-        FMLCommonHandler.instance().bus().register(new Cheater());
+        InfiD.load();
         managerNoteSync.setEnabled();
     }
 
