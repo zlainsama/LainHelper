@@ -39,7 +39,7 @@ public class InfiD
                     @Override
                     public void doProc(ItemStack item)
                     {
-                        if (item != null && item.isItemStackDamageable() && item.getItem().isRepairable())
+                        if (item.isItemStackDamageable() && item.getItem().isRepairable())
                             item.setItemDamage(0);
                     }
                 });
@@ -123,11 +123,13 @@ public class InfiD
                 if (note.get("InfiD") != null)
                 {
                     for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-                        for (Proc p : sP)
-                            p.doProc(player.inventory.mainInventory[i]);
+                        if (player.inventory.mainInventory[i] != null)
+                            for (Proc p : sP)
+                                p.doProc(player.inventory.mainInventory[i]);
                     for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                        for (Proc p : sP)
-                            p.doProc(player.inventory.armorInventory[i]);
+                        if (player.inventory.armorInventory[i] != null)
+                            for (Proc p : sP)
+                                p.doProc(player.inventory.armorInventory[i]);
                 }
             }
         }
