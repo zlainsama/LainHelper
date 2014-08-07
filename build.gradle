@@ -30,6 +30,7 @@ jar
 {
     exclude('ic2/**/**')
     exclude('cofh/**/**')
+    exclude('mods/battlegear2/**/**')
 }
 
 processResources

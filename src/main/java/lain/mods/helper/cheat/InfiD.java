@@ -8,7 +8,9 @@ import java.util.List;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.SafeProcess;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,11 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class InfiD
 {
 
+    interface Probe
+    {
+        void visit(EntityPlayer player, InfiD iD);
+    }
+
     interface Proc
     {
         void doProc(ItemStack item);
@@ -28,13 +35,77 @@ public class InfiD
 
     public static void load()
     {
-        final InfiD i = new InfiD();
+        InfiD i = new InfiD();
+        load_sP(i);
+        load_iP(i);
+        FMLCommonHandler.instance().bus().register(i);
+    }
+
+    private static void load_iP(final InfiD iD)
+    {
         new SafeProcess()
         {
             @Override
             public void run()
             {
-                i.addProc(new Proc()
+                iD.addProbe(new Probe()
+                {
+                    @Override
+                    public void visit(EntityPlayer player, InfiD iD)
+                    {
+                        for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
+                            iD.runProc(player.inventory.mainInventory[i]);
+                    }
+                });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                iD.addProbe(new Probe()
+                {
+                    @Override
+                    public void visit(EntityPlayer player, InfiD iD)
+                    {
+                        for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                            iD.runProc(player.inventory.armorInventory[i]);
+                    }
+                });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (InventoryPlayerBattle.class != null)
+                    iD.addProbe(new Probe()
+                    {
+                        @Override
+                        public void visit(EntityPlayer player, InfiD iD)
+                        {
+                            if (player.inventory instanceof InventoryPlayerBattle)
+                            {
+                                InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
+                                for (int i = 0; i < inv.extraItems.length; i++)
+                                    iD.runProc(inv.extraItems[i]);
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+    }
+
+    private static void load_sP(final InfiD iD)
+    {
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                iD.addProc(new Proc()
                 {
                     @Override
                     public void doProc(ItemStack item)
@@ -58,7 +129,7 @@ public class InfiD
             public void run()
             {
                 if (ElectricItem.class != null && IElectricItemManager.class != null && IBackupElectricItemManager.class != null && IElectricItem.class != null)
-                    i.addProc(new Proc()
+                    iD.addProc(new Proc()
                     {
                         @Override
                         public void doProc(ItemStack item)
@@ -75,7 +146,7 @@ public class InfiD
             public void run()
             {
                 if (IEnergyContainerItem.class != null)
-                    i.addProc(new Proc()
+                    iD.addProc(new Proc()
                     {
                         @Override
                         public void doProc(ItemStack item)
@@ -87,13 +158,18 @@ public class InfiD
                     });
             }
         }.runSafe();
-        FMLCommonHandler.instance().bus().register(i);
     }
 
     List<Proc> sP = Lists.newArrayList();
+    List<Probe> iP = Lists.newArrayList();
 
     private InfiD()
     {
+    }
+
+    void addProbe(Probe p)
+    {
+        iP.add(p);
     }
 
     void addProc(Proc p)
@@ -113,14 +189,8 @@ public class InfiD
 
                 if (note.get("InfiD") != null)
                 {
-                    for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-                        if (player.inventory.mainInventory[i] != null)
-                            for (Proc p : sP)
-                                p.doProc(player.inventory.mainInventory[i]);
-                    for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                        if (player.inventory.armorInventory[i] != null)
-                            for (Proc p : sP)
-                                p.doProc(player.inventory.armorInventory[i]);
+                    for (Probe p : iP)
+                        p.visit(player, this);
                 }
             }
             else if (event.player instanceof EntityClientPlayerMP)
@@ -130,17 +200,18 @@ public class InfiD
 
                 if (note.get("InfiD") != null)
                 {
-                    for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-                        if (player.inventory.mainInventory[i] != null)
-                            for (Proc p : sP)
-                                p.doProc(player.inventory.mainInventory[i]);
-                    for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                        if (player.inventory.armorInventory[i] != null)
-                            for (Proc p : sP)
-                                p.doProc(player.inventory.armorInventory[i]);
+                    for (Probe p : iP)
+                        p.visit(player, this);
                 }
             }
         }
+    }
+
+    void runProc(ItemStack item)
+    {
+        if (item != null)
+            for (Proc p : sP)
+                p.doProc(item);
     }
 
 }
