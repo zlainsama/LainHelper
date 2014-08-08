@@ -113,12 +113,8 @@ public class InfiD
                     {
                         if (item.isItemStackDamageable() && item.getItem().isRepairable())
                         {
-                            int dmg = item.getItemDamage();
-                            if (dmg > 1)
-                            {
-                                dmg = 1;
-                                item.setItemDamage(dmg);
-                            }
+                            if (item.getItemDamage() > 1)
+                                item.setItemDamage(1);
                         }
                     }
                 });
@@ -183,12 +179,10 @@ public class InfiD
                             NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
                             if (data != null)
                             {
-                                int dmg = data.getInteger("Damage");
-                                if (dmg > 1)
-                                {
-                                    dmg = 1;
-                                    data.setInteger("Damage", dmg);
-                                }
+                                if (data.getBoolean("Broken"))
+                                    data.setBoolean("Broken", false);
+                                if (data.getInteger("Damage") > 1)
+                                    data.setInteger("Damage", 1);
                             }
                         }
                     }
