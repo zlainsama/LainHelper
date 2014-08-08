@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -152,10 +153,46 @@ public class InfiD
                         public void doProc(ItemStack item)
                         {
                             if (item.getItem() instanceof IEnergyContainerItem)
-                                while (((IEnergyContainerItem) item.getItem()).receiveEnergy(item, Integer.MAX_VALUE, false) > 0)
-                                    ;
+                            {
+                                int n = Integer.MAX_VALUE;
+                                while (n > 0)
+                                {
+                                    int a = ((IEnergyContainerItem) item.getItem()).receiveEnergy(item, n, false);
+                                    if (a > 0)
+                                        n -= a;
+                                    else
+                                        break;
+                                }
+                            }
                         }
                     });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                iD.addProc(new Proc()
+                {
+                    @Override
+                    public void doProc(ItemStack item)
+                    {
+                        if (item.hasTagCompound())
+                        {
+                            NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
+                            if (data != null)
+                            {
+                                int dmg = data.getInteger("Damage");
+                                if (dmg > 1)
+                                {
+                                    dmg = 1;
+                                    data.setInteger("Damage", dmg);
+                                }
+                            }
+                        }
+                    }
+                });
             }
         }.runSafe();
     }
