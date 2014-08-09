@@ -113,8 +113,8 @@ public class InfiD
                     {
                         if (item.isItemStackDamageable() && item.getItem().isRepairable())
                         {
-                            if (item.getItemDamage() > 1)
-                                item.setItemDamage(1);
+                            if (item.getItemDamage() > 0)
+                                item.setItemDamage(0);
                         }
                     }
                 });
@@ -181,8 +181,8 @@ public class InfiD
                             {
                                 if (data.getBoolean("Broken"))
                                     data.setBoolean("Broken", false);
-                                if (data.getInteger("Damage") > 1)
-                                    data.setInteger("Damage", 1);
+                                if (data.getInteger("Damage") > 0)
+                                    data.setInteger("Damage", 0);
                             }
                         }
                     }
