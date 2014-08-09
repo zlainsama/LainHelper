@@ -179,10 +179,15 @@ public class InfiD
                             NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
                             if (data != null)
                             {
-                                if (data.getBoolean("Broken"))
-                                    data.setBoolean("Broken", false);
-                                if (data.getInteger("Damage") > 0)
-                                    data.setInteger("Damage", 0);
+                                if (!data.hasKey("Energy"))
+                                {
+                                    if (data.getBoolean("Broken"))
+                                        data.setBoolean("Broken", false);
+                                    if (data.getInteger("Damage") > 0)
+                                        data.setInteger("Damage", 0);
+                                    if (item.getItemDamage() > 0) // visual
+                                        item.setItemDamage(0);
+                                }
                             }
                         }
                     }
