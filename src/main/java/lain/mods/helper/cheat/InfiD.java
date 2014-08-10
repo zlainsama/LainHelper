@@ -7,6 +7,7 @@ import ic2.api.item.IElectricItemManager;
 import java.util.List;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
+import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -36,26 +37,82 @@ public class InfiD
 
     public static void load()
     {
-        InfiD i = new InfiD();
-        load_sP(i);
-        load_iP(i);
-        FMLCommonHandler.instance().bus().register(i);
+        Ref<InfiD> ref = Ref.newRef();
+        load_iD(ref);
+        load_iP(ref);
+        load_sP(ref);
+        FMLCommonHandler.instance().bus().register(ref.get());
     }
 
-    private static void load_iP(final InfiD iD)
+    private static void load_iD(final Ref<InfiD> ref)
+    {
+        new SafeProcess()
+        {
+            @Override
+            public void onFailed()
+            {
+                ref.set(new InfiD()
+                {
+                    @Override
+                    void tickPlayer(EntityPlayer player)
+                    {
+                        if (player instanceof EntityPlayerMP)
+                        {
+                            if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
+                            {
+                                for (Probe p : iP)
+                                    p.visit(player, this);
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void run()
+            {
+                if (EntityClientPlayerMP.class != null)
+                    ref.set(new InfiD()
+                    {
+                        @Override
+                        void tickPlayer(EntityPlayer player)
+                        {
+                            if (player instanceof EntityPlayerMP)
+                            {
+                                if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
+                                {
+                                    for (Probe p : iP)
+                                        p.visit(player, this);
+                                }
+                            }
+                            else if (player instanceof EntityClientPlayerMP)
+                            {
+                                if (NoteClient.instance().get("InfiD") != null)
+                                {
+                                    for (Probe p : iP)
+                                        p.visit(player, this);
+                                }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+    }
+
+    private static void load_iP(final Ref<InfiD> ref)
     {
         new SafeProcess()
         {
             @Override
             public void run()
             {
-                iD.addProbe(new Probe()
+                ref.get().addProbe(new Probe()
                 {
                     @Override
                     public void visit(EntityPlayer player, InfiD iD)
                     {
                         for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-                            iD.runProc(player.inventory.mainInventory[i]);
+                            ref.get().runProc(player.inventory.mainInventory[i]);
                     }
                 });
             }
@@ -65,7 +122,7 @@ public class InfiD
             @Override
             public void run()
             {
-                iD.addProbe(new Probe()
+                ref.get().addProbe(new Probe()
                 {
                     @Override
                     public void visit(EntityPlayer player, InfiD iD)
@@ -82,7 +139,7 @@ public class InfiD
             public void run()
             {
                 if (InventoryPlayerBattle.class != null)
-                    iD.addProbe(new Probe()
+                    ref.get().addProbe(new Probe()
                     {
                         @Override
                         public void visit(EntityPlayer player, InfiD iD)
@@ -99,14 +156,14 @@ public class InfiD
         }.runSafe();
     }
 
-    private static void load_sP(final InfiD iD)
+    private static void load_sP(final Ref<InfiD> ref)
     {
         new SafeProcess()
         {
             @Override
             public void run()
             {
-                iD.addProc(new Proc()
+                ref.get().addProc(new Proc()
                 {
                     @Override
                     public void doProc(ItemStack item)
@@ -126,7 +183,7 @@ public class InfiD
             public void run()
             {
                 if (ElectricItem.class != null && IElectricItemManager.class != null && IBackupElectricItemManager.class != null && IElectricItem.class != null)
-                    iD.addProc(new Proc()
+                    ref.get().addProc(new Proc()
                     {
                         @Override
                         public void doProc(ItemStack item)
@@ -143,7 +200,7 @@ public class InfiD
             public void run()
             {
                 if (IEnergyContainerItem.class != null)
-                    iD.addProc(new Proc()
+                    ref.get().addProc(new Proc()
                     {
                         @Override
                         public void doProc(ItemStack item)
@@ -169,7 +226,7 @@ public class InfiD
             @Override
             public void run()
             {
-                iD.addProc(new Proc()
+                ref.get().addProc(new Proc()
                 {
                     @Override
                     public void doProc(ItemStack item)
@@ -196,8 +253,8 @@ public class InfiD
         }.runSafe();
     }
 
-    List<Proc> sP = Lists.newArrayList();
     List<Probe> iP = Lists.newArrayList();
+    List<Proc> sP = Lists.newArrayList();
 
     private InfiD()
     {
@@ -217,30 +274,7 @@ public class InfiD
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
-        {
-            if (event.player instanceof EntityPlayerMP)
-            {
-                EntityPlayerMP player = (EntityPlayerMP) event.player;
-                Note note = Note.getNote(player);
-
-                if (note.get("InfiD") != null)
-                {
-                    for (Probe p : iP)
-                        p.visit(player, this);
-                }
-            }
-            else if (event.player instanceof EntityClientPlayerMP)
-            {
-                EntityClientPlayerMP player = (EntityClientPlayerMP) event.player;
-                Note note = NoteClient.instance();
-
-                if (note.get("InfiD") != null)
-                {
-                    for (Probe p : iP)
-                        p.visit(player, this);
-                }
-            }
-        }
+            tickPlayer(event.player);
     }
 
     void runProc(ItemStack item)
@@ -248,6 +282,10 @@ public class InfiD
         if (item != null)
             for (Proc p : sP)
                 p.doProc(item);
+    }
+
+    void tickPlayer(EntityPlayer player)
+    {
     }
 
 }

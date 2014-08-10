@@ -3,6 +3,10 @@ package lain.mods.helper.utils;
 public abstract class SafeProcess implements Runnable
 {
 
+    public void onFailed()
+    {
+    }
+
     public void runSafe()
     {
         try
@@ -11,6 +15,7 @@ public abstract class SafeProcess implements Runnable
         }
         catch (Error ignored)
         {
+            onFailed();
         }
     }
 
