@@ -14,4 +14,4 @@ LH_Spawn_Usage=/spawn - 传送你到主世界出生点.
 LH_OpenStorage_Usage=/openstorage - 打开一个能用来与其他玩家分享物品的储藏库.
 LH_OpenStorage_Title=分享的储藏库
 
-item.cooked_seeds.name=烤过的种子
+item.seeds_cooked.name=烤过的种子
