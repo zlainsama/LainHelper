@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import universalelectricity.api.item.IEnergyItem;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -249,6 +250,33 @@ public class InfiD
                         }
                     }
                 });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IEnergyItem.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IEnergyItem)
+                            {
+                                double n = Double.MAX_VALUE;
+                                while (n > 0)
+                                {
+                                    double a = ((IEnergyItem) item.getItem()).recharge(item, n, true);
+                                    if (a > 0)
+                                        n -= a;
+                                    else
+                                        break;
+                                }
+                            }
+                        }
+                    });
             }
         }.runSafe();
     }
