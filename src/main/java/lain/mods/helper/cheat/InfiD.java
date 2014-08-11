@@ -39,9 +39,12 @@ public class InfiD
     {
         Ref<InfiD> ref = Ref.newRef();
         load_iD(ref);
-        load_iP(ref);
-        load_sP(ref);
-        FMLCommonHandler.instance().bus().register(ref.get());
+        if (ref.get() != null)
+        {
+            load_iP(ref);
+            load_sP(ref);
+            FMLCommonHandler.instance().bus().register(ref.get());
+        }
     }
 
     private static void load_iD(final Ref<InfiD> ref)
@@ -112,7 +115,7 @@ public class InfiD
                     public void visit(EntityPlayer player, InfiD iD)
                     {
                         for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-                            ref.get().runProc(player.inventory.mainInventory[i]);
+                            iD.runProc(player.inventory.mainInventory[i]);
                     }
                 });
             }
