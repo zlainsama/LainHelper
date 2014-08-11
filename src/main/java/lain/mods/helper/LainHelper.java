@@ -7,6 +7,7 @@ import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSpawn;
 import lain.mods.helper.handlers.PlayerDeathHandler;
 import lain.mods.helper.note.network.NoteSync;
+import lain.mods.helper.survivalists.Survivalists;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
 import net.minecraftforge.common.MinecraftForge;
@@ -83,6 +84,9 @@ public class LainHelper
     @Mod.EventHandler
     public void setEnabled(FMLInitializationEvent event)
     {
+        if (Options.enableSurvivalists)
+            Survivalists.setEnabled();
+
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
         InfiD.load();
         managerNoteSync.setEnabled();

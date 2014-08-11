@@ -14,4 +14,4 @@ LH_Spawn_Usage=/spawn - teleport you to overworld spawn.
 LH_OpenStorage_Usage=/openstorage - open a storage that can be used to share items with other players.
 LH_OpenStorage_Title=Shared Storage
 
-attribute.name.helper.damageReduction=Damage Reduction
+item.cooked_seeds.name=Cooked Seeds
