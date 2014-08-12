@@ -12,7 +12,7 @@ public class Options
     public static boolean enableHelperCommands = false;
     public static boolean overworldHomeOnly = true;
     public static boolean enableSharedStorage = false;
-    public static boolean enableSurvivalists = true;
+    public static boolean enableSurvivalists = false;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void loadConfig(Configuration config, Logger logger)
