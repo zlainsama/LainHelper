@@ -32,6 +32,7 @@ jar
     exclude('cofh/**/**')
     exclude('mods/battlegear2/**/**')
     exclude('universalelectricity/**/**')
+    exclude('baubles/**/**')
 }
 
 processResources

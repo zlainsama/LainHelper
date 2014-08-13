@@ -14,9 +14,11 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import universalelectricity.api.item.IEnergyItem;
+import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -153,6 +155,27 @@ public class InfiD
                                 InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
                                 for (int i = 0; i < inv.extraItems.length; i++)
                                     iD.runProc(inv.extraItems[i]);
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (BaublesApi.class != null)
+                    ref.get().addProbe(new Probe()
+                    {
+                        @Override
+                        public void visit(EntityPlayer player, InfiD iD)
+                        {
+                            IInventory inv = BaublesApi.getBaubles(player);
+                            if (inv != null)
+                            {
+                                for (int i = 0; i < inv.getSizeInventory(); i++)
+                                    iD.runProc(inv.getStackInSlot(i));
                             }
                         }
                     });
