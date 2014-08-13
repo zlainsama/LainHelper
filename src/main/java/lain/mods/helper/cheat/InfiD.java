@@ -17,6 +17,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.FoodStats;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.api.item.IEnergyItem;
 import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
@@ -47,6 +50,7 @@ public class InfiD
             load_iP(ref);
             load_sP(ref);
             FMLCommonHandler.instance().bus().register(ref.get());
+            MinecraftForge.EVENT_BUS.register(ref.get());
         }
     }
 
@@ -57,21 +61,7 @@ public class InfiD
             @Override
             public void onFailed()
             {
-                ref.set(new InfiD()
-                {
-                    @Override
-                    void tickPlayer(EntityPlayer player)
-                    {
-                        if (player instanceof EntityPlayerMP)
-                        {
-                            if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
-                            {
-                                for (Probe p : iP)
-                                    p.visit(player, this);
-                            }
-                        }
-                    }
-                });
+                ref.set(new InfiD());
             }
 
             @Override
@@ -83,22 +73,9 @@ public class InfiD
                         @Override
                         void tickPlayer(EntityPlayer player)
                         {
-                            if (player instanceof EntityPlayerMP)
-                            {
-                                if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
-                                {
-                                    for (Probe p : iP)
-                                        p.visit(player, this);
-                                }
-                            }
-                            else if (player instanceof EntityClientPlayerMP)
-                            {
-                                if (NoteClient.instance().get("InfiD") != null)
-                                {
-                                    for (Probe p : iP)
-                                        p.visit(player, this);
-                                }
-                            }
+                            if (player instanceof EntityClientPlayerMP)
+                                processClient(player);
+                            super.tickPlayer(player);
                         }
                     });
             }
@@ -322,10 +299,56 @@ public class InfiD
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    public void handleEvent(RenderGameOverlayEvent.Pre event)
+    {
+        switch (event.type)
+        {
+            case FOOD:
+                if (NoteClient.instance().get("InfiD") != null)
+                    event.setCanceled(true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @SubscribeEvent
+    public void handleEvent(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
             tickPlayer(event.player);
+    }
+
+    void processClient(EntityPlayer player)
+    {
+        if (NoteClient.instance().get("InfiD") != null)
+        {
+            for (Probe p : iP)
+                p.visit(player, this);
+
+            FoodStats food = player.getFoodStats();
+            if (food != null)
+            {
+                food.addStats(17 - food.getFoodLevel(), 0.0F);
+                food.addStats(1, 20.0F);
+            }
+        }
+    }
+
+    void processServer(EntityPlayer player)
+    {
+        if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
+        {
+            for (Probe p : iP)
+                p.visit(player, this);
+
+            FoodStats food = player.getFoodStats();
+            if (food != null)
+            {
+                food.addStats(17 - food.getFoodLevel(), 0.0F);
+                food.addStats(1, 20.0F);
+            }
+        }
     }
 
     void runProc(ItemStack item)
@@ -337,6 +360,8 @@ public class InfiD
 
     void tickPlayer(EntityPlayer player)
     {
+        if (player instanceof EntityPlayerMP)
+            processServer(player);
     }
 
 }
