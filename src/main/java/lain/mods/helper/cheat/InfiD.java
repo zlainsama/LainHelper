@@ -18,8 +18,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.FoodStats;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.api.item.IEnergyItem;
 import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
@@ -50,7 +48,6 @@ public class InfiD
             load_iP(ref);
             load_sP(ref);
             FMLCommonHandler.instance().bus().register(ref.get());
-            MinecraftForge.EVENT_BUS.register(ref.get());
         }
     }
 
@@ -296,20 +293,6 @@ public class InfiD
     void addProc(Proc p)
     {
         sP.add(p);
-    }
-
-    @SubscribeEvent
-    public void handleEvent(RenderGameOverlayEvent.Pre event)
-    {
-        switch (event.type)
-        {
-            case FOOD:
-                if (NoteClient.instance().get("InfiD") != null)
-                    event.setCanceled(true);
-                break;
-            default:
-                break;
-        }
     }
 
     @SubscribeEvent
