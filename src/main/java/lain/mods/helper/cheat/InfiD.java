@@ -5,6 +5,7 @@ import ic2.api.item.IBackupElectricItemManager;
 import ic2.api.item.IElectricItem;
 import ic2.api.item.IElectricItemManager;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
@@ -18,6 +19,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.FoodStats;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.api.item.IEnergyItem;
 import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
@@ -48,6 +51,7 @@ public class InfiD
             load_iP(ref);
             load_sP(ref);
             FMLCommonHandler.instance().bus().register(ref.get());
+            MinecraftForge.EVENT_BUS.register(ref.get());
         }
     }
 
@@ -281,6 +285,8 @@ public class InfiD
     List<Probe> iP = Lists.newArrayList();
     List<Proc> sP = Lists.newArrayList();
 
+    AtomicBoolean renderFoodBar = new AtomicBoolean(true);
+
     private InfiD()
     {
     }
@@ -293,6 +299,20 @@ public class InfiD
     void addProc(Proc p)
     {
         sP.add(p);
+    }
+
+    @SubscribeEvent
+    public void handleEvent(RenderGameOverlayEvent.Pre event)
+    {
+        switch (event.type)
+        {
+            case FOOD:
+                if (!renderFoodBar.get())
+                    event.setCanceled(true);
+                break;
+            default:
+                break;
+        }
     }
 
     @SubscribeEvent
@@ -315,6 +335,12 @@ public class InfiD
                 food.addStats(17 - food.getFoodLevel(), 0.0F);
                 food.addStats(1, 20.0F);
             }
+
+            renderFoodBar.compareAndSet(true, false);
+        }
+        else
+        {
+            renderFoodBar.compareAndSet(false, true);
         }
     }
 
