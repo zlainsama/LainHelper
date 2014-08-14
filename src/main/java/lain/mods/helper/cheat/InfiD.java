@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import baubles.api.BaublesApi;
@@ -327,6 +328,21 @@ public class InfiD
     void addProc(Proc p)
     {
         sP.add(p);
+    }
+
+    @SubscribeEvent
+    public void handleEvent(LivingHurtEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
+            {
+                if (!event.source.isDamageAbsolute())
+                    event.ammount *= 0.5F;
+                if (!event.source.isUnblockable())
+                    event.ammount *= 0.5F;
+            }
+        }
     }
 
     @SubscribeEvent
