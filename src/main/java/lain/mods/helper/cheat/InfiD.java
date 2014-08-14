@@ -22,6 +22,7 @@ import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.api.item.IEnergyItem;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
@@ -270,6 +271,33 @@ public class InfiD
                                 while (n > 0)
                                 {
                                     double a = ((IEnergyItem) item.getItem()).recharge(item, n, true);
+                                    if (a > 0)
+                                        n -= a;
+                                    else
+                                        break;
+                                }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IAEItemPowerStorage.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IAEItemPowerStorage)
+                            {
+                                double n = Double.MAX_VALUE;
+                                while (n > 0)
+                                {
+                                    double a = n - ((IAEItemPowerStorage) item.getItem()).injectAEPower(item, n);
                                     if (a > 0)
                                         n -= a;
                                     else

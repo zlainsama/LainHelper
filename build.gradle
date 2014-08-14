@@ -33,6 +33,7 @@ jar
     exclude('mods/battlegear2/**/**')
     exclude('universalelectricity/**/**')
     exclude('baubles/**/**')
+    exclude('appeng/**/**')
 }
 
 processResources
