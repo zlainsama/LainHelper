@@ -339,8 +339,8 @@ public class InfiD
             {
                 if (!event.source.isDamageAbsolute())
                     event.ammount *= 0.5F;
-                if (!event.source.isUnblockable())
-                    event.ammount *= 0.5F;
+                if (!event.source.isUnblockable() || event.source.isMagicDamage())
+                    event.ammount *= 0.2F;
             }
         }
     }
