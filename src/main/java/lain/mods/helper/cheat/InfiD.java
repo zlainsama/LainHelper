@@ -333,6 +333,14 @@ public class InfiD
     @SubscribeEvent
     public void handleEvent(LivingHurtEvent event)
     {
+        if (event.source.getSourceOfDamage() instanceof EntityPlayerMP)
+        {
+            if (Note.getNote((EntityPlayerMP) event.source.getSourceOfDamage()).get("InfiD") != null)
+            {
+                if (event.entity != event.source.getSourceOfDamage())
+                    event.ammount *= 2.0F;
+            }
+        }
         if (event.entityLiving instanceof EntityPlayerMP)
         {
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
