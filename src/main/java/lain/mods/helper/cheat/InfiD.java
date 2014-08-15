@@ -346,9 +346,12 @@ public class InfiD
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
                 if (!event.source.isDamageAbsolute())
-                    event.ammount *= 0.5F;
-                if (!event.source.isUnblockable() || event.source.isMagicDamage() || event.source.isFireDamage())
-                    event.ammount *= 0.2F;
+                {
+                    if (event.source.canHarmInCreative())
+                        event.ammount *= 0.5F;
+                    else
+                        event.ammount *= 0.1F;
+                }
             }
         }
     }
