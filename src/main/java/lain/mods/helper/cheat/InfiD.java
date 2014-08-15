@@ -338,7 +338,7 @@ public class InfiD
             if (Note.getNote((EntityPlayerMP) event.source.getSourceOfDamage()).get("InfiD") != null)
             {
                 if (event.entity != event.source.getSourceOfDamage())
-                    event.ammount *= 2.0F;
+                    event.ammount *= 3.0F;
             }
         }
         if (event.entityLiving instanceof EntityPlayerMP)
@@ -347,7 +347,7 @@ public class InfiD
             {
                 if (!event.source.isDamageAbsolute())
                     event.ammount *= 0.5F;
-                if (!event.source.isUnblockable() || event.source.isMagicDamage())
+                if (!event.source.isUnblockable() || event.source.isMagicDamage() || event.source.isFireDamage())
                     event.ammount *= 0.2F;
             }
         }
