@@ -378,7 +378,7 @@ public class InfiD
             {
                 food.addStats(-food.getFoodLevel(), 0.0F);
                 food.addStats(10, 20.0F);
-                food.addStats(18, 0.0F);
+                food.addStats(8, 0.0F);
             }
 
             renderFoodBar.compareAndSet(true, false);
@@ -401,7 +401,7 @@ public class InfiD
             {
                 food.addStats(-food.getFoodLevel(), 0.0F);
                 food.addStats(10, 20.0F);
-                food.addStats(18, 0.0F);
+                food.addStats(8, 0.0F);
             }
         }
     }
