@@ -376,8 +376,9 @@ public class InfiD
             FoodStats food = player.getFoodStats();
             if (food != null)
             {
-                food.addStats(17 - food.getFoodLevel(), 0.0F);
-                food.addStats(1, 20.0F);
+                food.addStats(-food.getFoodLevel(), 0.0F);
+                food.addStats(10, 20.0F);
+                food.addStats(18, 0.0F);
             }
 
             renderFoodBar.compareAndSet(true, false);
@@ -398,8 +399,9 @@ public class InfiD
             FoodStats food = player.getFoodStats();
             if (food != null)
             {
-                food.addStats(17 - food.getFoodLevel(), 0.0F);
-                food.addStats(1, 20.0F);
+                food.addStats(-food.getFoodLevel(), 0.0F);
+                food.addStats(10, 20.0F);
+                food.addStats(18, 0.0F);
             }
         }
     }
