@@ -7,10 +7,14 @@ import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -20,6 +24,30 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class InfiD
 {
+
+    class BonusDamage extends EntityDamageSource
+    {
+
+        public BonusDamage(Entity source)
+        {
+            super("generic", source);
+            setDamageBypassesArmor();
+            setMagicDamage();
+        }
+
+        @Override
+        public IChatComponent func_151519_b(EntityLivingBase entity)
+        {
+            return new ChatComponentTranslation("death.attack.indirectMagic", entity.func_145748_c_(), damageSourceEntity.func_145748_c_());
+        }
+
+        @Override
+        public boolean isDifficultyScaled()
+        {
+            return false;
+        }
+
+    }
 
     public static void load()
     {
@@ -69,15 +97,17 @@ public class InfiD
     @SubscribeEvent
     public void handleEvent(LivingHurtEvent event)
     {
-        Entity attacker = event.source.getSourceOfDamage();
+        Entity attacker = event.source.getEntity();
+        String type = event.source.getDamageType();
         if (attacker instanceof EntityPlayerMP)
         {
             if (Note.getNote((EntityPlayerMP) attacker).get("InfiD") != null)
             {
-                if (event.entity != attacker && "thorns".equalsIgnoreCase(event.source.getDamageType()))
+                if (event.entity != attacker && !(event.source instanceof BonusDamage))
                 {
                     int t = event.entity.hurtResistantTime;
-                    event.entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(attacker, null), event.ammount * 0.5F);
+                    event.entity.hurtResistantTime = 0;
+                    event.entity.attackEntityFrom(new BonusDamage(attacker), event.ammount * 0.5F);
                     event.entity.hurtResistantTime = t;
                 }
             }
