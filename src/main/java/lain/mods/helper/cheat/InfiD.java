@@ -7,14 +7,10 @@ import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.FoodStats;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -24,30 +20,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class InfiD
 {
-
-    class BonusDamage extends EntityDamageSource
-    {
-
-        public BonusDamage(Entity source)
-        {
-            super("generic", source);
-            setDamageBypassesArmor();
-            setMagicDamage();
-        }
-
-        @Override
-        public IChatComponent func_151519_b(EntityLivingBase entity)
-        {
-            return new ChatComponentTranslation("death.attack.indirectMagic", entity.func_145748_c_(), damageSourceEntity.func_145748_c_());
-        }
-
-        @Override
-        public boolean isDifficultyScaled()
-        {
-            return false;
-        }
-
-    }
 
     public static void load()
     {
@@ -98,13 +70,19 @@ public class InfiD
     public void handleEvent(LivingHurtEvent event)
     {
         Entity attacker = event.source.getEntity();
-        String type = event.source.getDamageType();
         if (attacker instanceof EntityPlayerMP)
         {
             if (Note.getNote((EntityPlayerMP) attacker).get("InfiD") != null)
             {
-                if (event.entity != attacker && !(event.source instanceof BonusDamage))
-                    event.entity.attackEntityFrom(new BonusDamage(attacker), event.ammount * 0.5F);
+                if (event.entityLiving != attacker)
+                {
+                    float health = event.entityLiving.getHealth();
+                    if (health > 1.0F)
+                    {
+                        health = Math.max(1.0F, health - (event.ammount * 0.5F));
+                        event.entityLiving.setHealth(health);
+                    }
+                }
             }
         }
         if (event.entityLiving instanceof EntityPlayerMP)
@@ -112,7 +90,7 @@ public class InfiD
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
                 if (attacker != null && event.entity != attacker)
-                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 2.0F);
+                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 4.0F);
                 if (!event.source.isDamageAbsolute())
                 {
                     if (event.ammount > 0)
