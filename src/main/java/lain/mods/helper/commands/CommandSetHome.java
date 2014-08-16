@@ -35,7 +35,7 @@ public class CommandSetHome extends GeneralHelperCommand
         if (par1 instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) par1;
-            PositionData pos = new PositionData(player).align();
+            PositionData pos = new PositionData(player)/* .align() */;
             if (!Options.overworldHomeOnly || pos.dimension == 0)
             {
                 PlayerData.get(player).setHomePosition(pos);

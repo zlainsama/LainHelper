@@ -379,7 +379,9 @@ public class InfiD
             {
                 if (attacker != null && event.entity != attacker)
                     attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 4.0F);
-                if (event.ammount > 0)
+                if (event.source == DamageSource.outOfWorld && event.entityLiving.posY < -512.0F)
+                    ;
+                else if (event.ammount > 0)
                     event.ammount *= 0.1F;
             }
         }
