@@ -10,6 +10,7 @@ import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
+import mekanism.api.energy.IEnergizedItem;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
@@ -306,6 +307,27 @@ public class InfiD
                                     else
                                         break;
                                 }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IEnergizedItem.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IEnergizedItem)
+                            {
+                                IEnergizedItem iei = (IEnergizedItem) item.getItem();
+                                if (iei.canReceive(item))
+                                    iei.setEnergy(item, iei.getMaxEnergy(item));
                             }
                         }
                     });
