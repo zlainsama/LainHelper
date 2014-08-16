@@ -104,12 +104,7 @@ public class InfiD
             if (Note.getNote((EntityPlayerMP) attacker).get("InfiD") != null)
             {
                 if (event.entity != attacker && !(event.source instanceof BonusDamage))
-                {
-                    int t = event.entity.hurtResistantTime;
-                    event.entity.hurtResistantTime = 0;
                     event.entity.attackEntityFrom(new BonusDamage(attacker), event.ammount * 0.5F);
-                    event.entity.hurtResistantTime = t;
-                }
             }
         }
         if (event.entityLiving instanceof EntityPlayerMP)
@@ -117,12 +112,7 @@ public class InfiD
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
                 if (attacker != null && event.entity != attacker)
-                {
-                    int t = attacker.hurtResistantTime;
-                    attacker.hurtResistantTime = 0;
                     attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 2.0F);
-                    attacker.hurtResistantTime = t;
-                }
                 if (!event.source.isDamageAbsolute())
                 {
                     if (event.ammount > 0)
