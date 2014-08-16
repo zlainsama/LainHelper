@@ -6,8 +6,10 @@ import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -67,24 +69,34 @@ public class InfiD
     @SubscribeEvent
     public void handleEvent(LivingHurtEvent event)
     {
-        if (event.source.getSourceOfDamage() instanceof EntityPlayerMP)
+        Entity attacker = event.source.getSourceOfDamage();
+        if (attacker instanceof EntityPlayerMP)
         {
-            if (Note.getNote((EntityPlayerMP) event.source.getSourceOfDamage()).get("InfiD") != null)
+            if (Note.getNote((EntityPlayerMP) attacker).get("InfiD") != null)
             {
-                if (event.entity != event.source.getSourceOfDamage())
-                    event.ammount *= 4.0F;
+                if (event.entity != attacker && "thorns".equalsIgnoreCase(event.source.getDamageType()))
+                {
+                    int t = event.entity.hurtResistantTime;
+                    event.entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(attacker, null), event.ammount * 0.5F);
+                    event.entity.hurtResistantTime = t;
+                }
             }
         }
         if (event.entityLiving instanceof EntityPlayerMP)
         {
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
+                if (attacker != null && event.entity != attacker)
+                {
+                    int t = attacker.hurtResistantTime;
+                    attacker.hurtResistantTime = 0;
+                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 2.0F);
+                    attacker.hurtResistantTime = t;
+                }
                 if (!event.source.isDamageAbsolute())
                 {
-                    if (event.source.canHarmInCreative())
-                        event.ammount *= 0.50F;
-                    else
-                        event.ammount *= 0.05F;
+                    if (event.ammount > 0)
+                        event.ammount *= 0.1F;
                 }
             }
         }
