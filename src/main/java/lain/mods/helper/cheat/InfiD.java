@@ -17,7 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -27,7 +26,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -138,27 +136,6 @@ public class InfiD
                                 InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
                                 for (int i = 0; i < inv.extraItems.length; i++)
                                     iD.runProc(inv.extraItems[i]);
-                            }
-                        }
-                    });
-            }
-        }.runSafe();
-        new SafeProcess()
-        {
-            @Override
-            public void run()
-            {
-                if (BaublesApi.class != null)
-                    ref.get().addProbe(new Probe()
-                    {
-                        @Override
-                        public void visit(EntityPlayer player, InfiD iD)
-                        {
-                            IInventory inv = BaublesApi.getBaubles(player);
-                            if (inv != null)
-                            {
-                                for (int i = 0; i < inv.getSizeInventory(); i++)
-                                    iD.runProc(inv.getStackInSlot(i));
                             }
                         }
                     });
@@ -367,7 +344,7 @@ public class InfiD
                     float health = event.entityLiving.getHealth();
                     if (health > 1.0F)
                     {
-                        health = Math.max(1.0F, health - event.ammount);
+                        health = Math.max(1.0F, health - (event.ammount * 0.5F));
                         event.entityLiving.setHealth(health);
                     }
                 }
@@ -378,7 +355,7 @@ public class InfiD
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
                 if (attacker != null && event.entity != attacker)
-                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 4.0F);
+                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), Math.max(4.0F, event.ammount * 0.5F));
                 if (event.source == DamageSource.outOfWorld && event.entityLiving.posY < -512.0F)
                     ;
                 else if (event.ammount > 0)
