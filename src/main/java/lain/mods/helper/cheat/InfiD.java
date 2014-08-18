@@ -7,12 +7,15 @@ import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -74,6 +77,41 @@ public class InfiD
         {
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
+                if (immuneList.contains(event.source.getDamageType()))
+                    event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void handleEvent(LivingHurtEvent event)
+    {
+        Entity attacker = event.source.getEntity();
+        if (attacker instanceof EntityPlayerMP)
+        {
+            if (Note.getNote((EntityPlayerMP) attacker).get("InfiD") != null)
+            {
+                if (event.entityLiving != attacker)
+                {
+                    float health = event.entityLiving.getHealth();
+                    if (health > 1.0F)
+                    {
+                        health = Math.max(1.0F, health - (event.ammount * 0.5F));
+                        event.entityLiving.setHealth(health);
+                    }
+                }
+            }
+        }
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
+            {
+                if (attacker != null && event.entity != attacker)
+                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), Math.max(4.0F, event.ammount * 0.5F));
+                if (event.source == DamageSource.outOfWorld && event.entityLiving.posY < -512.0F)
+                    ;
+                else if (event.ammount > 0)
+                    event.ammount *= 0.1F;
                 if (immuneList.contains(event.source.getDamageType()))
                     event.setCanceled(true);
             }
