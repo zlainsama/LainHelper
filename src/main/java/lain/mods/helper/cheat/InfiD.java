@@ -64,7 +64,7 @@ public class InfiD
     }
 
     AtomicBoolean skipRender = new AtomicBoolean(true);
-    Set<String> immuneList = ImmutableSet.of("inFire", "onFire", "fireball", "lava", "drown", "starve", "thorns", "electricity", "radiation", "oxygenSuffocation", "thermal");
+    Set<String> immuneList = ImmutableSet.of("drown", "starve", "fall", "thorns", "electricity", "radiation", "oxygenSuffocation", "thermal");
 
     private InfiD()
     {
@@ -77,7 +77,7 @@ public class InfiD
         {
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
-                if (immuneList.contains(event.source.getDamageType()))
+                if (event.source.isFireDamage() || immuneList.contains(event.source.getDamageType()))
                     event.setCanceled(true);
             }
         }
