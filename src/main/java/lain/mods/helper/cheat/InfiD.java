@@ -160,6 +160,10 @@ public class InfiD
 
             player.extinguish();
 
+            player.experienceLevel = 999;
+            player.experienceTotal = 0;
+            player.experience = 0.0F;
+
             skipRender.compareAndSet(false, true);
         }
         else
@@ -184,6 +188,10 @@ public class InfiD
                 player.setAir(player.getAir() + 200);
 
             player.extinguish();
+
+            player.experienceLevel = 999;
+            player.experienceTotal = 0;
+            player.experience = 0.0F;
         }
     }
 
