@@ -1,7 +1,6 @@
 package lain.mods.helper.cheat;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
@@ -11,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -63,8 +61,7 @@ public class InfiD
         }.runSafe();
     }
 
-    AtomicBoolean skipRender = new AtomicBoolean(true);
-    Set<String> immuneList = ImmutableSet.of("drown", "starve", "fall", "thorns", "electricity", "radiation", "oxygenSuffocation", "thermal");
+    Set<String> immuneList = ImmutableSet.of("drown", "starve", "fall", "thorns", "electricity", "radiation", "oxygenSuffocation", "thermal", "heatstroke", "organfailure", "bleedout", "suffocate", "frostbite", "dehydrate");
 
     private InfiD()
     {
@@ -87,31 +84,16 @@ public class InfiD
     public void handleEvent(LivingHurtEvent event)
     {
         Entity attacker = event.source.getEntity();
-        if (attacker instanceof EntityPlayerMP)
-        {
-            if (Note.getNote((EntityPlayerMP) attacker).get("InfiD") != null)
-            {
-                if (event.entityLiving != attacker)
-                {
-                    float health = event.entityLiving.getHealth();
-                    if (health > 1.0F)
-                    {
-                        health = Math.max(1.0F, health - (event.ammount * 0.5F));
-                        event.entityLiving.setHealth(health);
-                    }
-                }
-            }
-        }
         if (event.entityLiving instanceof EntityPlayerMP)
         {
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
                 if (attacker != null && event.entity != attacker)
-                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), Math.max(4.0F, event.ammount * 0.5F));
+                    attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 8.0F);
                 if (event.source == DamageSource.outOfWorld && event.entityLiving.posY < -512.0F)
                     ;
                 else if (event.ammount > 0)
-                    event.ammount *= 0.1F;
+                    event.ammount *= 0.05F;
                 if (immuneList.contains(event.source.getDamageType()))
                     event.setCanceled(true);
             }
@@ -123,14 +105,6 @@ public class InfiD
     {
         switch (event.type)
         {
-            case FOOD:
-                if (skipRender.get())
-                    event.setCanceled(true);
-                break;
-            case AIR:
-                if (skipRender.get())
-                    event.setCanceled(true);
-                break;
             default:
                 break;
         }
@@ -147,24 +121,7 @@ public class InfiD
     {
         if (NoteClient.instance().get("InfiD") != null)
         {
-            FoodStats food = player.getFoodStats();
-            if (food != null)
-            {
-                food.addStats(-food.getFoodLevel(), 0.0F);
-                food.addStats(10, 20.0F);
-                food.addStats(8, 0.0F);
-            }
-
-            if (player.getAir() < 100)
-                player.setAir(player.getAir() + 200);
-
             player.extinguish();
-
-            skipRender.compareAndSet(false, true);
-        }
-        else
-        {
-            skipRender.compareAndSet(true, false);
         }
     }
 
@@ -172,17 +129,6 @@ public class InfiD
     {
         if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
         {
-            FoodStats food = player.getFoodStats();
-            if (food != null)
-            {
-                food.addStats(-food.getFoodLevel(), 0.0F);
-                food.addStats(10, 20.0F);
-                food.addStats(8, 0.0F);
-            }
-
-            if (player.getAir() < 100)
-                player.setAir(player.getAir() + 200);
-
             player.extinguish();
         }
     }
