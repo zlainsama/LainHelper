@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -117,6 +118,33 @@ public class InfiD
                         {
                             if (item.getItemDamage() > 1)
                                 item.setItemDamage(1);
+                        }
+                    }
+                });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                ref.get().addProc(new Proc()
+                {
+                    @Override
+                    public void doProc(ItemStack item)
+                    {
+                        if (item.hasTagCompound() && item.getTagCompound().hasKey("InfiTool"))
+                        {
+                            NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
+                            if (!data.hasKey("Energy"))
+                            {
+                                if (data.getBoolean("Broken"))
+                                    data.setBoolean("Broken", false);
+                                if (data.getInteger("Damage") > 0)
+                                    data.setInteger("Damage", 0);
+                                if (item.getItemDamage() > 0) // visual
+                                    item.setItemDamage(0);
+                            }
                         }
                     }
                 });
