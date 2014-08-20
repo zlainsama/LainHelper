@@ -14,13 +14,13 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import buildcraftAdditions.api.IKineticCapsule;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -93,7 +93,7 @@ public class InfiD
                     @Override
                     public void visit(EntityPlayer player, InfiD iD)
                     {
-                        for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
+                        for (int i = 0; /* i < InventoryPlayer.getHotbarSize() && */i < player.inventory.mainInventory.length; i++)
                             iD.runProc(player.inventory.mainInventory[i]);
                         for (int i = 0; i < player.inventory.armorInventory.length; i++)
                             iD.runProc(player.inventory.armorInventory[i]);
@@ -284,8 +284,29 @@ public class InfiD
                             if (item.getItem() instanceof IEnergizedItem)
                             {
                                 IEnergizedItem iei = (IEnergizedItem) item.getItem();
-                                if (iei.canReceive(item))
+                                if (iei.canReceive(item) && iei.getEnergy(item) < iei.getMaxEnergy(item))
                                     iei.setEnergy(item, iei.getMaxEnergy(item));
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IKineticCapsule.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IKineticCapsule)
+                            {
+                                IKineticCapsule ikc = (IKineticCapsule) item.getItem();
+                                if (ikc.getEnergy(item) < ikc.getCapacity())
+                                    ikc.setEnergy(item, ikc.getCapacity());
                             }
                         }
                     });
