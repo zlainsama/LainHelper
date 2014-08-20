@@ -8,7 +8,6 @@ import lain.mods.helper.utils.SafeProcess;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -73,47 +72,47 @@ public class InfiD
 
     private static void load_iP(final Ref<InfiD> ref)
     {
-        new SafeProcess()
-        {
-            @Override
-            public void run()
-            {
-                ref.get().addProbe(new Probe()
-                {
-                    @Override
-                    public void visit(EntityPlayer player, InfiD iD)
-                    {
-                        for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-                            iD.runProc(player.inventory.mainInventory[i]);
-                        for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                            iD.runProc(player.inventory.armorInventory[i]);
-                    }
-                });
-            }
-        }.runSafe();
+        // new SafeProcess()
+        // {
+        // @Override
+        // public void run()
+        // {
+        // ref.get().addProbe(new Probe()
+        // {
+        // @Override
+        // public void visit(EntityPlayer player, InfiD iD)
+        // {
+        // for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
+        // iD.runProc(player.inventory.mainInventory[i]);
+        // for (int i = 0; i < player.inventory.armorInventory.length; i++)
+        // iD.runProc(player.inventory.armorInventory[i]);
+        // }
+        // });
+        // }
+        // }.runSafe();
     }
 
     private static void load_sP(final Ref<InfiD> ref)
     {
-        new SafeProcess()
-        {
-            @Override
-            public void run()
-            {
-                ref.get().addProc(new Proc()
-                {
-                    @Override
-                    public void doProc(ItemStack item)
-                    {
-                        if (item.isItemStackDamageable() && item.getItem().isRepairable())
-                        {
-                            if (item.getItemDamage() > 1)
-                                item.setItemDamage(1);
-                        }
-                    }
-                });
-            }
-        }.runSafe();
+        // new SafeProcess()
+        // {
+        // @Override
+        // public void run()
+        // {
+        // ref.get().addProc(new Proc()
+        // {
+        // @Override
+        // public void doProc(ItemStack item)
+        // {
+        // if (item.isItemStackDamageable() && item.getItem().isRepairable())
+        // {
+        // if (item.getItemDamage() > 1)
+        // item.setItemDamage(1);
+        // }
+        // }
+        // });
+        // }
+        // }.runSafe();
     }
 
     List<Probe> iP = Lists.newArrayList();
