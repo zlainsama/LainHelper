@@ -1,10 +1,16 @@
 package lain.mods.helper.cheat;
 
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IBackupElectricItemManager;
+import ic2.api.item.IElectricItem;
+import ic2.api.item.IElectricItemManager;
 import java.util.List;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
 import lain.mods.helper.utils.SafeProcess;
+import mekanism.api.energy.IEnergizedItem;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import universalelectricity.api.item.IEnergyItem;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -93,6 +101,27 @@ public class InfiD
                 });
             }
         }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (InventoryPlayerBattle.class != null)
+                    ref.get().addProbe(new Probe()
+                    {
+                        @Override
+                        public void visit(EntityPlayer player, InfiD iD)
+                        {
+                            if (player.inventory instanceof InventoryPlayerBattle)
+                            {
+                                InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
+                                for (int i = 0; i < inv.extraItems.length; i++)
+                                    iD.runProc(inv.extraItems[i]);
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
     }
 
     private static void load_sP(final Ref<InfiD> ref)
@@ -109,8 +138,8 @@ public class InfiD
                     {
                         if (item.isItemStackDamageable() && item.getItem().isRepairable())
                         {
-                            if (item.getItemDamage() > 1)
-                                item.setItemDamage(1);
+                            if (item.getItemDamage() > 0)
+                                item.setItemDamage(0);
                         }
                     }
                 });
@@ -148,6 +177,23 @@ public class InfiD
             @Override
             public void run()
             {
+                if (ElectricItem.class != null && IElectricItemManager.class != null && IBackupElectricItemManager.class != null && IElectricItem.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (ElectricItem.manager != null && item.getItem() instanceof IElectricItem)
+                                ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), true, false);
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
                 if (IEnergyContainerItem.class != null)
                     ref.get().addProc(new Proc()
                     {
@@ -165,6 +211,81 @@ public class InfiD
                                     else
                                         break;
                                 }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IEnergyItem.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IEnergyItem)
+                            {
+                                double n = Double.MAX_VALUE;
+                                while (n > 0)
+                                {
+                                    double a = ((IEnergyItem) item.getItem()).recharge(item, n, true);
+                                    if (a > 0)
+                                        n -= a;
+                                    else
+                                        break;
+                                }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IAEItemPowerStorage.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IAEItemPowerStorage)
+                            {
+                                double n = Double.MAX_VALUE;
+                                while (n > 0)
+                                {
+                                    double a = n - ((IAEItemPowerStorage) item.getItem()).injectAEPower(item, n);
+                                    if (a > 0)
+                                        n -= a;
+                                    else
+                                        break;
+                                }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IEnergizedItem.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IEnergizedItem)
+                            {
+                                IEnergizedItem iei = (IEnergizedItem) item.getItem();
+                                if (iei.canReceive(item))
+                                    iei.setEnergy(item, iei.getMaxEnergy(item));
                             }
                         }
                     });
