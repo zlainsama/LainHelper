@@ -26,6 +26,11 @@ minecraft {
     assetDir = "eclipse/assets"
 }
 
+jar
+{
+    exclude('cofh/**/**')
+}
+
 processResources
 {
     inputs.property "version", project.version

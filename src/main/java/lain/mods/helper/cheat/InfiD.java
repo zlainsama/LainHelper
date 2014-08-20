@@ -8,9 +8,12 @@ import lain.mods.helper.utils.SafeProcess;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -72,47 +75,101 @@ public class InfiD
 
     private static void load_iP(final Ref<InfiD> ref)
     {
-        // new SafeProcess()
-        // {
-        // @Override
-        // public void run()
-        // {
-        // ref.get().addProbe(new Probe()
-        // {
-        // @Override
-        // public void visit(EntityPlayer player, InfiD iD)
-        // {
-        // for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
-        // iD.runProc(player.inventory.mainInventory[i]);
-        // for (int i = 0; i < player.inventory.armorInventory.length; i++)
-        // iD.runProc(player.inventory.armorInventory[i]);
-        // }
-        // });
-        // }
-        // }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                ref.get().addProbe(new Probe()
+                {
+                    @Override
+                    public void visit(EntityPlayer player, InfiD iD)
+                    {
+                        for (int i = 0; i < InventoryPlayer.getHotbarSize() && i < player.inventory.mainInventory.length; i++)
+                            iD.runProc(player.inventory.mainInventory[i]);
+                        for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                            iD.runProc(player.inventory.armorInventory[i]);
+                    }
+                });
+            }
+        }.runSafe();
     }
 
     private static void load_sP(final Ref<InfiD> ref)
     {
-        // new SafeProcess()
-        // {
-        // @Override
-        // public void run()
-        // {
-        // ref.get().addProc(new Proc()
-        // {
-        // @Override
-        // public void doProc(ItemStack item)
-        // {
-        // if (item.isItemStackDamageable() && item.getItem().isRepairable())
-        // {
-        // if (item.getItemDamage() > 1)
-        // item.setItemDamage(1);
-        // }
-        // }
-        // });
-        // }
-        // }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                ref.get().addProc(new Proc()
+                {
+                    @Override
+                    public void doProc(ItemStack item)
+                    {
+                        if (item.isItemStackDamageable() && item.getItem().isRepairable())
+                        {
+                            if (item.getItemDamage() > 1)
+                                item.setItemDamage(1);
+                        }
+                    }
+                });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                ref.get().addProc(new Proc()
+                {
+                    @Override
+                    public void doProc(ItemStack item)
+                    {
+                        if (item.hasTagCompound() && item.getTagCompound().hasKey("InfiTool"))
+                        {
+                            NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
+                            if (!data.hasKey("Energy"))
+                            {
+                                if (data.getBoolean("Broken"))
+                                    data.setBoolean("Broken", false);
+                                if (data.getInteger("Damage") > 0)
+                                    data.setInteger("Damage", 0);
+                                if (item.getItemDamage() > 0) // visual
+                                    item.setItemDamage(0);
+                            }
+                        }
+                    }
+                });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (IEnergyContainerItem.class != null)
+                    ref.get().addProc(new Proc()
+                    {
+                        @Override
+                        public void doProc(ItemStack item)
+                        {
+                            if (item.getItem() instanceof IEnergyContainerItem)
+                            {
+                                int n = Integer.MAX_VALUE;
+                                while (n > 0)
+                                {
+                                    int a = ((IEnergyContainerItem) item.getItem()).receiveEnergy(item, n, false);
+                                    if (a > 0)
+                                        n -= a;
+                                    else
+                                        break;
+                                }
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
     }
 
     List<Probe> iP = Lists.newArrayList();
