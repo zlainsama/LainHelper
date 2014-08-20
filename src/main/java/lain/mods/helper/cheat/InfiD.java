@@ -1,7 +1,6 @@
 package lain.mods.helper.cheat;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import lain.mods.helper.utils.Ref;
@@ -11,9 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.FoodStats;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.Lists;
@@ -118,39 +114,10 @@ public class InfiD
                 });
             }
         }.runSafe();
-        new SafeProcess()
-        {
-            @Override
-            public void run()
-            {
-                ref.get().addProc(new Proc()
-                {
-                    @Override
-                    public void doProc(ItemStack item)
-                    {
-                        if (item.hasTagCompound() && item.getTagCompound().hasKey("InfiTool"))
-                        {
-                            NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
-                            if (!data.hasKey("Energy"))
-                            {
-                                if (data.getBoolean("Broken"))
-                                    data.setBoolean("Broken", false);
-                                if (data.getInteger("Damage") > 0)
-                                    data.setInteger("Damage", 0);
-                                if (item.getItemDamage() > 0) // visual
-                                    item.setItemDamage(0);
-                            }
-                        }
-                    }
-                });
-            }
-        }.runSafe();
     }
 
     List<Probe> iP = Lists.newArrayList();
     List<Proc> sP = Lists.newArrayList();
-
-    AtomicBoolean skipRender = new AtomicBoolean(false);
 
     private InfiD()
     {
@@ -180,24 +147,6 @@ public class InfiD
     }
 
     @SubscribeEvent
-    public void handleEvent(RenderGameOverlayEvent.Pre event)
-    {
-        switch (event.type)
-        {
-            case FOOD:
-                if (skipRender.get())
-                    event.setCanceled(true);
-                break;
-            case AIR:
-                if (skipRender.get())
-                    event.setCanceled(true);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @SubscribeEvent
     public void handleEvent(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
@@ -210,25 +159,6 @@ public class InfiD
         {
             for (Probe p : iP)
                 p.visit(player, this);
-
-            FoodStats food = player.getFoodStats();
-            if (food != null)
-            {
-                food.addStats(-food.getFoodLevel(), 0.0F);
-                food.addStats(10, 20.0F);
-                food.addStats(8, 0.0F);
-            }
-
-            if (player.getAir() < 100)
-                player.setAir(player.getAir() + 200);
-
-            player.extinguish();
-
-            skipRender.compareAndSet(false, true);
-        }
-        else
-        {
-            skipRender.compareAndSet(true, false);
         }
     }
 
@@ -238,19 +168,6 @@ public class InfiD
         {
             for (Probe p : iP)
                 p.visit(player, this);
-
-            FoodStats food = player.getFoodStats();
-            if (food != null)
-            {
-                food.addStats(-food.getFoodLevel(), 0.0F);
-                food.addStats(10, 20.0F);
-                food.addStats(8, 0.0F);
-            }
-
-            if (player.getAir() < 100)
-                player.setAir(player.getAir() + 200);
-
-            player.extinguish();
         }
     }
 
