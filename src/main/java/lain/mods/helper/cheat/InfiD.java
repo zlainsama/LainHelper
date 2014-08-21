@@ -12,10 +12,12 @@ import lain.mods.helper.utils.SafeProcess;
 import mekanism.api.energy.IEnergizedItem;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
@@ -334,12 +336,17 @@ public class InfiD
     @SubscribeEvent
     public void handleEvent(LivingHurtEvent event)
     {
+        Entity attacker = event.source.getEntity();
         if (event.entityLiving instanceof EntityPlayerMP)
         {
             if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
             {
                 if (event.ammount > 0)
-                    event.ammount *= 0.5F;
+                {
+                    if (attacker != null && event.entityLiving != attacker)
+                        attacker.attackEntityFrom(DamageSource.causeThornsDamage(event.entity), 4.0F);
+                    event.ammount *= 0.2F;
+                }
             }
         }
     }
