@@ -14,14 +14,12 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import baubles.api.BaublesApi;
 import buildcraftAdditions.api.IKineticCapsule;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
@@ -119,27 +117,6 @@ public class InfiD
                                 InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
                                 for (int i = 0; i < inv.extraItems.length; i++)
                                     iD.runProc(inv.extraItems[i]);
-                            }
-                        }
-                    });
-            }
-        }.runSafe();
-        new SafeProcess()
-        {
-            @Override
-            public void run()
-            {
-                if (isClassAccessible(BaublesApi.class) && isClassAccessible("baubles.common.lib.PlayerHandler"))
-                    ref.get().addProbe(new Probe()
-                    {
-                        @Override
-                        public void visit(EntityPlayer player, InfiD iD)
-                        {
-                            IInventory inv = BaublesApi.getBaubles(player);
-                            if (inv != null)
-                            {
-                                for (int i = 0; i < inv.getSizeInventory(); i++)
-                                    iD.runProc(inv.getStackInSlot(i));
                             }
                         }
                     });
