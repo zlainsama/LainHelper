@@ -52,4 +52,3 @@ public interface IElectricItem {
 	 */
 	double getTransferLimit(ItemStack itemStack);
 }
-

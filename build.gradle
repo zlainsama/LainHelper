@@ -29,6 +29,7 @@ minecraft {
 jar
 {
     exclude('mods/battlegear2/**/**')
+    exclude('baubles/**/**')
     
     exclude('ic2/**/**')
     exclude('cofh/**/**')

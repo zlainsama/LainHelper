@@ -14,12 +14,14 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import baubles.api.BaublesApi;
 import buildcraftAdditions.api.IKineticCapsule;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.Lists;
@@ -66,7 +68,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (EntityClientPlayerMP.class != null)
+                if (isClassAccessible(EntityClientPlayerMP.class))
                     ref.set(new InfiD()
                     {
                         @Override
@@ -106,7 +108,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (InventoryPlayerBattle.class != null)
+                if (isClassAccessible(InventoryPlayerBattle.class))
                     ref.get().addProbe(new Probe()
                     {
                         @Override
@@ -117,6 +119,27 @@ public class InfiD
                                 InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
                                 for (int i = 0; i < inv.extraItems.length; i++)
                                     iD.runProc(inv.extraItems[i]);
+                            }
+                        }
+                    });
+            }
+        }.runSafe();
+        new SafeProcess()
+        {
+            @Override
+            public void run()
+            {
+                if (isClassAccessible(BaublesApi.class) && isClassAccessible("baubles.common.lib.PlayerHandler"))
+                    ref.get().addProbe(new Probe()
+                    {
+                        @Override
+                        public void visit(EntityPlayer player, InfiD iD)
+                        {
+                            IInventory inv = BaublesApi.getBaubles(player);
+                            if (inv != null)
+                            {
+                                for (int i = 0; i < inv.getSizeInventory(); i++)
+                                    iD.runProc(inv.getStackInSlot(i));
                             }
                         }
                     });
@@ -177,7 +200,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (ElectricItem.class != null && IElectricItemManager.class != null && IBackupElectricItemManager.class != null && IElectricItem.class != null)
+                if (isClassAccessible(ElectricItem.class) && isClassAccessible(IElectricItemManager.class) && isClassAccessible(IBackupElectricItemManager.class) && isClassAccessible(IElectricItem.class))
                     ref.get().addProc(new Proc()
                     {
                         @Override
@@ -194,7 +217,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (IEnergyContainerItem.class != null)
+                if (isClassAccessible(IEnergyContainerItem.class))
                     ref.get().addProc(new Proc()
                     {
                         @Override
@@ -221,7 +244,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (IEnergyItem.class != null)
+                if (isClassAccessible(IEnergyItem.class))
                     ref.get().addProc(new Proc()
                     {
                         @Override
@@ -248,7 +271,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (IAEItemPowerStorage.class != null)
+                if (isClassAccessible(IAEItemPowerStorage.class))
                     ref.get().addProc(new Proc()
                     {
                         @Override
@@ -275,7 +298,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (IEnergizedItem.class != null)
+                if (isClassAccessible(IEnergizedItem.class))
                     ref.get().addProc(new Proc()
                     {
                         @Override
@@ -296,7 +319,7 @@ public class InfiD
             @Override
             public void run()
             {
-                if (IKineticCapsule.class != null)
+                if (isClassAccessible(IKineticCapsule.class))
                     ref.get().addProc(new Proc()
                     {
                         @Override

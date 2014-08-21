@@ -56,4 +56,3 @@ public final class ElectricItem {
 
 	private static final List<IBackupElectricItemManager> backupManagers = new ArrayList<IBackupElectricItemManager>();
 }
-
