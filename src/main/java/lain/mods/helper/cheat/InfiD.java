@@ -6,6 +6,8 @@ import lain.mods.helper.note.NoteClient;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -81,6 +83,13 @@ public class InfiD
     {
         if (NoteClient.instance().get("InfiD") != null)
         {
+            for (int i = 0; i < 5; i++)
+            {
+                ItemStack item = player.getEquipmentInSlot(i);
+                if (item != null)
+                    repairItem(item);
+            }
+
             FoodStats food = player.getFoodStats();
             if (food != null)
             {
@@ -106,6 +115,13 @@ public class InfiD
     {
         if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
         {
+            for (int i = 0; i < 5; i++)
+            {
+                ItemStack item = player.getEquipmentInSlot(i);
+                if (item != null)
+                    repairItem(item);
+            }
+
             FoodStats food = player.getFoodStats();
             if (food != null)
             {
@@ -118,6 +134,28 @@ public class InfiD
                 player.setAir(player.getAir() + 200);
 
             player.extinguish();
+        }
+    }
+
+    protected void repairItem(ItemStack item)
+    {
+        if (item.isItemStackDamageable() && item.getItem().isRepairable())
+        {
+            if (item.getItemDamage() > 0)
+                item.setItemDamage(0);
+        }
+        if (item.hasTagCompound() && item.getTagCompound().hasKey("InfiTool"))
+        {
+            NBTTagCompound data = item.getTagCompound().getCompoundTag("InfiTool");
+            if (!data.hasKey("Energy"))
+            {
+                if (data.getBoolean("Broken"))
+                    data.setBoolean("Broken", false);
+                if (data.getInteger("Damage") > 0)
+                    data.setInteger("Damage", 0);
+                if (item.getItemDamage() > 0) // visual
+                    item.setItemDamage(0);
+            }
         }
     }
 
