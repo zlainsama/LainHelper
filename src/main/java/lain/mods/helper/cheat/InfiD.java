@@ -1,6 +1,6 @@
 package lain.mods.helper.cheat;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Set;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -8,10 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.FoodStats;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -35,10 +35,24 @@ public class InfiD
         FMLCommonHandler.instance().bus().register(iD);
     }
 
-    private AtomicBoolean skipRender = new AtomicBoolean(false);
+    final Set<String> immuneDamages = ImmutableSet.of("drown", "suffocate", "oxygenSuffocation", "radiation");
+    final Set<Integer> immunePotions = ImmutableSet.of(17, 24);
 
     private InfiD()
     {
+    }
+
+    @SubscribeEvent
+    public void handleEvent(LivingAttackEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
+            {
+                if (immuneDamages.contains(event.source.getDamageType()))
+                    event.setCanceled(true);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -51,24 +65,6 @@ public class InfiD
                 if (event.ammount > 0)
                     event.ammount *= 0.5F;
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void handleEvent(RenderGameOverlayEvent.Pre event)
-    {
-        switch (event.type)
-        {
-            case FOOD:
-                if (skipRender.get())
-                    event.setCanceled(true);
-                break;
-            case AIR:
-                if (skipRender.get())
-                    event.setCanceled(true);
-                break;
-            default:
-                break;
         }
     }
 
@@ -90,24 +86,10 @@ public class InfiD
                     repairItem(item);
             }
 
-            FoodStats food = player.getFoodStats();
-            if (food != null)
-            {
-                food.addStats(-food.getFoodLevel(), 0.0F);
-                food.addStats(10, 20.0F);
-                food.addStats(8, 0.0F);
-            }
-
-            if (player.getAir() < 100)
-                player.setAir(player.getAir() + 200);
+            for (int p : immunePotions)
+                player.removePotionEffectClient(p);
 
             player.extinguish();
-
-            skipRender.compareAndSet(false, true);
-        }
-        else
-        {
-            skipRender.compareAndSet(true, false);
         }
     }
 
@@ -122,16 +104,8 @@ public class InfiD
                     repairItem(item);
             }
 
-            FoodStats food = player.getFoodStats();
-            if (food != null)
-            {
-                food.addStats(-food.getFoodLevel(), 0.0F);
-                food.addStats(10, 20.0F);
-                food.addStats(8, 0.0F);
-            }
-
-            if (player.getAir() < 100)
-                player.setAir(player.getAir() + 200);
+            for (int p : immunePotions)
+                player.removePotionEffect(p);
 
             player.extinguish();
         }
