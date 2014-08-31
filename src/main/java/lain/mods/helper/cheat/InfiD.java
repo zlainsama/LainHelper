@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import cofh.api.energy.IEnergyContainerItem;
@@ -125,19 +124,6 @@ public class InfiD
     }
 
     @SubscribeEvent
-    public void handleEvent(LivingHurtEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayerMP)
-        {
-            if (Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
-            {
-                if (event.ammount > 0)
-                    event.ammount *= 0.2F;
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void handleEvent(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
@@ -154,9 +140,6 @@ public class InfiD
             for (int i = 0; i < player.inventory.mainInventory.length; i++)
                 if (player.inventory.mainInventory[i] != null)
                     chargeItem(player.inventory.mainInventory[i]);
-
-            if (player.fallDistance > 1.0F)
-                player.fallDistance = 1.0F;
         }
     }
 
@@ -170,9 +153,6 @@ public class InfiD
             for (int i = 0; i < player.inventory.mainInventory.length; i++)
                 if (player.inventory.mainInventory[i] != null)
                     chargeItem(player.inventory.mainInventory[i]);
-
-            if (player.fallDistance > 1.0F)
-                player.fallDistance = 1.0F;
         }
     }
 
