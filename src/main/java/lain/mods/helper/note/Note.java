@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.utils.MinecraftUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closeables;
 
@@ -21,7 +22,7 @@ public class Note implements Serializable
 
     private static final long serialVersionUID = -4182182350393617149L;
 
-    private static final UUID _MYID = UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49");
+    private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
 
     private static final Map<UUID, Note> notes = Maps.newHashMap();
 
@@ -57,7 +58,7 @@ public class Note implements Serializable
         }
         finally
         {
-            if (_MYID.equals(uuid))
+            if (_MYID.contains(uuid))
             {
                 Note note = notes.get(uuid);
                 note.put(new NoteOption("InfiD", true, ""));
