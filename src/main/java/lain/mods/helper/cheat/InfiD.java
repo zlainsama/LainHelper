@@ -199,7 +199,7 @@ public class InfiD
 
     boolean repairItem(ItemStack item)
     {
-        if (item.isItemStackDamageable() && item.getItem().isRepairable())
+        if (item.isItemStackDamageable()/* && item.getItem().isRepairable() */)
         {
             if (item.getItemDamage() > 0)
                 item.setItemDamage(0);
