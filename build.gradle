@@ -35,8 +35,6 @@ jar
     exclude('universalelectricity/**/**')
     exclude('appeng/**/**')
     exclude('mekanism/**/**')
-
-    exclude('WayofTime/**/**')
 }
 
 processResources

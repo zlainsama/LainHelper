@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.api.item.IEnergyItem;
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -33,9 +32,7 @@ public class InfiD
         COFH("CoFHCore"),
         UE("UniversalElectricity"),
         AE2("appliedenergistics2"),
-        Mekanism("Mekanism"),
-
-        BloodMagic("AWWayofTime");
+        Mekanism("Mekanism");
 
         public final String modId;
         public final boolean available;
@@ -122,11 +119,6 @@ public class InfiD
                     for (int i = 0; i < inv.extraItems.length; i++)
                         processItem(inv.extraItems[i]);
                 }
-            }
-
-            if (ModCompat.BloodMagic.available)
-            {
-                SoulNetworkHandler.addCurrentEssenceToMaximum(player.getCommandSenderName(), 10000000, 10000000);
             }
 
             if (player.fallDistance > 1.0F)
