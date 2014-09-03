@@ -28,11 +28,15 @@ minecraft {
 
 jar
 {
+    exclude('mods/battlegear2/**/**')
+
     exclude('ic2/**/**')
     exclude('cofh/**/**')
     exclude('universalelectricity/**/**')
     exclude('appeng/**/**')
     exclude('mekanism/**/**')
+
+    exclude('WayofTime/**/**')
 }
 
 processResources

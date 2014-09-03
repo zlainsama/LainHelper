@@ -5,12 +5,15 @@ import ic2.api.item.IElectricItem;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
 import mekanism.api.energy.IEnergizedItem;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.api.item.IEnergyItem;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -24,11 +27,15 @@ public class InfiD
     enum ModCompat
     {
 
+        BattleGear2("battlegear2"),
+
         IC2("IC2"),
         COFH("CoFHCore"),
         UE("UniversalElectricity"),
         AE2("appliedenergistics2"),
-        Mekanism("Mekanism");
+        Mekanism("Mekanism"),
+
+        BloodMagic("AWWayofTime");
 
         public final String modId;
         public final boolean available;
@@ -60,12 +67,82 @@ public class InfiD
     {
     }
 
-    void chargeItem(ItemStack item)
+    @SubscribeEvent
+    public void handleEvent(TickEvent.PlayerTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.END)
+            tickPlayer(event.player);
+    }
+
+    void processClient(EntityPlayer player)
+    {
+        if (NoteClient.instance().get("InfiD") != null)
+        {
+            for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                if (player.inventory.armorInventory[i] != null)
+                    processItem(player.inventory.armorInventory[i]);
+            for (int i = 0; i < player.inventory.mainInventory.length; i++)
+                if (player.inventory.mainInventory[i] != null)
+                    processItem(player.inventory.mainInventory[i]);
+            if (ModCompat.BattleGear2.available)
+            {
+                if (player.inventory instanceof InventoryPlayerBattle)
+                {
+                    InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
+                    for (int i = 0; i < inv.extraItems.length; i++)
+                        processItem(inv.extraItems[i]);
+                }
+            }
+
+            if (player.fallDistance > 1.0F)
+                player.fallDistance = 1.0F;
+        }
+    }
+
+    boolean processItem(ItemStack item)
+    {
+        return rechargeItem(item) || repairItem(item);
+    }
+
+    void processServer(EntityPlayer player)
+    {
+        if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
+        {
+            for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                if (player.inventory.armorInventory[i] != null)
+                    processItem(player.inventory.armorInventory[i]);
+            for (int i = 0; i < player.inventory.mainInventory.length; i++)
+                if (player.inventory.mainInventory[i] != null)
+                    processItem(player.inventory.mainInventory[i]);
+            if (ModCompat.BattleGear2.available)
+            {
+                if (player.inventory instanceof InventoryPlayerBattle)
+                {
+                    InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
+                    for (int i = 0; i < inv.extraItems.length; i++)
+                        processItem(inv.extraItems[i]);
+                }
+            }
+
+            if (ModCompat.BloodMagic.available)
+            {
+                SoulNetworkHandler.addCurrentEssenceToMaximum(player.getCommandSenderName(), 10000000, 10000000);
+            }
+
+            if (player.fallDistance > 1.0F)
+                player.fallDistance = 1.0F;
+        }
+    }
+
+    boolean rechargeItem(ItemStack item)
     {
         if (ModCompat.IC2.available)
         {
             if (ElectricItem.manager != null && item.getItem() instanceof IElectricItem)
+            {
                 ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), true, false);
+                return true;
+            }
         }
         if (ModCompat.COFH.available)
         {
@@ -80,6 +157,7 @@ public class InfiD
                     else
                         break;
                 }
+                return true;
             }
         }
         if (ModCompat.UE.available)
@@ -95,6 +173,7 @@ public class InfiD
                     else
                         break;
                 }
+                return true;
             }
         }
         if (ModCompat.AE2.available)
@@ -110,6 +189,7 @@ public class InfiD
                     else
                         break;
                 }
+                return true;
             }
         }
         if (ModCompat.UE.available)
@@ -119,41 +199,49 @@ public class InfiD
                 IEnergizedItem iei = (IEnergizedItem) item.getItem();
                 if (iei.canReceive(item) && iei.getEnergy(item) < iei.getMaxEnergy(item))
                     iei.setEnergy(item, iei.getMaxEnergy(item));
+                return true;
             }
         }
+        return false;
     }
 
-    @SubscribeEvent
-    public void handleEvent(TickEvent.PlayerTickEvent event)
+    boolean repairItem(ItemStack item)
     {
-        if (event.phase == TickEvent.Phase.END)
-            tickPlayer(event.player);
-    }
-
-    void processClient(EntityPlayer player)
-    {
-        if (NoteClient.instance().get("InfiD") != null)
+        if (item.isItemStackDamageable() && item.getItem().isRepairable())
         {
-            for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                if (player.inventory.armorInventory[i] != null)
-                    chargeItem(player.inventory.armorInventory[i]);
-            for (int i = 0; i < player.inventory.mainInventory.length; i++)
-                if (player.inventory.mainInventory[i] != null)
-                    chargeItem(player.inventory.mainInventory[i]);
+            if (item.getItemDamage() > 0)
+                item.setItemDamage(0);
+            return true;
         }
-    }
-
-    void processServer(EntityPlayer player)
-    {
-        if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
+        if (item.hasTagCompound())
         {
-            for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                if (player.inventory.armorInventory[i] != null)
-                    chargeItem(player.inventory.armorInventory[i]);
-            for (int i = 0; i < player.inventory.mainInventory.length; i++)
-                if (player.inventory.mainInventory[i] != null)
-                    chargeItem(player.inventory.mainInventory[i]);
+            NBTTagCompound tag = item.getTagCompound();
+            if (tag.hasKey("InfiTool"))
+            {
+                NBTTagCompound data = tag.getCompoundTag("InfiTool");
+                if (!data.hasKey("Energy"))
+                {
+                    if (data.getBoolean("Broken"))
+                        data.setBoolean("Broken", false);
+                    if (data.getInteger("Damage") > 0)
+                        data.setInteger("Damage", 0);
+                    if (item.getItemDamage() > 0) // visual
+                        item.setItemDamage(0);
+                    return true;
+                }
+            }
+            if (tag.hasKey("GT.ToolStats"))
+            {
+                NBTTagCompound data = tag.getCompoundTag("GT.ToolStats");
+                if (!data.getBoolean("Electric"))
+                {
+                    if (data.getLong("Damage") > 0L)
+                        data.setLong("Damage", 0L);
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     void tickPlayer(EntityPlayer player)
