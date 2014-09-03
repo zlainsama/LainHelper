@@ -201,8 +201,8 @@ public class InfiD
     {
         if (item.isItemStackDamageable()/* && item.getItem().isRepairable() */)
         {
-            if (item.getItemDamage() > 0)
-                item.setItemDamage(0);
+            if (item.getItemDamage() > 1)
+                item.setItemDamage(1);
             return true;
         }
         if (item.hasTagCompound())
@@ -215,10 +215,10 @@ public class InfiD
                 {
                     if (data.getBoolean("Broken"))
                         data.setBoolean("Broken", false);
-                    if (data.getInteger("Damage") > 0)
-                        data.setInteger("Damage", 0);
-                    if (item.getItemDamage() > 0) // visual
-                        item.setItemDamage(0);
+                    if (data.getInteger("Damage") > 1)
+                        data.setInteger("Damage", 1);
+                    if (item.getItemDamage() > 1) // visual
+                        item.setItemDamage(1);
                     return true;
                 }
             }
@@ -227,8 +227,8 @@ public class InfiD
                 NBTTagCompound data = tag.getCompoundTag("GT.ToolStats");
                 if (!data.getBoolean("Electric"))
                 {
-                    if (data.getLong("Damage") > 0L)
-                        data.setLong("Damage", 0L);
+                    if (data.getLong("Damage") > 1L)
+                        data.setLong("Damage", 1L);
                     return true;
                 }
             }
