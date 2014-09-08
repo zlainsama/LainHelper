@@ -42,6 +42,11 @@ public class Teleporter
         }
     }
 
+    private static void syncPlayerExperience(EntityPlayerMP mp)
+    {
+        mp.addExperienceLevel(0); // mark as dirty
+    }
+
     @SuppressWarnings("rawtypes")
     private static void syncPlayerPotionEffect(EntityPlayerMP mp)
     {
@@ -105,6 +110,7 @@ public class Teleporter
                 scm.updateTimeAndWeatherForPlayer(mp, newW);
                 scm.syncPlayerInventory(mp);
                 syncPlayerPotionEffect(mp);
+                syncPlayerExperience(mp); // in case some mods reset it on client side
                 FMLCommonHandler.instance().firePlayerChangedDimensionEvent(mp, oldD, newD); // inform other mods
             }
             else

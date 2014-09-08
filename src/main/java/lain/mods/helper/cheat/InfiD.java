@@ -133,12 +133,13 @@ public class InfiD
 
     boolean rechargeItem(ItemStack item)
     {
+        boolean f = false;
         if (ModCompat.IC2.available)
         {
             if (ElectricItem.manager != null && item.getItem() instanceof IElectricItem)
             {
                 ElectricItem.manager.charge(item, Double.MAX_VALUE, ((IElectricItem) item.getItem()).getTier(item), true, false);
-                return true;
+                f = true;
             }
         }
         if (ModCompat.COFH.available)
@@ -154,7 +155,7 @@ public class InfiD
                     else
                         break;
                 }
-                return true;
+                f = true;
             }
         }
         if (ModCompat.UE.available)
@@ -170,7 +171,7 @@ public class InfiD
                     else
                         break;
                 }
-                return true;
+                f = true;
             }
         }
         if (ModCompat.AE2.available)
@@ -186,7 +187,7 @@ public class InfiD
                     else
                         break;
                 }
-                return true;
+                f = true;
             }
         }
         if (ModCompat.UE.available)
@@ -196,19 +197,20 @@ public class InfiD
                 IEnergizedItem iei = (IEnergizedItem) item.getItem();
                 if (iei.canReceive(item) && iei.getEnergy(item) < iei.getMaxEnergy(item))
                     iei.setEnergy(item, iei.getMaxEnergy(item));
-                return true;
+                f = true;
             }
         }
-        return false;
+        return f;
     }
 
     boolean repairItem(ItemStack item)
     {
+        boolean f = false;
         if (item.isItemStackDamageable()/* && item.getItem().isRepairable() */)
         {
             if (item.getItemDamage() > 1)
                 item.setItemDamage(1);
-            return true;
+            f = true;
         }
         if (item.hasTagCompound())
         {
@@ -224,7 +226,7 @@ public class InfiD
                         data.setInteger("Damage", 0);
                     if (item.getItemDamage() > 0) // visual
                         item.setItemDamage(0);
-                    return true;
+                    f = true;
                 }
             }
             if (tag.hasKey("GT.ToolStats"))
@@ -234,11 +236,11 @@ public class InfiD
                 {
                     if (data.getLong("Damage") > 0L)
                         data.setLong("Damage", 0L);
-                    return true;
+                    f = true;
                 }
             }
         }
-        return false;
+        return f;
     }
 
     void tickPlayer(EntityPlayer player)
