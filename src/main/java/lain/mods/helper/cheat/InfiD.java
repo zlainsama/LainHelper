@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import cofh.api.energy.IEnergyContainerItem;
@@ -65,6 +66,16 @@ public class InfiD
     }
 
     @SubscribeEvent
+    public void handleEvent(LivingHurtEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP && Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
+        {
+            if (event.ammount > 0.0F)
+                event.ammount *= 0.5F;
+        }
+    }
+
+    @SubscribeEvent
     public void handleEvent(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
@@ -93,6 +104,8 @@ public class InfiD
 
             if (player.fallDistance > 1.0F)
                 player.fallDistance = 1.0F;
+
+            player.removePotionEffectClient(17);
         }
     }
 
@@ -128,6 +141,8 @@ public class InfiD
 
             if (player.fallDistance > 1.0F)
                 player.fallDistance = 1.0F;
+
+            player.removePotionEffect(17);
         }
     }
 
@@ -208,8 +223,8 @@ public class InfiD
         boolean f = false;
         if (item.isItemStackDamageable()/* && item.getItem().isRepairable() */)
         {
-            if (item.getItemDamage() > 1)
-                item.setItemDamage(1);
+            if (item.getItemDamage() > 0)
+                item.setItemDamage(0);
             f = true;
         }
         if (item.hasTagCompound())
