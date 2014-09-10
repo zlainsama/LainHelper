@@ -71,7 +71,7 @@ public class InfiD
         if (event.entityLiving instanceof EntityPlayerMP && Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
         {
             if (event.ammount > 0.0F)
-                event.ammount *= 0.5F;
+                event.ammount *= 0.2F;
         }
     }
 
@@ -112,8 +112,8 @@ public class InfiD
     boolean processItem(ItemStack item)
     {
         boolean f = false;
-        if (repairItem(item))
-            f = true;
+        // if (repairItem(item))
+        // f = true;
         if (rechargeItem(item))
             f = true;
         return f;
@@ -221,7 +221,7 @@ public class InfiD
     boolean repairItem(ItemStack item)
     {
         boolean f = false;
-        if (item.isItemStackDamageable()/* && item.getItem().isRepairable() */)
+        if (item.isItemStackDamageable() && item.getItem().isRepairable())
         {
             if (item.getItemDamage() > 0)
                 item.setItemDamage(0);
