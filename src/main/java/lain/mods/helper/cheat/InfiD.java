@@ -147,12 +147,13 @@ public class InfiD
             if (ModCompat.Baubles.available)
             {
                 IInventory inv = BaublesApi.getBaubles(player);
-                for (int i = 0; i < inv.getSizeInventory(); i++)
-                {
-                    ItemStack item = inv.getStackInSlot(i);
-                    if (item != null)
-                        processItem(item);
-                }
+                if (inv != null)
+                    for (int i = 0; i < inv.getSizeInventory(); i++)
+                    {
+                        ItemStack item = inv.getStackInSlot(i);
+                        if (item != null)
+                            processItem(item);
+                    }
             }
 
             if (player.fallDistance > 1.0F)
