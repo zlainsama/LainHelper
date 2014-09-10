@@ -9,12 +9,15 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
+import vazkii.botania.api.mana.IManaItem;
 import appeng.api.implementations.items.IAEItemPowerStorage;
+import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -28,12 +31,14 @@ public class InfiD
     {
 
         BattleGear2("battlegear2"),
+        Baubles("Baubles"),
 
         IC2("IC2"),
         COFH("CoFHCore"),
         UE("UniversalElectricity"),
         AE2("appliedenergistics2"),
-        Mekanism("Mekanism");
+        Mekanism("Mekanism"),
+        Botania("Botania");
 
         public final String modId;
         public final boolean available;
@@ -135,7 +140,18 @@ public class InfiD
                 {
                     InventoryPlayerBattle inv = (InventoryPlayerBattle) player.inventory;
                     for (int i = 0; i < inv.extraItems.length; i++)
-                        processItem(inv.extraItems[i]);
+                        if (inv.extraItems[i] != null)
+                            processItem(inv.extraItems[i]);
+                }
+            }
+            if (ModCompat.Baubles.available)
+            {
+                IInventory inv = BaublesApi.getBaubles(player);
+                for (int i = 0; i < inv.getSizeInventory(); i++)
+                {
+                    ItemStack item = inv.getStackInSlot(i);
+                    if (item != null)
+                        processItem(item);
                 }
             }
 
@@ -210,8 +226,18 @@ public class InfiD
             if (item.getItem() instanceof IEnergizedItem)
             {
                 IEnergizedItem iei = (IEnergizedItem) item.getItem();
-                if (iei.canReceive(item) && iei.getEnergy(item) < iei.getMaxEnergy(item))
+                if (iei.getEnergy(item) < iei.getMaxEnergy(item))
                     iei.setEnergy(item, iei.getMaxEnergy(item));
+                f = true;
+            }
+        }
+        if (ModCompat.Botania.available)
+        {
+            if (item.getItem() instanceof IManaItem)
+            {
+                IManaItem imi = (IManaItem) item.getItem();
+                if (imi.getMana(item) < imi.getMaxMana(item))
+                    imi.addMana(item, imi.getMaxMana(item) - imi.getMana(item));
                 f = true;
             }
         }
