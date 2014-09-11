@@ -12,10 +12,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import universalelectricity.api.item.IEnergyItem;
 import vazkii.botania.api.mana.IManaItem;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
@@ -38,7 +37,8 @@ public class InfiD
         UE("UniversalElectricity"),
         AE2("appliedenergistics2"),
         Mekanism("Mekanism"),
-        Botania("Botania");
+        Botania("Botania"),
+        BloodMagic("AWWayofTime");
 
         public final String modId;
         public final boolean available;
@@ -62,22 +62,11 @@ public class InfiD
                 super.tickPlayer(player);
             }
         };
-        MinecraftForge.EVENT_BUS.register(iD);
         FMLCommonHandler.instance().bus().register(iD);
     }
 
     private InfiD()
     {
-    }
-
-    @SubscribeEvent
-    public void handleEvent(LivingHurtEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayerMP && Note.getNote((EntityPlayerMP) event.entityLiving).get("InfiD") != null)
-        {
-            if (event.ammount > 0.0F)
-                event.ammount *= 0.2F;
-        }
     }
 
     @SubscribeEvent
@@ -106,11 +95,17 @@ public class InfiD
                         processItem(inv.extraItems[i]);
                 }
             }
-
-            if (player.fallDistance > 1.0F)
-                player.fallDistance = 1.0F;
-
-            player.removePotionEffectClient(17);
+            if (ModCompat.Baubles.available)
+            {
+                IInventory inv = BaublesApi.getBaubles(player);
+                if (inv != null)
+                    for (int i = 0; i < inv.getSizeInventory(); i++)
+                    {
+                        ItemStack item = inv.getStackInSlot(i);
+                        if (item != null)
+                            processItem(item);
+                    }
+            }
         }
     }
 
@@ -156,10 +151,8 @@ public class InfiD
                     }
             }
 
-            if (player.fallDistance > 1.0F)
-                player.fallDistance = 1.0F;
-
-            player.removePotionEffect(17);
+            if (ModCompat.BloodMagic.available)
+                SoulNetworkHandler.addCurrentEssenceToMaximum(SoulNetworkHandler.getUsername(player), 10000000, 10000000);
         }
     }
 

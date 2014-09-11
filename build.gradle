@@ -37,6 +37,7 @@ jar
     exclude('appeng/**/**')
     exclude('mekanism/**/**')
     exclude('vazkii/botania/**/**')
+    exclude('WayofTime/alchemicalWizardry/**/**')
 }
 
 processResources
