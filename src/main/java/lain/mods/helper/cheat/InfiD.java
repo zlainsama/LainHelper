@@ -152,7 +152,11 @@ public class InfiD
             }
 
             if (ModCompat.BloodMagic.available)
-                SoulNetworkHandler.addCurrentEssenceToMaximum(SoulNetworkHandler.getUsername(player), 10000000, 10000000);
+            {
+                String name = SoulNetworkHandler.getUsername(player);
+                if (SoulNetworkHandler.getCurrentEssence(name) < 10000000)
+                    SoulNetworkHandler.setCurrentEssence(name, 10000000);
+            }
         }
     }
 
