@@ -4,96 +4,67 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import org.apache.logging.log4j.Logger;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class DataStorage
 {
 
-    public final File file;
-    public Logger logger;
-    public NBTTagCompound data;
-    private final List<DataStorageAttachment> attachments = Lists.newLinkedList();
+    private final File file;
+    private final Map<String, DataStorageAttachment> objects;
+    private NBTTagCompound data;
 
     public DataStorage(File file)
     {
         this.file = file;
+        this.objects = Maps.newHashMap();
+    }
+
+    public File getFile()
+    {
+        return file;
     }
 
     public void load()
     {
         try
         {
-            data = CompressedStreamTools.readCompressed(new FileInputStream(file));
+            data = CompressedStreamTools.readCompressed(new FileInputStream(getFile()));
+            for (String name : objects.keySet())
+                objects.get(name).loadData(data.getCompoundTag(name));
         }
-        catch (IOException e)
+        catch (IOException ignored)
         {
-            if (logger != null)
-                logger.debug("Unable to read data, creating empty compound", e);
-            data = new NBTTagCompound();
-        }
-        try
-        {
-            for (DataStorageAttachment attachment : attachments)
-                attachment.loadData(data);
-        }
-        catch (Exception e)
-        {
-            if (logger != null)
-                logger.error("Something goes wrong", e);
         }
     }
 
-    public boolean registerAttachment(DataStorageAttachment attachment)
+    public void registerAttachmentObject(String name, DataStorageAttachment obj)
     {
-        if (attachments.contains(attachment))
-            return false;
-        if (attachments.add(attachment))
-        {
-            if (data != null)
-                attachment.loadData(data);
-            return true;
-        }
-        return false;
+        if (objects.get(name) == obj)
+            return;
+        if (data != null)
+            obj.loadData(data.getCompoundTag(name));
+        objects.put(name, obj);
     }
 
     public void save()
     {
-        if (data == null)
-            return;
         try
         {
-            for (DataStorageAttachment attachment : attachments)
-                attachment.saveData(data);
+            data = new NBTTagCompound();
+            for (String name : objects.keySet())
+            {
+                NBTTagCompound item = new NBTTagCompound();
+                objects.get(name).saveData(item);
+                data.setTag(name, item);
+            }
+            CompressedStreamTools.writeCompressed(data, new FileOutputStream(getFile()));
         }
-        catch (Exception e)
+        catch (IOException ignored)
         {
-            if (logger != null)
-                logger.error("Something goes wrong", e);
         }
-        try
-        {
-            CompressedStreamTools.writeCompressed(data, new FileOutputStream(file));
-        }
-        catch (IOException e)
-        {
-            if (logger != null)
-                logger.error("Unable to save data, this may cause problems", e);
-        }
-    }
-
-    public DataStorage setLogger(Logger logger)
-    {
-        this.logger = logger;
-        return this;
-    }
-
-    public boolean unregisterAttachment(DataStorageAttachment attachment)
-    {
-        return attachments.remove(attachment);
     }
 
 }

@@ -1,77 +1,83 @@
 package lain.mods.helper;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.UUID;
+import lain.mods.helper.handlers.PlayerExtraSavedDataHandler;
+import lain.mods.helper.utils.DataStorageAttachment;
 import lain.mods.helper.utils.PositionData;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import com.google.common.collect.Maps;
 
-public final class PlayerData
+public final class PlayerData implements DataStorageAttachment
 {
 
-    private static final String _ID = "92c98451-a0c6-4899-bce6-c5cc0f75e447";
+    private static final Map<UUID, WeakReference<PlayerData>> caches = Maps.newHashMap();
 
-    private static NBTTagCompound _GetOrCreateCompound(NBTTagCompound base, String name)
+    public static PlayerData get(EntityPlayerMP p)
     {
-        if (!base.hasKey(name))
-            base.setTag(name, new NBTTagCompound());
-        return base.getCompoundTag(name);
+        UUID id = p.getUniqueID();
+        PlayerData data = caches.get(id) != null ? caches.get(id).get() : null;
+        if (data == null)
+        {
+            PlayerExtraSavedDataHandler.get(p).registerAttachmentObject("PlayerData", data = new PlayerData());
+            caches.put(id, new WeakReference<PlayerData>(data));
+        }
+        return data;
     }
 
-    private static NBTTagCompound _GetPlayerPersistedData(EntityPlayer p)
-    {
-        return _GetOrCreateCompound(p.getEntityData(), EntityPlayer.PERSISTED_NBT_TAG);
-    }
+    private PositionData homePos;
+    private PositionData lastPos;
 
-    private static NBTTagCompound _GetRawData(EntityPlayer p)
+    private PlayerData()
     {
-        return _GetOrCreateCompound(_GetPlayerPersistedData(p), _ID);
-    }
-
-    public static PlayerData get(EntityPlayer p)
-    {
-        return new PlayerData(_GetRawData(p));
-    }
-
-    private final NBTTagCompound d;
-
-    private PlayerData(NBTTagCompound data)
-    {
-        d = data;
     }
 
     public PositionData getHomePosition()
     {
-        if (d.hasKey("homePosition"))
-        {
-            PositionData loc = new PositionData();
-            loc.readFromNBT(d.getCompoundTag("homePosition"));
-            return loc;
-        }
-        return null;
+        return homePos;
     }
 
     public PositionData getLastPosition()
     {
-        if (d.hasKey("lastPosition"))
+        return lastPos;
+    }
+
+    @Override
+    public void loadData(NBTTagCompound data)
+    {
+        if (data.hasKey("homePosition"))
+            (homePos = new PositionData()).readFromNBT(data.getCompoundTag("homePosition"));
+        if (data.hasKey("lastPosition"))
+            (lastPos = new PositionData()).readFromNBT(data.getCompoundTag("lastPosition"));
+    }
+
+    @Override
+    public void saveData(NBTTagCompound data)
+    {
+        if (homePos != null)
         {
-            PositionData loc = new PositionData();
-            loc.readFromNBT(d.getCompoundTag("lastPosition"));
-            return loc;
+            NBTTagCompound item = new NBTTagCompound();
+            homePos.writeToNBT(item);
+            data.setTag("homePosition", item);
         }
-        return null;
+        if (lastPos != null)
+        {
+            NBTTagCompound item = new NBTTagCompound();
+            lastPos.writeToNBT(item);
+            data.setTag("lastPosition", item);
+        }
     }
 
     public void setHomePosition(PositionData pos)
     {
-        NBTTagCompound data = new NBTTagCompound();
-        pos.writeToNBT(data);
-        d.setTag("homePosition", data);
+        homePos = pos;
     }
 
     public void setLastPosition(PositionData pos)
     {
-        NBTTagCompound data = new NBTTagCompound();
-        pos.writeToNBT(data);
-        d.setTag("lastPosition", data);
+        lastPos = pos;
     }
 
 }

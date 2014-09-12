@@ -28,12 +28,20 @@ public class MinecraftUtils
         return filename == null ? getSaveDirFile() : new File(getSaveDirFile(), filename);
     }
 
-    private static MinecraftServer getServer()
+    public static File getSaveDirFile(String dirname, String filename)
+    {
+        File dir = getSaveDirFile(dirname);
+        if (dir.exists() || dir.mkdirs())
+            return new File(dir, filename);
+        return null;
+    }
+
+    public static MinecraftServer getServer()
     {
         return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
 
-    private static Side getSide()
+    public static Side getSide()
     {
         return FMLCommonHandler.instance().getSide();
     }

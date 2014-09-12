@@ -1,5 +1,7 @@
 package lain.mods.helper;
 
+import java.io.File;
+import java.io.IOException;
 import lain.mods.helper.cheat.InfiD;
 import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
@@ -10,6 +12,9 @@ import lain.mods.helper.note.network.NoteSync;
 import lain.mods.helper.survivalists.Survivalists;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
+import lain.mods.helper.utils.ServerTicks;
+import net.minecraft.world.GameRules;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Level;
@@ -19,7 +24,6 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 
 @Mod(modid = "LainHelper", useMetadata = true)
 public class LainHelper
@@ -44,22 +48,35 @@ public class LainHelper
         if (Options.enableSharedStorage)
         {
             SharedStorage.storage = new DataStorage(MinecraftUtils.getSaveDirFile("SharedStorage.dat"));
-            SharedStorage.storage.logger = logger;
-            SharedStorage.storage.load();
             event.registerServerCommand(SharedStorage.createCommandOpenStorage());
         }
-    }
-
-    @Mod.EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event)
-    {
-        if (Options.enableSharedStorage)
+        if (Options.autoDisableMobGriefingAndFireTickInNewWorld)
         {
-            SharedStorage.storage.save();
-            if (SharedStorage.inventory != null)
-                SharedStorage.storage.unregisterAttachment(SharedStorage.inventory);
-            SharedStorage.storage = null;
-            SharedStorage.inventory = null;
+            ServerTicks.RunOnce(new Runnable()
+            {
+
+                @Override
+                public void run()
+                {
+                    File marker = MinecraftUtils.getSaveDirFile("WorldMarker");
+                    if (marker.exists())
+                        return;
+                    try
+                    {
+                        if (marker.createNewFile())
+                        {
+                            GameRules rules = DimensionManager.getWorld(0).getGameRules();
+                            rules.setOrCreateGameRule("mobGriefing", "false");
+                            rules.setOrCreateGameRule("doFireTick", "false");
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        logger.throwing(e);
+                    }
+                }
+
+            });
         }
     }
 

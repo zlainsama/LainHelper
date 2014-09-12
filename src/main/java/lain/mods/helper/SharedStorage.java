@@ -1,6 +1,7 @@
 package lain.mods.helper;
 
 import lain.mods.helper.commands.GeneralHelperCommand;
+import lain.mods.helper.handlers.MapSaveHandler;
 import lain.mods.helper.inventory.InventoryStorage;
 import lain.mods.helper.utils.DataStorage;
 import net.minecraft.command.ICommand;
@@ -40,12 +41,13 @@ public class SharedStorage
             public void processCommand(ICommandSender par1, String[] par2)
             {
                 if (inventory == null && storage != null)
-                    storage.registerAttachment(inventory = new InventoryStorage("LH_OpenStorage_Title", false, 54));
+                    storage.registerAttachmentObject("Inventory", inventory = new InventoryStorage("LH_OpenStorage_Title", false, 54));
                 if (inventory == null)
                     return;
                 if (par1 instanceof EntityPlayerMP)
                 {
                     EntityPlayerMP player = (EntityPlayerMP) par1;
+                    MapSaveHandler.checkAndLoad();
                     player.displayGUIChest(inventory);
                 }
                 else
