@@ -20,6 +20,7 @@ public class PlayerExtraSavedDataHandler extends DataStorage implements IExtende
         if (obj instanceof DataStorage)
             return (DataStorage) obj;
         player.registerExtendedProperties(_ID, obj = new PlayerExtraSavedDataHandler(MinecraftUtils.getSaveDirFile("playerdata", player.getUniqueID().toString() + ".pesd")));
+        ((DataStorage) obj).load();
         return (DataStorage) obj;
     }
 

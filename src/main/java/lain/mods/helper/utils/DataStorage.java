@@ -37,6 +37,7 @@ public class DataStorage
         }
         catch (IOException ignored)
         {
+            ignored.printStackTrace();
         }
     }
 

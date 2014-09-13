@@ -11,9 +11,12 @@ public class MapSaveHandler extends WorldSavedData
 
     public static void checkAndLoad()
     {
-        World world = DimensionManager.getWorld(0);
-        if (world != null)
-            world.loadItemData(MapSaveHandler.class, "MapSaveHandler");
+        World overworld = DimensionManager.getWorld(0);
+        if (overworld != null)
+        {
+            if (overworld.loadItemData(MapSaveHandler.class, "MapSaveHandler") == null)
+                overworld.setItemData("MapSaveHandler", new MapSaveHandler("MapSaveHandler"));
+        }
     }
 
     public MapSaveHandler(String par1)

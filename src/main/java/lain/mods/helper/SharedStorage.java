@@ -40,8 +40,10 @@ public class SharedStorage
             @Override
             public void processCommand(ICommandSender par1, String[] par2)
             {
-                if (inventory == null && storage != null)
-                    storage.registerAttachmentObject("Inventory", inventory = new InventoryStorage("LH_OpenStorage_Title", false, 54));
+                if (inventory == null)
+                    inventory = new InventoryStorage("LH_OpenStorage_Title", false, 54);
+                if (storage != null)
+                    storage.registerAttachmentObject("Inventory", inventory);
                 if (inventory == null)
                     return;
                 if (par1 instanceof EntityPlayerMP)

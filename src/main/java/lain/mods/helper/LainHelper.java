@@ -14,6 +14,7 @@ import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
 import lain.mods.helper.utils.ServerTicks;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -63,9 +64,10 @@ public class LainHelper
                         return;
                     try
                     {
-                        if (marker.createNewFile())
+                        World overworld = DimensionManager.getWorld(0);
+                        if (overworld != null && marker.createNewFile())
                         {
-                            GameRules rules = DimensionManager.getWorld(0).getGameRules();
+                            GameRules rules = overworld.getGameRules();
                             rules.setOrCreateGameRule("mobGriefing", "false");
                             rules.setOrCreateGameRule("doFireTick", "false");
                         }
