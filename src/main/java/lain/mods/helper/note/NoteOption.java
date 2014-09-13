@@ -1,22 +1,13 @@
 package lain.mods.helper.note;
 
-import java.io.Serializable;
 import com.google.common.base.Strings;
 
-public class NoteOption implements Serializable
+public class NoteOption
 {
 
-    private static final long serialVersionUID = 3782902396170972256L;
-
-    public String name;
-    public boolean locked;
-    public String value;
-
-    public NoteOption()
-    {
-        name = "";
-        value = "";
-    }
+    public final String name;
+    public final boolean locked;
+    public final String value;
 
     public NoteOption(String name, boolean locked, String value)
     {

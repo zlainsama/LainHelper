@@ -8,6 +8,7 @@ import com.google.common.base.Strings;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -80,31 +81,38 @@ public class NoteSync
             sendNoteOption((EntityPlayerMP) event.player, null);
     }
 
+    @SubscribeEvent
+    public void onPlayerTicks(TickEvent.PlayerTickEvent event)
+    {
+        if (event.player instanceof EntityPlayerMP)
+        {
+            if (Note.getNote((EntityPlayerMP) event.player).isDirty())
+                sendNoteOption((EntityPlayerMP) event.player, null);
+        }
+    }
+
     public void sendNoteOption(EntityPlayerMP player, String name)
     {
         Note note = Note.getNote(player);
-        if (note == null) // wont happen
-            channel.sendTo(new NoteSyncPacket("", 0, false, "").createPacket(), player);
-        else
+        if (Strings.isNullOrEmpty(name)) // sync all options
         {
-            if (Strings.isNullOrEmpty(name)) // sync all options
+            channel.sendTo(new NoteSyncPacket("", 0, false, "").createPacket(), player); // clear first
+            for (String n : note.names())
             {
-                channel.sendTo(new NoteSyncPacket("", 0, false, "").createPacket(), player); // clear first
-                for (String n : note.names())
-                {
-                    NoteOption option = note.get(n);
-                    channel.sendTo(new NoteSyncPacket(option.name, 2, option.locked, option.value).createPacket(), player);
-                }
-            }
-            else
-            {
-                NoteOption option = note.get(name);
-                if (option == null)
-                    channel.sendTo(new NoteSyncPacket(name, 1, false, "").createPacket(), player);
-                else
-                    channel.sendTo(new NoteSyncPacket(option.name, 2, option.locked, option.value).createPacket(), player);
+                NoteOption option = note.get(n);
+                channel.sendTo(new NoteSyncPacket(option.name, 2, option.locked, option.value).createPacket(), player);
             }
         }
+        else
+        {
+            NoteOption option = note.get(name);
+            if (option == null)
+                channel.sendTo(new NoteSyncPacket(name, 1, false, "").createPacket(), player);
+            else
+                channel.sendTo(new NoteSyncPacket(option.name, 2, option.locked, option.value).createPacket(), player);
+        }
+        if (name == null)
+            note.setDirty(false);
     }
 
     public void setDisabled()

@@ -27,15 +27,22 @@ public class Note implements DataStorageAttachment
     }
 
     private Map<String, NoteOption> options = Maps.newHashMap();
+    private boolean dirty = true;
 
     public void clear()
     {
         options.clear();
+        setDirty();
     }
 
     public NoteOption get(String name)
     {
         return options.get(name);
+    }
+
+    public boolean isDirty()
+    {
+        return dirty;
     }
 
     @Override
@@ -48,6 +55,7 @@ public class Note implements DataStorageAttachment
             NBTTagCompound item = items.getCompoundTagAt(i);
             put(new NoteOption(item.getString("Name"), item.getBoolean("Locked"), item.getString("Value")));
         }
+        setDirty();
     }
 
     public Set<String> names()
@@ -58,11 +66,13 @@ public class Note implements DataStorageAttachment
     public void put(NoteOption option)
     {
         options.put(option.name, option);
+        setDirty();
     }
 
     public void remove(String name)
     {
         options.remove(name);
+        setDirty();
     }
 
     @Override
@@ -78,6 +88,18 @@ public class Note implements DataStorageAttachment
             items.appendTag(item);
         }
         data.setTag("NoteOptions", items);
+    }
+
+    public boolean setDirty()
+    {
+        return setDirty(true);
+    }
+
+    public boolean setDirty(boolean isDirty)
+    {
+        boolean prev = dirty;
+        dirty = isDirty;
+        return prev;
     }
 
 }
