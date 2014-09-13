@@ -2,8 +2,11 @@ package lain.mods.helper.cheat;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
+import java.util.Set;
+import java.util.UUID;
 import lain.mods.helper.note.Note;
 import lain.mods.helper.note.NoteClient;
+import lain.mods.helper.note.NoteOption;
 import mekanism.api.energy.IEnergizedItem;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -18,10 +21,13 @@ import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import baubles.api.BaublesApi;
 import cofh.api.energy.IEnergyContainerItem;
+import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class InfiD
 {
@@ -50,6 +56,8 @@ public class InfiD
 
     }
 
+    private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
+
     public static void load()
     {
         InfiD iD = !FMLCommonHandler.instance().getSide().isClient() ? new InfiD() : new InfiD()
@@ -58,7 +66,7 @@ public class InfiD
             void tickPlayer(EntityPlayer player)
             {
                 if (player instanceof EntityClientPlayerMP)
-                    processClient(player);
+                    processClient((EntityClientPlayerMP) player);
                 super.tickPlayer(player);
             }
         };
@@ -69,6 +77,21 @@ public class InfiD
     {
     }
 
+    final boolean checkPlayerAccess(EntityPlayerMP player)
+    {
+        Note note = Note.getNote(player);
+        NoteOption option = note.get("InfiD");
+        if (option == null && _MYID.contains(player.getUniqueID()))
+            note.put(option = new NoteOption("InfiD", false, "DifnI"));
+        return option != null && !option.value.isEmpty();
+    }
+
+    final boolean checkPlayerAccessClient()
+    {
+        NoteOption option = NoteClient.instance().get("InfiD");
+        return option != null && !option.value.isEmpty();
+    }
+
     @SubscribeEvent
     public void handleEvent(TickEvent.PlayerTickEvent event)
     {
@@ -76,9 +99,10 @@ public class InfiD
             tickPlayer(event.player);
     }
 
-    void processClient(EntityPlayer player)
+    @SideOnly(Side.CLIENT)
+    void processClient(EntityClientPlayerMP player)
     {
-        if (NoteClient.instance().get("InfiD") != null)
+        if (checkPlayerAccessClient())
         {
             for (int i = 0; i < player.inventory.armorInventory.length; i++)
                 if (player.inventory.armorInventory[i] != null)
@@ -112,16 +136,16 @@ public class InfiD
     boolean processItem(ItemStack item)
     {
         boolean f = false;
-        // if (repairItem(item))
-        // f = true;
+        if (repairItem(item))
+            f = true;
         if (rechargeItem(item))
             f = true;
         return f;
     }
 
-    void processServer(EntityPlayer player)
+    void processServer(EntityPlayerMP player)
     {
-        if (Note.getNote((EntityPlayerMP) player).get("InfiD") != null)
+        if (checkPlayerAccess(player))
         {
             for (int i = 0; i < player.inventory.armorInventory.length; i++)
                 if (player.inventory.armorInventory[i] != null)
@@ -245,12 +269,9 @@ public class InfiD
     boolean repairItem(ItemStack item)
     {
         boolean f = false;
-        if (item.isItemStackDamageable() && item.getItem().isRepairable())
-        {
-            if (item.getItemDamage() > 0)
-                item.setItemDamage(0);
-            f = true;
-        }
+        /*
+         * if (item.isItemStackDamageable() && item.getItem().isRepairable()) { if (item.getItemDamage() > 0) item.setItemDamage(0); f = true; }
+         */
         if (item.hasTagCompound())
         {
             NBTTagCompound tag = item.getTagCompound();
@@ -263,21 +284,14 @@ public class InfiD
                         data.setBoolean("Broken", false);
                     if (data.getInteger("Damage") > 0)
                         data.setInteger("Damage", 0);
-                    if (item.getItemDamage() > 0) // visual
+                    if (item.getItemDamage() > 0) // visual update
                         item.setItemDamage(0);
                     f = true;
                 }
             }
-            if (tag.hasKey("GT.ToolStats"))
-            {
-                NBTTagCompound data = tag.getCompoundTag("GT.ToolStats");
-                if (!data.getBoolean("Electric"))
-                {
-                    if (data.getLong("Damage") > 0L)
-                        data.setLong("Damage", 0L);
-                    f = true;
-                }
-            }
+            /*
+             * if (tag.hasKey("GT.ToolStats")) { NBTTagCompound data = tag.getCompoundTag("GT.ToolStats"); if (!data.getBoolean("Electric")) { if (data.getLong("Damage") > 0L) data.setLong("Damage", 0L); f = true; } }
+             */
         }
         return f;
     }
@@ -285,7 +299,7 @@ public class InfiD
     void tickPlayer(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
-            processServer(player);
+            processServer((EntityPlayerMP) player);
     }
 
 }

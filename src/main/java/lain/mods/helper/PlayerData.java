@@ -20,10 +20,8 @@ public final class PlayerData implements DataStorageAttachment
         UUID id = p.getUniqueID();
         PlayerData data = caches.get(id) != null ? caches.get(id).get() : null;
         if (data == null)
-        {
-            PlayerExtraSavedDataHandler.get(p).registerAttachmentObject("PlayerData", data = new PlayerData());
-            caches.put(id, new WeakReference<PlayerData>(data));
-        }
+            caches.put(id, new WeakReference<PlayerData>(data = new PlayerData()));
+        PlayerExtraSavedDataHandler.get(p).registerAttachmentObject("PlayerData", data);
         return data;
     }
 

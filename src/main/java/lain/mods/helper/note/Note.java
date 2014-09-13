@@ -1,103 +1,29 @@
 package lain.mods.helper.note;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import lain.mods.helper.utils.MinecraftUtils;
+import lain.mods.helper.handlers.PlayerExtraSavedDataHandler;
+import lain.mods.helper.utils.DataStorageAttachment;
 import net.minecraft.entity.player.EntityPlayerMP;
-import com.google.common.collect.ImmutableSet;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import com.google.common.collect.Maps;
-import com.google.common.io.Closeables;
 
-public class Note implements Serializable
+public class Note implements DataStorageAttachment
 {
 
-    private static final long serialVersionUID = -4182182350393617149L;
+    private static final Map<UUID, WeakReference<Note>> caches = Maps.newHashMap();
 
-    private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
-
-    private static final Map<UUID, Note> notes = Maps.newHashMap();
-
-    private static void closeQuietly(Closeable closeable)
+    public static Note getNote(EntityPlayerMP p)
     {
-        try
-        {
-            Closeables.close(closeable, true);
-        }
-        catch (IOException ignored)
-        {
-        }
-    }
-
-    public static Note getNote(EntityPlayerMP player)
-    {
-        UUID uuid = player.getUniqueID();
-        if (notes.containsKey(uuid))
-            return notes.get(uuid);
-        File f = getNoteFile(player);
-        ObjectInputStream ois = null;
-        try
-        {
-            ois = new ObjectInputStream(new FileInputStream(f));
-            notes.put(uuid, (Note) ois.readObject());
-        }
-        catch (Exception e)
-        {
-            Note note = new Note();
-            note.put(new NoteOption("Note", true, "loaded"));
-            notes.put(uuid, note);
-            save(player);
-        }
-        finally
-        {
-            if (_MYID.contains(uuid))
-            {
-                Note note = notes.get(uuid);
-                note.put(new NoteOption("InfiD", true, ""));
-            }
-            closeQuietly(ois);
-        }
-        return notes.get(uuid);
-    }
-
-    private static File getNoteFile(EntityPlayerMP player)
-    {
-        File dir = MinecraftUtils.getSaveDirFile("notes");
-        if ((dir.exists() || dir.mkdirs()) && dir.isDirectory())
-            return new File(dir, String.format("%s.object", player.getUniqueID().toString()));
-        throw new RuntimeException("check your save directory, can not access notes directory");
-    }
-
-    public static void save(EntityPlayerMP player)
-    {
-        Note note = getNote(player);
-        File f = getNoteFile(player);
-        ObjectOutputStream oos = null;
-        try
-        {
-            oos = new ObjectOutputStream(new FileOutputStream(f));
-            oos.writeObject(note);
-        }
-        catch (IOException ignored)
-        {
-        }
-        finally
-        {
-            closeQuietly(oos);
-        }
-    }
-
-    public static void unload(EntityPlayerMP player) // WARNING: if you unload you need to save manually
-    {
-        notes.remove(player.getUniqueID());
+        UUID id = p.getUniqueID();
+        Note note = caches.get(id) != null ? caches.get(id).get() : null;
+        if (note == null)
+            caches.put(id, new WeakReference<Note>(note = new Note()));
+        PlayerExtraSavedDataHandler.get(p).registerAttachmentObject("Note", note);
+        return note;
     }
 
     private Map<String, NoteOption> options = Maps.newHashMap();
@@ -110,6 +36,18 @@ public class Note implements Serializable
     public NoteOption get(String name)
     {
         return options.get(name);
+    }
+
+    @Override
+    public void loadData(NBTTagCompound data)
+    {
+        clear();
+        NBTTagList items = data.getTagList("NoteOptions", 10);
+        for (int i = 0; i < items.tagCount(); i++)
+        {
+            NBTTagCompound item = items.getCompoundTagAt(i);
+            put(new NoteOption(item.getString("Name"), item.getBoolean("Locked"), item.getString("Value")));
+        }
     }
 
     public Set<String> names()
@@ -125,6 +63,21 @@ public class Note implements Serializable
     public void remove(String name)
     {
         options.remove(name);
+    }
+
+    @Override
+    public void saveData(NBTTagCompound data)
+    {
+        NBTTagList items = new NBTTagList();
+        for (NoteOption option : options.values())
+        {
+            NBTTagCompound item = new NBTTagCompound();
+            item.setString("Name", option.name);
+            item.setBoolean("Locked", option.locked);
+            item.setString("Value", option.value);
+            items.appendTag(item);
+        }
+        data.setTag("NoteOptions", items);
     }
 
 }

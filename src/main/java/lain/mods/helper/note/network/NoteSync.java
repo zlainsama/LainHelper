@@ -63,10 +63,7 @@ public class NoteSync
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
     {
         if (event.player instanceof EntityPlayerMP)
-        {
-            Note.save((EntityPlayerMP) event.player);
             sendNoteOption((EntityPlayerMP) event.player, null);
-        }
     }
 
     @SubscribeEvent
@@ -77,23 +74,10 @@ public class NoteSync
     }
 
     @SubscribeEvent
-    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
-    {
-        if (event.player instanceof EntityPlayerMP)
-        {
-            Note.save((EntityPlayerMP) event.player);
-            Note.unload((EntityPlayerMP) event.player);
-        }
-    }
-
-    @SubscribeEvent
     public void onPlayerRespawned(PlayerEvent.PlayerRespawnEvent event)
     {
         if (event.player instanceof EntityPlayerMP)
-        {
-            Note.save((EntityPlayerMP) event.player);
             sendNoteOption((EntityPlayerMP) event.player, null);
-        }
     }
 
     public void sendNoteOption(EntityPlayerMP player, String name)
