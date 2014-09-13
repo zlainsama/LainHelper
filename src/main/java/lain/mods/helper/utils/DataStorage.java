@@ -44,8 +44,16 @@ public class DataStorage
     {
         if (objects.get(name) == obj)
             return;
-        if (data != null)
+        if (objects.containsKey(name))
+        {
+            NBTTagCompound tmp = new NBTTagCompound();
+            objects.get(name).saveData(tmp);
+            obj.loadData(tmp);
+        }
+        else if (data != null)
+        {
             obj.loadData(data.getCompoundTag(name));
+        }
         objects.put(name, obj);
     }
 
