@@ -1,7 +1,6 @@
 package lain.mods.helper;
 
 import lain.mods.helper.commands.GeneralHelperCommand;
-import lain.mods.helper.handlers.MapSaveHandler;
 import lain.mods.helper.inventory.InventoryStorage;
 import lain.mods.helper.utils.DataStorage;
 import net.minecraft.command.ICommand;
@@ -49,7 +48,6 @@ public class SharedStorage
                 if (par1 instanceof EntityPlayerMP)
                 {
                     EntityPlayerMP player = (EntityPlayerMP) par1;
-                    MapSaveHandler.checkAndLoad();
                     player.displayGUIChest(inventory);
                 }
                 else

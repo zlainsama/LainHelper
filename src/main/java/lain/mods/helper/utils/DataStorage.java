@@ -20,6 +20,8 @@ public class DataStorage
     {
         this.file = file;
         this.objects = Maps.newHashMap();
+
+        load();
     }
 
     public File getFile()
@@ -32,12 +34,13 @@ public class DataStorage
         try
         {
             data = CompressedStreamTools.readCompressed(new FileInputStream(getFile()));
-            for (String name : objects.keySet())
-                objects.get(name).loadData(data.getCompoundTag(name));
         }
-        catch (IOException ignored)
+        catch (IOException e)
         {
+            data = new NBTTagCompound();
         }
+        for (String name : objects.keySet())
+            objects.get(name).loadData(data.getCompoundTag(name));
     }
 
     public void registerAttachmentObject(String name, DataStorageAttachment obj)
@@ -45,32 +48,24 @@ public class DataStorage
         if (objects.get(name) == obj)
             return;
         if (objects.containsKey(name))
-        {
-            NBTTagCompound tmp = new NBTTagCompound();
-            objects.get(name).saveData(tmp);
-            obj.loadData(tmp);
-        }
-        else if (data != null)
-        {
-            obj.loadData(data.getCompoundTag(name));
-        }
+            objects.get(name).saveData(data.getCompoundTag(name));
+        obj.loadData(data.getCompoundTag(name));
         objects.put(name, obj);
     }
 
     public void save()
     {
+        for (String name : objects.keySet())
+        {
+            NBTTagCompound item = data.getCompoundTag(name);
+            objects.get(name).saveData(item);
+            data.setTag(name, item);
+        }
         try
         {
-            data = new NBTTagCompound();
-            for (String name : objects.keySet())
-            {
-                NBTTagCompound item = new NBTTagCompound();
-                objects.get(name).saveData(item);
-                data.setTag(name, item);
-            }
             CompressedStreamTools.writeCompressed(data, new FileOutputStream(getFile()));
         }
-        catch (IOException ignored)
+        catch (IOException e)
         {
         }
     }

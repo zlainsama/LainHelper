@@ -8,6 +8,8 @@ import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSpawn;
 import lain.mods.helper.handlers.PlayerDeathHandler;
+import lain.mods.helper.handlers.PlayerExtraSavedDataHandler;
+import lain.mods.helper.handlers.WorldExtraSavedDataHandler;
 import lain.mods.helper.note.network.NoteSync;
 import lain.mods.helper.survivalists.Survivalists;
 import lain.mods.helper.utils.DataStorage;
@@ -107,6 +109,8 @@ public class LainHelper
             Survivalists.setEnabled();
 
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
+        MinecraftForge.EVENT_BUS.register(new PlayerExtraSavedDataHandler());
+        MinecraftForge.EVENT_BUS.register(new WorldExtraSavedDataHandler());
         InfiD.load();
         managerNoteSync.setEnabled();
     }
