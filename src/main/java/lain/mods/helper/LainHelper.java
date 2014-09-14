@@ -27,6 +27,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 
 @Mod(modid = "LainHelper", useMetadata = true)
 public class LainHelper
@@ -82,6 +83,12 @@ public class LainHelper
 
             });
         }
+    }
+
+    @Mod.EventHandler
+    public void onServerStopped(FMLServerStoppedEvent event)
+    {
+        PlayerExtraSavedDataHandler.cleanup();
     }
 
     @Mod.EventHandler

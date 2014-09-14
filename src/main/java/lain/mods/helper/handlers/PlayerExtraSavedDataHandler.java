@@ -46,6 +46,11 @@ public class PlayerExtraSavedDataHandler
     private static final String _ID = "92c98451-a0c6-4899-bce6-c5cc0f75e447";
     private static final Map<UUID, WeakReference<Handler>> caches = Maps.newHashMap();
 
+    public static void cleanup()
+    {
+        caches.clear();
+    }
+
     public static DataStorage get(EntityPlayerMP p)
     {
         UUID id = p.getUniqueID();
