@@ -36,6 +36,8 @@ jar
     exclude('universalelectricity/**/**')
     exclude('appeng/**/**')
     exclude('mekanism/**/**')
+    exclude('buildcraftAdditions/**/**')
+    exclude('pneumaticCraft/**/**')
     exclude('vazkii/botania/**/**')
     exclude('WayofTime/alchemicalWizardry/**/**')
 }

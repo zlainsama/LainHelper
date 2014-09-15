@@ -15,11 +15,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
+import pneumaticCraft.api.item.IPressurizable;
 import universalelectricity.api.item.IEnergyItem;
 import vazkii.botania.api.mana.IManaItem;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import baubles.api.BaublesApi;
+import buildcraftAdditions.api.IKineticCapsule;
 import cofh.api.energy.IEnergyContainerItem;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -43,6 +46,8 @@ public class InfiD
         UE("UniversalElectricity"),
         AE2("appliedenergistics2"),
         Mekanism("Mekanism"),
+        BCAdditions("bcadditions"),
+        PneumaticCraft("PneumaticCraft"),
         Botania("Botania"),
         BloodMagic("AWWayofTime");
 
@@ -253,6 +258,34 @@ public class InfiD
                 f = true;
             }
         }
+        if (ModCompat.BCAdditions.available)
+        {
+            if (item.getItem() instanceof IKineticCapsule)
+            {
+                IKineticCapsule ikc = (IKineticCapsule) item.getItem();
+                if (ikc.getEnergy(item) < ikc.getCapacity())
+                    ikc.setEnergy(item, ikc.getCapacity());
+                f = true;
+            }
+        }
+        if (ModCompat.PneumaticCraft.available)
+        {
+            if (item.getItem() instanceof IPressurizable)
+            {
+                IPressurizable ipe = (IPressurizable) item.getItem();
+                float cp = ipe.getPressure(item);
+                float mp = ipe.maxPressure(item);
+                if (cp < mp)
+                {
+                    ipe.addAir(item, 1);
+                    float diff = ipe.getPressure(item) - cp;
+                    cp = cp + diff;
+                    if (cp < mp)
+                        ipe.addAir(item, MathHelper.ceiling_float_int((mp - cp) / diff));
+                }
+                f = true;
+            }
+        }
         if (ModCompat.Botania.available)
         {
             if (item.getItem() instanceof IManaItem)
@@ -269,9 +302,12 @@ public class InfiD
     boolean repairItem(ItemStack item)
     {
         boolean f = false;
-        /*
-         * if (item.isItemStackDamageable() && item.getItem().isRepairable()) { if (item.getItemDamage() > 0) item.setItemDamage(0); f = true; }
-         */
+        if (item.isItemStackDamageable() && !item.getItem().getHasSubtypes())
+        {
+            if (item.getItemDamage() > 0)
+                item.setItemDamage(0);
+            f = true;
+        }
         if (item.hasTagCompound())
         {
             NBTTagCompound tag = item.getTagCompound();
@@ -289,9 +325,16 @@ public class InfiD
                     f = true;
                 }
             }
-            /*
-             * if (tag.hasKey("GT.ToolStats")) { NBTTagCompound data = tag.getCompoundTag("GT.ToolStats"); if (!data.getBoolean("Electric")) { if (data.getLong("Damage") > 0L) data.setLong("Damage", 0L); f = true; } }
-             */
+            if (tag.hasKey("GT.ToolStats"))
+            {
+                NBTTagCompound data = tag.getCompoundTag("GT.ToolStats");
+                if (!data.getBoolean("Electric"))
+                {
+                    if (data.getLong("Damage") > 0L)
+                        data.setLong("Damage", 0L);
+                    f = true;
+                }
+            }
         }
         return f;
     }
