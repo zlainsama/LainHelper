@@ -26,21 +26,6 @@ minecraft {
     assetDir = "eclipse/assets"
 }
 
-jar
-{
-    exclude('mods/battlegear2/**/**')
-    exclude('baubles/**/**')
-
-    exclude('ic2/**/**')
-    exclude('cofh/**/**')
-    exclude('universalelectricity/**/**')
-    exclude('appeng/**/**')
-    exclude('mekanism/**/**')
-    exclude('pneumaticCraft/**/**')
-    exclude('vazkii/botania/**/**')
-    exclude('WayofTime/alchemicalWizardry/**/**')
-}
-
 processResources
 {
     inputs.property "version", project.version
