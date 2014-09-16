@@ -1,6 +1,7 @@
 package lain.mods.helper.commands;
 
 import lain.mods.helper.PlayerData;
+import lain.mods.helper.events.PlayerTeleportationEvent;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -8,6 +9,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.MinecraftForge;
 
 public class CommandHome extends GeneralHelperCommand
 {
@@ -37,9 +39,19 @@ public class CommandHome extends GeneralHelperCommand
             PositionData home = PlayerData.get(player).getHomePosition();
             if (home != null)
             {
-                PlayerData.get(player).setLastPosition(new PositionData(player));
-                home.teleportEntity(player);
-                par1.addChatMessage(msgHomeDone);
+                PositionData last = new PositionData(player);
+                PlayerTeleportationEvent event = new PlayerTeleportationEvent(player, last, home);
+                if (MinecraftForge.EVENT_BUS.post(event))
+                {
+                    if (event.message != null)
+                        par1.addChatMessage(event.message);
+                }
+                else
+                {
+                    PlayerData.get(player).setLastPosition(last);
+                    home.teleportEntity(player);
+                    par1.addChatMessage(msgHomeDone);
+                }
             }
             else
                 par1.addChatMessage(msgHomeNotFound);

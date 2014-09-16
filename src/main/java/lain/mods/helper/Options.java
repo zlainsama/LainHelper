@@ -13,6 +13,8 @@ public class Options
     public static boolean overworldHomeOnly = true;
     public static boolean enableSharedStorage = false;
     public static boolean enableSurvivalists = false;
+    public static boolean enableAntiMobTeleportation = true;
+    public static int ticksAntiMobProtection = 60;
     public static boolean autoDisableMobGriefingAndFireTickInNewWorld = false;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

@@ -27,9 +27,15 @@ public final class PlayerData implements DataStorageAttachment
 
     private PositionData homePos;
     private PositionData lastPos;
+    private int ticksAntiMob = 0;
 
     private PlayerData()
     {
+    }
+
+    public int getAntiMobTicks()
+    {
+        return ticksAntiMob;
     }
 
     public PositionData getHomePosition()
@@ -49,6 +55,7 @@ public final class PlayerData implements DataStorageAttachment
             (homePos = new PositionData()).readFromNBT(data.getCompoundTag("homePosition"));
         if (data.hasKey("lastPosition"))
             (lastPos = new PositionData()).readFromNBT(data.getCompoundTag("lastPosition"));
+        ticksAntiMob = data.getInteger("ticksAntiMob");
     }
 
     @Override
@@ -66,6 +73,12 @@ public final class PlayerData implements DataStorageAttachment
             lastPos.writeToNBT(item);
             data.setTag("lastPosition", item);
         }
+        data.setInteger("ticksAntiMob", ticksAntiMob);
+    }
+
+    public void setAntiMobTicks(int ticks)
+    {
+        ticksAntiMob = ticks;
     }
 
     public void setHomePosition(PositionData pos)

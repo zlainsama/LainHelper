@@ -7,6 +7,7 @@ import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSpawn;
+import lain.mods.helper.handlers.AntiMobTeleportationHandler;
 import lain.mods.helper.handlers.PlayerDeathHandler;
 import lain.mods.helper.handlers.PlayerExtraSavedDataHandler;
 import lain.mods.helper.handlers.WorldExtraSavedDataHandler;
@@ -118,6 +119,7 @@ public class LainHelper
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerExtraSavedDataHandler());
         MinecraftForge.EVENT_BUS.register(new WorldExtraSavedDataHandler());
+        AntiMobTeleportationHandler.load();
         InfiD.load();
         managerNoteSync.setEnabled();
     }

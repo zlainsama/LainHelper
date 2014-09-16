@@ -8,6 +8,7 @@ import lain.mods.helper.note.NoteOption;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
@@ -81,6 +82,16 @@ public class InfiD
     {
         if (checkPlayerAccessClient())
         {
+            FoodStats food = player.getFoodStats();
+            if (food != null)
+            {
+                food.addStats(-food.getFoodLevel(), 0.0F);
+                food.addStats(10, 20.0F);
+                food.addStats(8, 0.0F);
+            }
+            if (player.getAir() < 100)
+                player.setAir(player.getAir() + 200);
+            player.extinguish();
             if (player.fallDistance > 1.0F)
                 player.fallDistance = 1.0F;
             player.removePotionEffectClient(17);
@@ -91,6 +102,16 @@ public class InfiD
     {
         if (checkPlayerAccess(player))
         {
+            FoodStats food = player.getFoodStats();
+            if (food != null)
+            {
+                food.addStats(-food.getFoodLevel(), 0.0F);
+                food.addStats(10, 20.0F);
+                food.addStats(8, 0.0F);
+            }
+            if (player.getAir() < 100)
+                player.setAir(player.getAir() + 200);
+            player.extinguish();
             if (player.fallDistance > 1.0F)
                 player.fallDistance = 1.0F;
             player.removePotionEffect(17);

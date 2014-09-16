@@ -1,6 +1,7 @@
 package lain.mods.helper.commands;
 
 import lain.mods.helper.PlayerData;
+import lain.mods.helper.events.PlayerTeleportationEvent;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -8,6 +9,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends GeneralHelperCommand
@@ -34,9 +36,20 @@ public class CommandSpawn extends GeneralHelperCommand
         if (par1 instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP) par1;
-            PlayerData.get(player).setLastPosition(new PositionData(player));
-            new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getRandomizedSpawnPoint(), 0).teleportEntity(player, true);
-            par1.addChatMessage(msgSpawnDone);
+            PositionData last = new PositionData(player);
+            PositionData target = new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getRandomizedSpawnPoint(), 0);
+            PlayerTeleportationEvent event = new PlayerTeleportationEvent(player, last, target);
+            if (MinecraftForge.EVENT_BUS.post(event))
+            {
+                if (event.message != null)
+                    par1.addChatMessage(event.message);
+            }
+            else
+            {
+                PlayerData.get(player).setLastPosition(last);
+                target.teleportEntity(player, true);
+                par1.addChatMessage(msgSpawnDone);
+            }
         }
         else
             par1.addChatMessage(msgNotPlayer);
