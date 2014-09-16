@@ -115,11 +115,12 @@ public class LainHelper
     {
         if (Options.enableSurvivalists)
             Survivalists.setEnabled();
+        if (Options.enableAntiMobTeleportation)
+            AntiMobTeleportationHandler.load();
 
         MinecraftForge.EVENT_BUS.register(new PlayerDeathHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerExtraSavedDataHandler());
         MinecraftForge.EVENT_BUS.register(new WorldExtraSavedDataHandler());
-        AntiMobTeleportationHandler.load();
         InfiD.load();
         managerNoteSync.setEnabled();
     }
