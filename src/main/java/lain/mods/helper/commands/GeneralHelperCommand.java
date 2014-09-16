@@ -12,4 +12,10 @@ public abstract class GeneralHelperCommand extends CommandBase
         return true;
     }
 
+    @Override
+    public int getRequiredPermissionLevel()
+    {
+        return 0;
+    }
+
 }
