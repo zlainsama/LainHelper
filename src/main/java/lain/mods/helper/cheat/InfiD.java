@@ -8,8 +8,6 @@ import lain.mods.helper.note.NoteOption;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -36,7 +34,6 @@ public class InfiD
             }
         };
         FMLCommonHandler.instance().bus().register(iD);
-        MinecraftForge.EVENT_BUS.register(iD);
     }
 
     private InfiD()
@@ -59,17 +56,6 @@ public class InfiD
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void handleEvent(LivingHurtEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayerMP && checkPlayerAccess((EntityPlayerMP) event.entityLiving))
-        {
-            if (!event.source.canHarmInCreative() && !event.source.isDamageAbsolute())
-                if (event.ammount > 0.0F)
-                    event.ammount *= 0.2F;
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
     public void handleEvent(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
@@ -81,8 +67,6 @@ public class InfiD
     {
         if (checkPlayerAccessClient())
         {
-            if (player.getFoodStats().getFoodLevel() < 1)
-                player.getFoodStats().addStats(1, 0.0F);
             player.removePotionEffectClient(17);
         }
     }
@@ -91,8 +75,6 @@ public class InfiD
     {
         if (checkPlayerAccess(player))
         {
-            if (player.getFoodStats().getFoodLevel() < 1)
-                player.getFoodStats().addStats(1, 0.0F);
             player.removePotionEffect(17);
         }
     }
