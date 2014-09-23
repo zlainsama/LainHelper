@@ -65,7 +65,7 @@ public class InfiD
         {
             if (!event.source.canHarmInCreative() && !event.source.isDamageAbsolute())
                 if (event.ammount > 0.0F)
-                    event.ammount *= 0.5F;
+                    event.ammount *= 0.2F;
         }
     }
 
@@ -81,6 +81,8 @@ public class InfiD
     {
         if (checkPlayerAccessClient())
         {
+            if (player.getFoodStats().getFoodLevel() < 1)
+                player.getFoodStats().addStats(1, 0.0F);
             player.removePotionEffectClient(17);
         }
     }
@@ -89,6 +91,8 @@ public class InfiD
     {
         if (checkPlayerAccess(player))
         {
+            if (player.getFoodStats().getFoodLevel() < 1)
+                player.getFoodStats().addStats(1, 0.0F);
             player.removePotionEffect(17);
         }
     }

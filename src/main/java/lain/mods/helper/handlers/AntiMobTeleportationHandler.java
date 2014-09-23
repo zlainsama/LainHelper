@@ -9,7 +9,6 @@ import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -36,20 +35,6 @@ public class AntiMobTeleportationHandler
                 if (!(attacker instanceof EntityLivingBase) || attacker instanceof IBossDisplayData)
                     return;
                 attacker.setDead();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void handleEvent(LivingSetAttackTargetEvent event)
-    {
-        if (event.entityLiving instanceof IBossDisplayData)
-            return;
-        if (event.target instanceof EntityPlayerMP)
-        {
-            if (PlayerData.get((EntityPlayerMP) event.target).getAntiMobTicks() > 0)
-            {
-                event.entityLiving.setDead();
             }
         }
     }
