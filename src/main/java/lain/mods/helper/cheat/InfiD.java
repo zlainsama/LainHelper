@@ -23,7 +23,7 @@ public class InfiD
 
     public static void load()
     {
-        InfiD iD = !FMLCommonHandler.instance().getSide().isClient() ? new InfiD() : new InfiD()
+        InfiD iD = FMLCommonHandler.instance().getSide().isClient() ? new InfiD()
         {
             @Override
             void tickPlayer(EntityPlayer player)
@@ -32,7 +32,7 @@ public class InfiD
                     processClient((EntityClientPlayerMP) player);
                 super.tickPlayer(player);
             }
-        };
+        } : new InfiD();
         FMLCommonHandler.instance().bus().register(iD);
     }
 
