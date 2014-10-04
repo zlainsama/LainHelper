@@ -8,10 +8,6 @@ import lain.mods.helper.note.NoteOption;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -28,7 +24,6 @@ public class InfiD
     {
         InfiD iD = new InfiD();
         FMLCommonHandler.instance().bus().register(iD);
-        MinecraftForge.EVENT_BUS.register(iD);
     }
 
     private InfiD()
@@ -48,69 +43,6 @@ public class InfiD
     {
         NoteOption option = NoteClient.instance().get("InfiD");
         return option != null && !option.value.isEmpty();
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void handleEvent(LivingFallEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) event.entityLiving;
-            if (player instanceof EntityPlayerMP)
-            {
-                if (checkPlayerAccess((EntityPlayerMP) player))
-                {
-                    event.distance = 0.0F;
-                }
-            }
-            else if (isClient && player instanceof EntityClientPlayerMP)
-            {
-                if (checkPlayerAccessClient())
-                {
-                    event.distance = 0.0F;
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void handleEvent(LivingHurtEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) event.entityLiving;
-            if (player instanceof EntityPlayerMP)
-            {
-                if (checkPlayerAccess((EntityPlayerMP) player))
-                {
-                    if (!event.source.canHarmInCreative() && !event.source.isDamageAbsolute())
-                    {
-                        if (event.ammount > 0.0F)
-                            event.ammount *= 0.1F;
-                    }
-                }
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void handleEvent(PlayerFlyableFallEvent event)
-    {
-        EntityPlayer player = event.entityPlayer;
-        if (player instanceof EntityPlayerMP)
-        {
-            if (checkPlayerAccess((EntityPlayerMP) player))
-            {
-                event.distance = 0.0F;
-            }
-        }
-        else if (isClient && player instanceof EntityClientPlayerMP)
-        {
-            if (checkPlayerAccessClient())
-            {
-                event.distance = 0.0F;
-            }
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
