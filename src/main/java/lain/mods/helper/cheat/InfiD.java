@@ -26,9 +26,8 @@ public class InfiD
                 if (_MYID.contains(player.getUniqueID()))
                 {
                     player.removePotionEffect(17);
+                    player.addPotionEffect(new PotionEffect(10, 10, 0, true, false));
                     player.addPotionEffect(new PotionEffect(11, 10, 1, true, false));
-                    player.addPotionEffect(new PotionEffect(12, 10, 0, true, false));
-                    player.addPotionEffect(new PotionEffect(13, 10, 0, true, false));
                     player.addPotionEffect(new PotionEffect(16, 400, 0, true, false));
                 }
             }
