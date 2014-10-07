@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -26,9 +25,6 @@ public class InfiD
                 if (_MYID.contains(player.getUniqueID()))
                 {
                     player.removePotionEffect(17);
-                    player.addPotionEffect(new PotionEffect(10, 10, 0, true, false));
-                    player.addPotionEffect(new PotionEffect(11, 10, 1, true, false));
-                    player.addPotionEffect(new PotionEffect(16, 400, 0, true, false));
                 }
             }
         }
