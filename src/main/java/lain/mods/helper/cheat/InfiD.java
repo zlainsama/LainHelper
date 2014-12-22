@@ -16,14 +16,16 @@ public class InfiD
 
     public static void setup()
     {
-        InfiD i = new InfiD();
-        MinecraftForge.EVENT_BUS.register(i);
+        if (INSTANCE == null)
+            throw new RuntimeException();
     }
 
+    private static final InfiD INSTANCE = new InfiD();
     private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
 
     private InfiD()
     {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public boolean check(Entity entity)
