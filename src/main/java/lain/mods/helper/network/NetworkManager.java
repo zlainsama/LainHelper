@@ -4,27 +4,26 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLEventChannel;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public class NetworkManager
 {
 
-    protected static final BiMap<Byte, Class<? extends NetworkPacket>> REGISTRY = HashBiMap.create();
-    protected static final String CHANNELNAME = "LainHelper";
-
-    protected static FMLEventChannel channel;
-
-    public static void registerPacket(byte id, Class<? extends NetworkPacket> packetClass)
+    public static void registerPacket(Class<? extends NetworkPacket> packetClass)
     {
-        REGISTRY.forcePut(id, packetClass);
+        REGISTRY.forcePut(packetClass.hashCode(), packetClass);
     }
+
+    protected static final BiMap<Integer, Class<? extends NetworkPacket>> REGISTRY = HashBiMap.create();
+    protected static final String CHANNELNAME = "LainHelper";
+    protected static FMLEventChannel channel;
 
     public NetworkManager()
     {
@@ -37,7 +36,7 @@ public class NetworkManager
     public void handleEvent(FMLNetworkEvent.ServerCustomPacketEvent event) throws InstantiationException, IllegalAccessException
     {
         PacketBuffer buf = (PacketBuffer) event.packet.payload();
-        byte id = buf.readByte();
+        int id = buf.readInt();
         Class<? extends NetworkPacket> clazz = REGISTRY.get(id);
         if (clazz != null)
         {
@@ -58,7 +57,7 @@ public class NetworkManager
             if (id != 0)
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                buf.writeByte(id);
+                buf.writeInt(id);
                 packet.writeToBuffer(buf);
                 channel.sendTo(new FMLProxyPacket(buf, CHANNELNAME), player);
             }
@@ -73,7 +72,7 @@ public class NetworkManager
             if (id != 0)
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                buf.writeByte(id);
+                buf.writeInt(id);
                 packet.writeToBuffer(buf);
                 channel.sendToAll(new FMLProxyPacket(buf, CHANNELNAME));
             }
@@ -88,7 +87,7 @@ public class NetworkManager
             if (id != 0)
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                buf.writeByte(id);
+                buf.writeInt(id);
                 packet.writeToBuffer(buf);
                 channel.sendToAllAround(new FMLProxyPacket(buf, CHANNELNAME), point);
             }
@@ -103,7 +102,7 @@ public class NetworkManager
             if (id != 0)
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                buf.writeByte(id);
+                buf.writeInt(id);
                 packet.writeToBuffer(buf);
                 channel.sendToDimension(new FMLProxyPacket(buf, CHANNELNAME), dimensionId);
             }

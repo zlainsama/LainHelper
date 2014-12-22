@@ -2,10 +2,9 @@ package lain.mods.helper;
 
 import lain.mods.helper.cheat.InfiD;
 import lain.mods.helper.network.NetworkManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 @Mod(modid = "LainHelper", useMetadata = true)
 public class LainHelper
@@ -17,7 +16,7 @@ public class LainHelper
     @Mod.EventHandler
     public void handleEvent(FMLInitializationEvent event)
     {
-        FMLCommonHandler.instance().bus().register(new InfiD());
+        InfiD.setup();
     }
 
 }

@@ -2,9 +2,9 @@ package lain.mods.helper.network;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public class NetworkManagerClient extends NetworkManager
 {
@@ -13,7 +13,7 @@ public class NetworkManagerClient extends NetworkManager
     public void handleEvent(FMLNetworkEvent.ClientCustomPacketEvent event) throws InstantiationException, IllegalAccessException
     {
         PacketBuffer buf = (PacketBuffer) event.packet.payload();
-        byte id = buf.readByte();
+        int id = buf.readInt();
         Class<? extends NetworkPacket> clazz = REGISTRY.get(id);
         if (clazz != null)
         {
@@ -35,7 +35,7 @@ public class NetworkManagerClient extends NetworkManager
             if (id != 0)
             {
                 PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                buf.writeByte(id);
+                buf.writeInt(id);
                 packet.writeToBuffer(buf);
                 channel.sendToServer(new FMLProxyPacket(buf, CHANNELNAME));
             }
