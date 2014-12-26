@@ -5,7 +5,6 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -36,17 +35,10 @@ public class InfiD
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void proc(LivingHealEvent event)
-    {
-        if (check(event.entityLiving))
-            event.amount *= 2.0F;
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
     public void proc(LivingHurtEvent event)
     {
         if (check(event.entityLiving))
-            event.ammount *= 0.5F;
+            event.ammount *= 0.8F;
     }
 
 }
