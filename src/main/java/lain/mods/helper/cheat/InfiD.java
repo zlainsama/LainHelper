@@ -4,11 +4,14 @@ import java.util.Set;
 import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class InfiD
 {
@@ -25,6 +28,7 @@ public class InfiD
     private InfiD()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public boolean check(Entity entity)
@@ -34,11 +38,60 @@ public class InfiD
         return false;
     }
 
+    public NBTTagCompound getData(Entity entity)
+    {
+        NBTTagCompound root = entity.getEntityData();
+        if (!root.hasKey("InfiD", 10))
+            root.setTag("InfiD", new NBTTagCompound());
+        return root.getCompoundTag("InfiD");
+    }
+
+    public int getIntOrCreate(NBTTagCompound compound, String name, int defaultvalue)
+    {
+        if (!compound.hasKey(name, 3))
+            compound.setInteger(name, defaultvalue);
+        return compound.getInteger(name);
+    }
+
+    public int getTimeRegen(Entity entity, int defaultvalue)
+    {
+        return getIntOrCreate(getData(entity), "timeRegen", defaultvalue);
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void proc(LivingHurtEvent event)
     {
         if (check(event.entityLiving))
-            event.ammount *= 0.8F;
+        {
+            event.ammount *= 0.5F;
+            if (event.source.isExplosion())
+                event.ammount *= 0.5F;
+            setTimeRegen(event.entityLiving, 100);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void proc(TickEvent.PlayerTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.START && check(event.player))
+        {
+            int timeRegen = getTimeRegen(event.player, 20);
+            if (!event.player.isEntityAlive())
+                timeRegen = 20;
+            else if (--timeRegen < 0)
+                timeRegen = 0;
+            if (timeRegen == 0)
+            {
+                event.player.heal(event.player.getMaxHealth() * 0.05F);
+                timeRegen = 40;
+            }
+            setTimeRegen(event.player, timeRegen);
+        }
+    }
+
+    public void setTimeRegen(Entity entity, int value)
+    {
+        getData(entity).setInteger("timeRegen", value);
     }
 
 }
