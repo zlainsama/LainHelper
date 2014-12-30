@@ -63,9 +63,6 @@ public class InfiD
     {
         if (check(event.entityLiving))
         {
-            event.ammount *= 0.5F;
-            if (event.source.isExplosion())
-                event.ammount *= 0.5F;
             setTimeRegen(event.entityLiving, 100);
         }
     }
