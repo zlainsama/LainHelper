@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradle eclipse
+start gradle eclipse

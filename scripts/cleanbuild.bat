@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradle clean setupDevWorkspace build
+start gradle clean setupDevWorkspace build

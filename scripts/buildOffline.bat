@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradle build -offline
+start gradle build -offline

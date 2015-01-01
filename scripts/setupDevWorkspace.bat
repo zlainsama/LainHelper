@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradle setupDevWorkspace
+start gradle setupDevWorkspace

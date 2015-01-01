@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradle clean
+start gradle clean
