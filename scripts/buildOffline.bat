@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradlew.bat build -offline
+gradle build -offline

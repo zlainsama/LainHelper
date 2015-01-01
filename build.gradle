@@ -22,7 +22,7 @@ group= "lain.mods.helper"
 archivesBaseName = "LainHelper"
 
 minecraft {
-    version = "1.7.10-10.13.2.1272"
+    version = "1.7.10-10.13.2.1277"
     runDir = "eclipse"
 }
 

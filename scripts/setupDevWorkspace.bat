@@ -1,3 +1,3 @@
 @echo off
 cd ..
-gradlew.bat setupDevWorkspace
+gradle setupDevWorkspace
