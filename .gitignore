@@ -218,4 +218,6 @@ pip-log.txt
 .gradle/
 eclipse/
 runtime/
+nbproject/
+build.xml
 
