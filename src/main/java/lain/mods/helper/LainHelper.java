@@ -1,10 +1,10 @@
 package lain.mods.helper;
 
-import lain.mods.helper.cheat.InfiD;
-import lain.mods.helper.network.NetworkManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import lain.mods.helper.cheat.InfiD;
+import lain.mods.helper.network.NetworkManager;
 
 @Mod(modid = "LainHelper", useMetadata = true)
 public class LainHelper
