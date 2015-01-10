@@ -1,5 +1,9 @@
 package lain.mods.helper.network;
 
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.PacketBuffer;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -8,10 +12,6 @@ import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.PacketBuffer;
 
 public class NetworkManager
 {
