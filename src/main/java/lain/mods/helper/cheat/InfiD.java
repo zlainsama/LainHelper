@@ -62,10 +62,7 @@ public class InfiD
     public void proc(LivingHurtEvent event)
     {
         if (check(event.entityLiving))
-        {
-            event.ammount *= 0.5F;
             setTimeRegen(event.entityLiving, 100);
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
