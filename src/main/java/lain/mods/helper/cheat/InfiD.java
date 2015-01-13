@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -59,19 +58,12 @@ public class InfiD
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void proc(LivingHurtEvent event)
-    {
-        if (check(event.entityLiving))
-            setTimeRegen(event.entityLiving, 100);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
     public void proc(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.START && check(event.player))
         {
             int timeRegen = getTimeRegen(event.player, 20);
-            if (!event.player.isEntityAlive())
+            if (!event.player.isEntityAlive() || !event.player.shouldHeal())
                 timeRegen = 20;
             else if (--timeRegen < 0)
                 timeRegen = 0;
