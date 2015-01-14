@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -58,10 +59,23 @@ public class InfiD
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
+    public void proc(LivingAttackEvent event)
+    {
+        if (check(event.entityLiving))
+        {
+            String type = event.source.getDamageType();
+            if ("starve".equalsIgnoreCase(type))
+                event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void proc(TickEvent.PlayerTickEvent event)
     {
         if (event.phase == TickEvent.Phase.START && check(event.player))
         {
+            event.player.removePotionEffect(17);
+
             int timeRegen = getTimeRegen(event.player, 20);
             if (!event.player.isEntityAlive() || !event.player.shouldHeal())
                 timeRegen = 20;
