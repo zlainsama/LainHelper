@@ -3,10 +3,10 @@ package lain.mods.helper.cheat;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -38,36 +38,20 @@ public class InfiD
         return false;
     }
 
-    public NBTTagCompound getData(Entity entity)
-    {
-        NBTTagCompound root = entity.getEntityData();
-        if (!root.hasKey("InfiD", 10))
-            root.setTag("InfiD", new NBTTagCompound());
-        return root.getCompoundTag("InfiD");
-    }
-
-    public int getIntOrCreate(NBTTagCompound compound, String name, int defaultvalue)
-    {
-        if (!compound.hasKey(name, 3))
-            compound.setInteger(name, defaultvalue);
-        return compound.getInteger(name);
-    }
-
-    public int getTimeRegen(Entity entity, int defaultvalue)
-    {
-        return getIntOrCreate(getData(entity), "timeRegen", defaultvalue);
-    }
-
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public void proc(LivingHurtEvent event)
+    public void proc(LivingSetAttackTargetEvent event)
     {
-        if (check(event.entityLiving))
+        if (event.target == null)
+            return;
+        if (check(event.target))
         {
-            if (event.ammount > 0.0F)
+            if (event.entityLiving.getAITarget() == event.target)
+                event.entityLiving.setRevengeTarget(null);
+            if (event.entityLiving instanceof EntityLiving)
             {
-                event.ammount *= 0.5F;
-
-                setTimeRegen(event.entityLiving, 40);
+                EntityLiving entityLiving = (EntityLiving) event.entityLiving;
+                if (entityLiving.getAttackTarget() == event.target)
+                    entityLiving.setAttackTarget(null);
             }
         }
     }
@@ -78,24 +62,7 @@ public class InfiD
         if (event.phase == TickEvent.Phase.START && check(event.player))
         {
             event.player.removePotionEffect(17);
-
-            int timeRegen = getTimeRegen(event.player, 20);
-            if (!event.player.isEntityAlive() || !event.player.shouldHeal())
-                timeRegen = 20;
-            else if (--timeRegen < 0)
-                timeRegen = 0;
-            if (timeRegen == 0)
-            {
-                event.player.heal(event.player.getMaxHealth() * 0.05F);
-                timeRegen = 40;
-            }
-            setTimeRegen(event.player, timeRegen);
         }
-    }
-
-    public void setTimeRegen(Entity entity, int value)
-    {
-        getData(entity).setInteger("timeRegen", value);
     }
 
 }
