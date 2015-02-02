@@ -45,8 +45,8 @@ public class InfiD
             return;
         if (check(event.target))
         {
-            if (event.entityLiving.getAITarget() == event.target)
-                event.entityLiving.setRevengeTarget(null);
+            // if (event.entityLiving.getAITarget() == event.target)
+            // event.entityLiving.setRevengeTarget(null);
             if (event.entityLiving instanceof EntityLiving)
             {
                 EntityLiving entityLiving = (EntityLiving) event.entityLiving;
