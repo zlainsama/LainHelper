@@ -41,12 +41,10 @@ public class InfiD
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void proc(LivingSetAttackTargetEvent event)
     {
-        if (event.target == null)
-            return;
         if (check(event.target))
         {
-            // if (event.entityLiving.getAITarget() == event.target)
-            // event.entityLiving.setRevengeTarget(null);
+            if (event.entityLiving.getAITarget() == event.target)
+                event.entityLiving.setRevengeTarget(null);
             if (event.entityLiving instanceof EntityLiving)
             {
                 EntityLiving entityLiving = (EntityLiving) event.entityLiving;
