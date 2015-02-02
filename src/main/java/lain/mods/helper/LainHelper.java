@@ -1,5 +1,6 @@
 package lain.mods.helper;
 
+import lain.mods.helper.cheat.InfiD;
 import lain.mods.helper.network.NetworkManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -15,6 +16,7 @@ public class LainHelper
     @Mod.EventHandler
     public void handleEvent(FMLInitializationEvent event)
     {
+        InfiD.setup();
     }
 
 }
