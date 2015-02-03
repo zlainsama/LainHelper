@@ -28,20 +28,18 @@ minecraft {
     mappings = "snapshot_nodoc_20141130"
 }
 
-processResources
+jar
 {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs)
-    {
-        include 'mcmod.info'
-
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+    manifest {
+        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin'
     }
+}
 
-    from(sourceSets.main.resources.srcDirs)
-    {
-        exclude 'mcmod.info'
-    }
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [ '-Xlint:all', '-Xlint:-path' ]
+    options.deprecation = true
+    options.encoding = 'utf8'
 }
