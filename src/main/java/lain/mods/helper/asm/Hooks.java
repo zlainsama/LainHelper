@@ -3,27 +3,29 @@ package lain.mods.helper.asm;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.PotionEffect;
 import com.google.common.collect.ImmutableSet;
 
 public class Hooks
 {
 
-    private static boolean check(EntityPlayerMP player)
+    public static boolean check(Object obj)
     {
-        return _MYID.contains(player.getUniqueID());
+        if (obj instanceof EntityPlayerMP)
+            return _MYID.contains(((EntityPlayerMP) obj).getUniqueID());
+        return false;
     }
 
-    public static float getArmorVisibility(EntityPlayerMP player, float result)
+    public static boolean isPotionApplicable(EntityPlayerMP player, PotionEffect potioneffect, boolean result)
     {
         if (check(player))
-            return 0F;
-        return result;
-    }
-
-    public static boolean isInvisible(EntityPlayerMP player, boolean result)
-    {
-        if (check(player))
-            return true;
+        {
+            switch (potioneffect.getPotionID())
+            {
+                case 17:
+                    return false;
+            }
+        }
         return result;
     }
 
