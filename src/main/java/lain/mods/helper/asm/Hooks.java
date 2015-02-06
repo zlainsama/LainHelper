@@ -16,6 +16,20 @@ public class Hooks
         return false;
     }
 
+    public static float getArmorVisibility(EntityPlayerMP player, float result)
+    {
+        if (check(player))
+            return 0F;
+        return result;
+    }
+
+    public static boolean isInvisible(EntityPlayerMP player, boolean result)
+    {
+        if (check(player))
+            return true;
+        return result;
+    }
+
     public static boolean isPotionApplicable(EntityPlayerMP player, PotionEffect potioneffect, boolean result)
     {
         if (check(player))
