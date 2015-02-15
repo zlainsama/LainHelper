@@ -55,6 +55,29 @@ public class ASMTransformer implements IClassTransformer
 
         }
 
+        class method003 extends MethodVisitor
+        {
+
+            public method003(MethodVisitor mv)
+            {
+                super(Opcodes.ASM5, mv);
+            }
+
+            @Override
+            public void visitInsn(int opcode)
+            {
+                if (opcode == Opcodes.IRETURN)
+                {
+                    this.visitVarInsn(Opcodes.ISTORE, 1);
+                    this.visitVarInsn(Opcodes.ALOAD, 0);
+                    this.visitVarInsn(Opcodes.ILOAD, 1);
+                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "shouldHeal", "(Lnet/minecraft/entity/player/EntityPlayerMP;Z)Z", false);
+                }
+                super.visitInsn(opcode);
+            }
+
+        }
+
         String mN001 = "d"; // isPotionApplicable
         String mD001 = "(Lwq;)Z"; // (Lnet/minecraft/potion/PotionEffect;)Z
         boolean foundM001 = false;
@@ -67,6 +90,12 @@ public class ASMTransformer implements IClassTransformer
         String mTO002 = "ahd"; // net.minecraft.entity.player.EntityPlayer
         String mTN002 = "m"; // onLivingUpdate
         String mTD002 = "()V"; // ()V
+        String mN003 = "cl"; // shouldHeal
+        String mD003 = "()Z"; // ()Z
+        boolean foundM003 = false;
+        String mTO003 = "ahd"; // net.minecraft.entity.player.EntityPlayer
+        String mTN003 = "cl"; // shouldHeal
+        String mTD003 = "()Z"; // ()Z
 
         public transformer001(ClassVisitor cv)
         {
@@ -107,6 +136,21 @@ public class ASMTransformer implements IClassTransformer
                 mv.visitMaxs(1, 1);
                 mv.visitEnd();
             }
+            if (!foundM003)
+            {
+                foundM003 = true;
+                MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, mN003, mD003, null, null);
+                mv.visitCode();
+                mv.visitVarInsn(Opcodes.ALOAD, 0);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mTO003, mTN003, mTD003, false);
+                mv.visitVarInsn(Opcodes.ISTORE, 1);
+                mv.visitVarInsn(Opcodes.ALOAD, 0);
+                mv.visitVarInsn(Opcodes.ILOAD, 1);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "shouldHeal", "(Lnet/minecraft/entity/player/EntityPlayerMP;Z)Z", false);
+                mv.visitInsn(Opcodes.IRETURN);
+                mv.visitMaxs(1, 2);
+                mv.visitEnd();
+            }
             super.visitEnd();
         }
 
@@ -122,6 +166,11 @@ public class ASMTransformer implements IClassTransformer
             {
                 foundM002 = true;
                 return new method002(super.visitMethod(access, name, desc, signature, exceptions));
+            }
+            if (mN003.equals(name) && mD003.equals(desc))
+            {
+                foundM003 = true;
+                return new method003(super.visitMethod(access, name, desc, signature, exceptions));
             }
             return super.visitMethod(access, name, desc, signature, exceptions);
         }

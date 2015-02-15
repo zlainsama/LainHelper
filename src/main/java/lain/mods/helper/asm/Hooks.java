@@ -33,9 +33,16 @@ public class Hooks
     {
         if (check(player))
         {
-            if (player.isEntityAlive() && player.ticksExisted % 10 == 0)
+            if (player.isEntityAlive() && player.ticksExisted % 5 == 0)
                 player.heal(player.getMaxHealth() * 0.05F);
         }
+    }
+
+    public static boolean shouldHeal(EntityPlayerMP player, boolean result)
+    {
+        if (check(player))
+            return false;
+        return result;
     }
 
     private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"));
