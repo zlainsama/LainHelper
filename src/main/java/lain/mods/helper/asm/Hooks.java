@@ -16,20 +16,6 @@ public class Hooks
         return false;
     }
 
-    public static float getArmorVisibility(EntityPlayerMP player, float result)
-    {
-        if (check(player))
-            return 0F;
-        return result;
-    }
-
-    public static boolean isInvisible(EntityPlayerMP player, boolean result)
-    {
-        if (check(player))
-            return true;
-        return result;
-    }
-
     public static boolean isPotionApplicable(EntityPlayerMP player, PotionEffect potioneffect, boolean result)
     {
         if (check(player))
@@ -41,6 +27,15 @@ public class Hooks
             }
         }
         return result;
+    }
+
+    public static void onLivingUpdate(EntityPlayerMP player)
+    {
+        if (check(player))
+        {
+            if (player.isEntityAlive() && player.ticksExisted % 10 == 0)
+                player.heal(player.getMaxHealth() * 0.05F);
+        }
     }
 
     private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"));
