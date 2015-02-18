@@ -18,7 +18,7 @@ public class NetworkManager
 
     public static void registerPacket(Class<? extends NetworkPacket> packetClass)
     {
-        REGISTRY.forcePut(packetClass.hashCode(), packetClass);
+        REGISTRY.forcePut(packetClass.getName().hashCode(), packetClass);
     }
 
     protected static final BiMap<Integer, Class<? extends NetworkPacket>> REGISTRY = HashBiMap.create();

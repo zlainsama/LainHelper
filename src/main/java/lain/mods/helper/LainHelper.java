@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 public class LainHelper extends DummyModContainer
 {
@@ -29,7 +30,7 @@ public class LainHelper extends DummyModContainer
         meta.updateUrl = "https://github.com/zlainsama/lainhelper/releases";
     }
 
-    @SubscribeEvent
+    @Subscribe
     public void init(FMLPreInitializationEvent event)
     {
         switch (event.getSide())
