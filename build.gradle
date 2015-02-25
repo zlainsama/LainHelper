@@ -17,21 +17,40 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.8"
+version = "1.7.10"
 group= "lain.mods.helper"
 archivesBaseName = "LainHelper"
 
 minecraft {
-    version = "1.8-11.14.0.1297"
+    version = "1.7.10-10.13.2.1284"
     runDir = "eclipse"
-
-    mappings = "snapshot_nodoc_20141130"
 }
 
 jar
 {
     manifest {
         attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin'
+		           'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from 'LICENSE.txt'
+
+    from(sourceSets.main.resources.srcDirs)
+    {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs)
+    {
+        exclude 'mcmod.info'
     }
 }
 
