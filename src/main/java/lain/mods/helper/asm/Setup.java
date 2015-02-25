@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -28,6 +29,8 @@ public class Setup implements IFMLCallHook
     @Override
     public Void call() throws Exception
     {
+        injectLibraries();
+
         try
         {
             PackageMap = HashBiMap.create();
@@ -110,9 +113,6 @@ public class Setup implements IFMLCallHook
             MethodMap = ImmutableBiMap.of();
             throw e;
         }
-        finally
-        {
-        }
         return null;
     }
 
@@ -120,6 +120,11 @@ public class Setup implements IFMLCallHook
     public void injectData(Map<String, Object> data)
     {
         deobfuscationFileName = (String) data.get("deobfuscationFileName");
+    }
+
+    private void injectLibraries()
+    {
+        ((LaunchClassLoader) Setup.class.getClassLoader()).addURL(Resources.getResource("/lib/xz-1.5.jar"));
     }
 
 }
