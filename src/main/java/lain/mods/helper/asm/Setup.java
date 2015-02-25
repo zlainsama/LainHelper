@@ -1,11 +1,14 @@
 package lain.mods.helper.asm;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 import org.apache.commons.io.FileUtils;
@@ -135,7 +138,17 @@ public class Setup implements IFMLCallHook
             dir.mkdirs();
 
         File lib = new File(dir, "xz-1.5.jar");
-        FileUtils.copyInputStreamToFile(Resources.getResource("/xz-1.5.jar").openStream(), lib);
-        classLoader.addURL(lib.toURI().toURL());
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(coremodLocation));
+        ZipEntry ze = null;
+        while ((ze = zis.getNextEntry()) != null)
+        {
+            if (ze.getName().toLowerCase().endsWith("/xz-1.5.jar"))
+            {
+                FileUtils.copyInputStreamToFile(zis, lib);
+                classLoader.addURL(lib.toURI().toURL());
+                break;
+            }
+        }
+        zis.close();
     }
 }
