@@ -29,7 +29,7 @@ minecraft {
 jar
 {
     manifest {
-        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin'
+        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin',
 		           'FMLCorePluginContainsFMLMod': 'true'
     }
 }
