@@ -78,24 +78,14 @@ public class ASMTransformer implements IClassTransformer
 
         }
 
-        String mN001 = "d"; // isPotionApplicable
-        String mD001 = "(Lwq;)Z"; // (Lnet/minecraft/potion/PotionEffect;)Z
+        ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/player/EntityPlayer");
+
+        ObfHelper m001 = ObfHelper.newMethod("func_70687_e", "net/minecraft/entity/EntityLivingBase", "(Lnet/minecraft/potion/PotionEffect;)Z"); // isPotionApplicable
         boolean foundM001 = false;
-        String mTO001 = "ahd"; // net.minecraft.entity.player.EntityPlayer
-        String mTN001 = "d"; // isPotionApplicable
-        String mTD001 = "(Lwq;)Z"; // (Lnet/minecraft/potion/PotionEffect;)Z
-        String mN002 = "m"; // onLivingUpdate
-        String mD002 = "()V"; // ()V
+        ObfHelper m002 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/EntityLivingBase", "()V"); // onLivingUpdate
         boolean foundM002 = false;
-        String mTO002 = "ahd"; // net.minecraft.entity.player.EntityPlayer
-        String mTN002 = "m"; // onLivingUpdate
-        String mTD002 = "()V"; // ()V
-        String mN003 = "cl"; // shouldHeal
-        String mD003 = "()Z"; // ()Z
+        ObfHelper m003 = ObfHelper.newMethod("func_70996_bM", "net/minecraft/entity/player/EntityPlayer", "()Z"); // shouldHeal
         boolean foundM003 = false;
-        String mTO003 = "ahd"; // net.minecraft.entity.player.EntityPlayer
-        String mTN003 = "cl"; // shouldHeal
-        String mTD003 = "()Z"; // ()Z
 
         public transformer001(ClassVisitor cv)
         {
@@ -109,29 +99,22 @@ public class ASMTransformer implements IClassTransformer
             if (!foundM001)
             {
                 foundM001 = true;
-                MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, mN001, mD001, null, null);
+                MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m001.getData(1), m001.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
                 mv.visitVarInsn(Opcodes.ALOAD, 1);
-                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mTO001, mTN001, mTD001, false);
-                mv.visitVarInsn(Opcodes.ISTORE, 2);
-                mv.visitVarInsn(Opcodes.ALOAD, 0);
-                mv.visitVarInsn(Opcodes.ALOAD, 1);
-                mv.visitVarInsn(Opcodes.ILOAD, 2);
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "isPotionApplicable", "(Lnet/minecraft/entity/player/EntityPlayerMP;Lnet/minecraft/potion/PotionEffect;Z)Z", false);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m001.getData(1), m001.getData(2), false);
                 mv.visitInsn(Opcodes.IRETURN);
-                mv.visitMaxs(2, 3);
+                mv.visitMaxs(2, 2);
                 mv.visitEnd();
             }
             if (!foundM002)
             {
                 foundM002 = true;
-                MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, mN002, mD002, null, null);
+                MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m002.getData(1), m002.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "onLivingUpdate", "(Lnet/minecraft/entity/player/EntityPlayerMP;)V", false);
-                mv.visitVarInsn(Opcodes.ALOAD, 0);
-                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mTO002, mTN002, mTD002, false);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m002.getData(1), m002.getData(2), false);
                 mv.visitInsn(Opcodes.RETURN);
                 mv.visitMaxs(1, 1);
                 mv.visitEnd();
@@ -139,16 +122,12 @@ public class ASMTransformer implements IClassTransformer
             if (!foundM003)
             {
                 foundM003 = true;
-                MethodVisitor mv = super.visitMethod(Opcodes.ACC_PUBLIC, mN003, mD003, null, null);
+                MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m003.getData(1), m003.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
-                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, mTO003, mTN003, mTD003, false);
-                mv.visitVarInsn(Opcodes.ISTORE, 1);
-                mv.visitVarInsn(Opcodes.ALOAD, 0);
-                mv.visitVarInsn(Opcodes.ILOAD, 1);
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "shouldHeal", "(Lnet/minecraft/entity/player/EntityPlayerMP;Z)Z", false);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m003.getData(1), m003.getData(2), false);
                 mv.visitInsn(Opcodes.IRETURN);
-                mv.visitMaxs(1, 2);
+                mv.visitMaxs(1, 1);
                 mv.visitEnd();
             }
             super.visitEnd();
@@ -157,17 +136,17 @@ public class ASMTransformer implements IClassTransformer
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
         {
-            if (mN001.equals(name) && mD001.equals(desc))
+            if (m001.match(name, desc))
             {
                 foundM001 = true;
                 return new method001(super.visitMethod(access, name, desc, signature, exceptions));
             }
-            if (mN002.equals(name) && mD002.equals(desc))
+            if (m002.match(name, desc))
             {
                 foundM002 = true;
                 return new method002(super.visitMethod(access, name, desc, signature, exceptions));
             }
-            if (mN003.equals(name) && mD003.equals(desc))
+            if (m003.match(name, desc))
             {
                 foundM003 = true;
                 return new method003(super.visitMethod(access, name, desc, signature, exceptions));

@@ -1,13 +1,15 @@
 package lain.mods.helper.asm;
 
 import java.util.Map;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.Name("LainHelper")
 @IFMLLoadingPlugin.MCVersion("")
 @IFMLLoadingPlugin.TransformerExclusions("lain.mods.helper.asm.")
 public class Plugin implements IFMLLoadingPlugin
 {
+
+    public static boolean runtimeDeobfuscationEnabled = false;
 
     @Override
     public String getAccessTransformerClass()
@@ -24,18 +26,19 @@ public class Plugin implements IFMLLoadingPlugin
     @Override
     public String getModContainerClass()
     {
-        return "lain.mods.helper.LainHelper";
+        return null;
     }
 
     @Override
     public String getSetupClass()
     {
-        return null;
+        return "lain.mods.helper.asm.Setup";
     }
 
     @Override
-    public void injectData(Map<String, Object> arg0)
+    public void injectData(Map<String, Object> data)
     {
+        runtimeDeobfuscationEnabled = (Boolean) data.get("runtimeDeobfuscationEnabled");
     }
 
 }

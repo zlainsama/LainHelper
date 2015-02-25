@@ -1,55 +1,14 @@
 package lain.mods.helper;
 
-import java.util.Arrays;
 import lain.mods.helper.network.NetworkManager;
-import lain.mods.helper.network.NetworkManagerClient;
-import net.minecraftforge.fml.common.DummyModContainer;
-import net.minecraftforge.fml.common.LoadController;
-import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 
-public class LainHelper extends DummyModContainer
+@Mod(modid = "LainHelper", useMetadata = true)
+public class LainHelper
 {
 
+    @SidedProxy(serverSide = "lain.mods.helper.network.NetworkManager", clientSide = "lain.mods.helper.network.NetworkManagerClient")
     public static NetworkManager network;
-
-    public LainHelper()
-    {
-        super(new ModMetadata());
-        ModMetadata meta = getMetadata();
-        meta.modId = "LainHelper";
-        meta.name = "LainHelper";
-        meta.version = "1.8-v1";
-        meta.authorList = Arrays.asList("zlainsama");
-        meta.description = "";
-        meta.credits = "";
-        meta.url = "https://github.com/zlainsama/lainhelper";
-        meta.updateUrl = "https://github.com/zlainsama/lainhelper/releases";
-    }
-
-    @Subscribe
-    public void init(FMLPreInitializationEvent event)
-    {
-        switch (event.getSide())
-        {
-            case CLIENT:
-                network = new NetworkManagerClient();
-                break;
-            case SERVER:
-            default:
-                network = new NetworkManager();
-                break;
-        }
-    }
-
-    @Override
-    public boolean registerBus(EventBus bus, LoadController controller)
-    {
-        bus.register(this);
-        return true;
-    }
 
 }

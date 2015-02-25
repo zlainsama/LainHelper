@@ -2,9 +2,9 @@ package lain.mods.helper.network;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public class NetworkManagerClient extends NetworkManager
 {
