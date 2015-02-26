@@ -80,11 +80,11 @@ public class ASMTransformer implements IClassTransformer
 
         ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/player/EntityPlayer");
 
-        ObfHelper m001 = ObfHelper.newMethod("func_70687_e", "net/minecraft/entity/EntityLivingBase", "(Lnet/minecraft/potion/PotionEffect;)Z"); // isPotionApplicable
+        ObfHelper m001 = ObfHelper.newMethod("func_70687_e", "net/minecraft/entity/EntityLivingBase", "(Lnet/minecraft/potion/PotionEffect;)Z").setDevName("isPotionApplicable");
         boolean foundM001 = false;
-        ObfHelper m002 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/EntityLivingBase", "()V"); // onLivingUpdate
+        ObfHelper m002 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/EntityLivingBase", "()V").setDevName("onLivingUpdate");
         boolean foundM002 = false;
-        ObfHelper m003 = ObfHelper.newMethod("func_70996_bM", "net/minecraft/entity/player/EntityPlayer", "()Z"); // shouldHeal
+        ObfHelper m003 = ObfHelper.newMethod("func_70996_bM", "net/minecraft/entity/player/EntityPlayer", "()Z").setDevName("shouldHeal");
         boolean foundM003 = false;
 
         public transformer001(ClassVisitor cv)

@@ -68,6 +68,11 @@ public class ObfHelper
         return null;
     }
 
+    public int getType()
+    {
+        return type;
+    }
+
     public boolean match(Object... obj)
     {
         switch (type)
@@ -96,22 +101,67 @@ public class ObfHelper
         return false;
     }
 
-    private void transform(boolean dev)
+    public ObfHelper setDevName(String name)
+    {
+        return setDevName(name, Plugin.isDevelopmentEnvironment);
+    }
+
+    private ObfHelper setDevName(String name, boolean devEnv)
+    {
+        if (devEnv)
+        {
+            switch (type)
+            {
+                case 1:
+                    data[0] = name;
+                    break;
+                case 2:
+                    data[0] = name;
+                    break;
+                case 3:
+                    data[1] = name;
+                    break;
+                case 4:
+                    data[1] = name;
+                    break;
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public String toString()
     {
         switch (type)
         {
             case 1:
-                Map<String, String> map1 = dev ? Setup.PackageMap : Setup.PackageMap.inverse();
+                return String.format("ObfHelper:Package{%s}", data[0]);
+            case 2:
+                return String.format("ObfHelper:Class{%s}", data[0]);
+            case 3:
+                return String.format("ObfHelper:Field{%s/%s}", data[0], data[1]);
+            case 4:
+                return String.format("ObfHelper:Method{%s/%s %s}", data[0], data[1], data[2]);
+        }
+        return String.format("ObfHelper:Unknown(%d){%s %s %s}", type, data[0], data[1], data[2]);
+    }
+
+    private void transform(boolean deobfuscated)
+    {
+        switch (type)
+        {
+            case 1:
+                Map<String, String> map1 = deobfuscated ? Setup.PackageMap : Setup.PackageMap.inverse();
                 if (map1.containsKey(data[0]))
                     data[0] = map1.get(data[0]);
                 break;
             case 2:
-                Map<String, String> map2 = dev ? Setup.ClassMap : Setup.ClassMap.inverse();
+                Map<String, String> map2 = deobfuscated ? Setup.ClassMap : Setup.ClassMap.inverse();
                 if (map2.containsKey(data[0]))
                     data[0] = map2.get(data[0]);
                 break;
             case 3:
-                Map<List<String>, List<String>> map3 = dev ? Setup.FieldMap : Setup.FieldMap.inverse();
+                Map<List<String>, List<String>> map3 = deobfuscated ? Setup.FieldMap : Setup.FieldMap.inverse();
                 List<String> list3 = ImmutableList.of(data[0], data[1]);
                 if (map3.containsKey(list3))
                 {
@@ -121,7 +171,7 @@ public class ObfHelper
                 }
                 break;
             case 4:
-                Map<List<String>, List<String>> map4 = dev ? Setup.MethodMap : Setup.MethodMap.inverse();
+                Map<List<String>, List<String>> map4 = deobfuscated ? Setup.MethodMap : Setup.MethodMap.inverse();
                 List<String> list4 = ImmutableList.of(data[0], data[1], data[2]);
                 if (map4.containsKey(list4))
                 {

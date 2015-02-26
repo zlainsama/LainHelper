@@ -10,6 +10,7 @@ public class Plugin implements IFMLLoadingPlugin
 {
 
     public static boolean runtimeDeobfuscationEnabled = false;
+    public static boolean isDevelopmentEnvironment = false;
 
     @Override
     public String getAccessTransformerClass()
@@ -39,6 +40,7 @@ public class Plugin implements IFMLLoadingPlugin
     public void injectData(Map<String, Object> data)
     {
         runtimeDeobfuscationEnabled = (Boolean) data.get("runtimeDeobfuscationEnabled");
+        isDevelopmentEnvironment = (getClass().getResource("/binpatches.pack.lzma") == null);
     }
 
 }

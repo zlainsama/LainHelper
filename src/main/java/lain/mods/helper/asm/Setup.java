@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import LZMA.LzmaInputStream;
 import com.google.common.base.Charsets;
 import com.google.common.collect.BiMap;
@@ -24,7 +23,6 @@ public class Setup implements IFMLCallHook
     public static BiMap<List<String>, List<String>> MethodMap;
 
     private String deobfuscationFileName;
-    private LaunchClassLoader classLoader;
 
     @Override
     public Void call() throws Exception
@@ -41,7 +39,7 @@ public class Setup implements IFMLCallHook
                 @Override
                 public InputStream openStream() throws IOException
                 {
-                    return new LzmaInputStream(classLoader.getClass().getResourceAsStream(deobfuscationFileName));
+                    return new LzmaInputStream(Setup.class.getResourceAsStream(deobfuscationFileName));
                 }
 
             }.asCharSource(Charsets.UTF_8).readLines(new LineProcessor<Void>()
@@ -102,10 +100,6 @@ public class Setup implements IFMLCallHook
             ClassMap = ImmutableBiMap.copyOf(ClassMap);
             FieldMap = ImmutableBiMap.copyOf(FieldMap);
             MethodMap = ImmutableBiMap.copyOf(MethodMap);
-            System.out.println(String.format("[Helper|ASM] loaded %d packages from deobfuscationFile.", PackageMap.size()));
-            System.out.println(String.format("[Helper|ASM] loaded %d classes from deobfuscationFile.", ClassMap.size()));
-            System.out.println(String.format("[Helper|ASM] loaded %d fields from deobfuscationFile.", FieldMap.size()));
-            System.out.println(String.format("[Helper|ASM] loaded %d methods from deobfuscationFile.", MethodMap.size()));
         }
         catch (Exception e)
         {
@@ -122,7 +116,6 @@ public class Setup implements IFMLCallHook
     public void injectData(Map<String, Object> data)
     {
         deobfuscationFileName = (String) data.get("deobfuscationFileName");
-        classLoader = (LaunchClassLoader) data.get("classLoader");
     }
 
 }
