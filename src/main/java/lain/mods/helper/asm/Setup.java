@@ -1,24 +1,18 @@
 package lain.mods.helper.asm;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
-import org.apache.commons.io.FileUtils;
+import LZMA.LzmaInputStream;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteSource;
 import com.google.common.io.LineProcessor;
-import com.google.common.io.Resources;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 
 public class Setup implements IFMLCallHook
@@ -31,13 +25,10 @@ public class Setup implements IFMLCallHook
 
     private String deobfuscationFileName;
     private LaunchClassLoader classLoader;
-    File coremodLocation;
 
     @Override
     public Void call() throws Exception
     {
-        injectLibraries();
-
         try
         {
             PackageMap = HashBiMap.create();
@@ -50,7 +41,7 @@ public class Setup implements IFMLCallHook
                 @Override
                 public InputStream openStream() throws IOException
                 {
-                    return new LZMACompressorInputStream(Resources.getResource(deobfuscationFileName).openStream());
+                    return new LzmaInputStream(classLoader.getClass().getResourceAsStream(deobfuscationFileName));
                 }
 
             }.asCharSource(Charset.defaultCharset()).readLines(new LineProcessor<Void>()
@@ -111,6 +102,10 @@ public class Setup implements IFMLCallHook
             ClassMap = ImmutableBiMap.copyOf(ClassMap);
             FieldMap = ImmutableBiMap.copyOf(FieldMap);
             MethodMap = ImmutableBiMap.copyOf(MethodMap);
+            System.out.println(String.format("[Helper|ASM] loaded %d packages from deobfuscationFile.", PackageMap.size()));
+            System.out.println(String.format("[Helper|ASM] loaded %d classes from deobfuscationFile.", ClassMap.size()));
+            System.out.println(String.format("[Helper|ASM] loaded %d fields from deobfuscationFile.", FieldMap.size()));
+            System.out.println(String.format("[Helper|ASM] loaded %d methods from deobfuscationFile.", MethodMap.size()));
         }
         catch (Exception e)
         {
@@ -128,27 +123,6 @@ public class Setup implements IFMLCallHook
     {
         deobfuscationFileName = (String) data.get("deobfuscationFileName");
         classLoader = (LaunchClassLoader) data.get("classLoader");
-        coremodLocation = (File) data.get("coremodLocation");
     }
 
-    private void injectLibraries() throws IOException
-    {
-        File dir = new File(coremodLocation.getParentFile(), "helper");
-        if (!dir.exists())
-            dir.mkdirs();
-
-        File lib = new File(dir, "xz-1.5.jar");
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(coremodLocation));
-        ZipEntry ze = null;
-        while ((ze = zis.getNextEntry()) != null)
-        {
-            if (ze.getName().toLowerCase().endsWith("/xz-1.5.jar"))
-            {
-                FileUtils.copyInputStreamToFile(zis, lib);
-                classLoader.addURL(lib.toURI().toURL());
-                break;
-            }
-        }
-        zis.close();
-    }
 }

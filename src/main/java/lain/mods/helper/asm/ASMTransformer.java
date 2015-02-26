@@ -98,7 +98,6 @@ public class ASMTransformer implements IClassTransformer
 
             if (!foundM001)
             {
-                foundM001 = true;
                 MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m001.getData(1), m001.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
@@ -110,7 +109,6 @@ public class ASMTransformer implements IClassTransformer
             }
             if (!foundM002)
             {
-                foundM002 = true;
                 MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m002.getData(1), m002.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
@@ -121,7 +119,6 @@ public class ASMTransformer implements IClassTransformer
             }
             if (!foundM003)
             {
-                foundM003 = true;
                 MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m003.getData(1), m003.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);

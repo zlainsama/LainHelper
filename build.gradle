@@ -40,7 +40,6 @@ processResources
     inputs.property "mcversion", project.minecraft.version
 
     from 'LICENSE.txt'
-	from 'xz-1.5.jar'
 
     from(sourceSets.main.resources.srcDirs)
     {
