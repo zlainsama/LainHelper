@@ -2,11 +2,11 @@ package lain.mods.helper.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import LZMA.LzmaInputStream;
+import com.google.common.base.Charsets;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -44,7 +44,7 @@ public class Setup implements IFMLCallHook
                     return new LzmaInputStream(classLoader.getClass().getResourceAsStream(deobfuscationFileName));
                 }
 
-            }.asCharSource(Charset.defaultCharset()).readLines(new LineProcessor<Void>()
+            }.asCharSource(Charsets.UTF_8).readLines(new LineProcessor<Void>()
             {
 
                 @Override
