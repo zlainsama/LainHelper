@@ -74,9 +74,9 @@ public class LainHelper
         public DataStorage load(File file) throws Exception
         {
             if (file == null)
-                throw new IllegalArgumentException("No available file can be used as DataStorage.");
+                throw new NullPointerException("The file to be used as DataStorage must not be null.");
             if (file.exists() && (file.isDirectory() || !file.canRead() || !file.canWrite()))
-                throw new IllegalArgumentException("The file('" + file.toString() + "') cannot be used as DataStorage. It needs to be readable and writable. It must be a file, not a directory.");
+                throw new IllegalArgumentException("The file('" + file.toString() + "') cannot be used as DataStorage. It must be readable and writable. It must be a file, not a directory.");
             return new DataStorage(file);
         }
 
