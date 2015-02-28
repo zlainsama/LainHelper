@@ -1,4 +1,4 @@
-package lain.mods.helper;
+package lain.mods.helper.utils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;

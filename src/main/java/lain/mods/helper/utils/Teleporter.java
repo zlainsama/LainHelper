@@ -1,4 +1,4 @@
-package lain.mods.helper;
+package lain.mods.helper.utils;
 
 import java.util.Iterator;
 import net.minecraft.entity.Entity;
