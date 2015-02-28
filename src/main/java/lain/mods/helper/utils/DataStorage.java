@@ -47,7 +47,7 @@ public class DataStorage
     {
         if (objects.get(name) == obj)
             return;
-        if (objects.containsKey(name))
+        if (objects.get(name) != null)
             objects.get(name).saveData(data.getCompoundTag(name));
         obj.loadData(data.getCompoundTag(name));
         objects.put(name, obj);
