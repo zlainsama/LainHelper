@@ -8,7 +8,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
-public class CommandOpenStorage extends GeneralHelperCommand
+public class CommandSharedStorage extends GeneralHelperCommand
 {
 
     IChatComponent msgNotPlayer = new ChatComponentTranslation("LH_NotPlayer", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
@@ -16,13 +16,13 @@ public class CommandOpenStorage extends GeneralHelperCommand
     @Override
     public String getCommandName()
     {
-        return "openstorage";
+        return "sharedstorage";
     }
 
     @Override
     public String getCommandUsage(ICommandSender par1)
     {
-        return "LH_OpenStorage_Usage";
+        return "LH_SharedStorage_Usage";
     }
 
     @Override

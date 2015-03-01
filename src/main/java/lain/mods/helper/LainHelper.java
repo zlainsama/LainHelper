@@ -5,8 +5,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
-import lain.mods.helper.commands.CommandOpenStorage;
 import lain.mods.helper.commands.CommandSetHome;
+import lain.mods.helper.commands.CommandSharedStorage;
 import lain.mods.helper.commands.CommandSpawn;
 import lain.mods.helper.network.NetworkManager;
 import lain.mods.helper.utils.DataStorage;
@@ -98,7 +98,7 @@ public class LainHelper
             event.registerServerCommand(new CommandHome());
             event.registerServerCommand(new CommandSetHome());
             event.registerServerCommand(new CommandSpawn());
-            event.registerServerCommand(new CommandOpenStorage());
+            event.registerServerCommand(new CommandSharedStorage());
         }
     }
 

@@ -74,7 +74,7 @@ public class SharedStorage
         @Override
         public IInventory load(DataStorage store) throws Exception
         {
-            InventoryStorage inv = new InventoryStorage("LH_OpenStorage_Title", false, 54);
+            InventoryStorage inv = new InventoryStorage("LH_SharedStorage_Title", false, 54);
             store.registerAttachmentObject("SharedStorage", inv);
             return inv;
         }

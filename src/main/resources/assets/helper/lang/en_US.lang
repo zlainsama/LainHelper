@@ -10,5 +10,5 @@ LH_Back_Usage=/back - teleport you to your last position.
 LH_Home_Usage=/home - teleport you to your home position.
 LH_SetHome_Usage=/sethome - set your home position here.
 LH_Spawn_Usage=/spawn - teleport you to overworld spawn.
-LH_OpenStorage_Usage=/openstorage - open a storage that can be used to share items with other players.
-LH_OpenStorage_Title=Shared Storage
+LH_SharedStorage_Usage=/sharedstorage - open a storage that can be used to share items with other players.
+LH_SharedStorage_Title=Shared Storage
