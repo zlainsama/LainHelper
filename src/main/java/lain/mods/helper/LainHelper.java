@@ -3,12 +3,18 @@ package lain.mods.helper;
 import java.io.File;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import lain.mods.helper.commands.CommandBack;
+import lain.mods.helper.commands.CommandHome;
+import lain.mods.helper.commands.CommandOpenStorage;
+import lain.mods.helper.commands.CommandSetHome;
+import lain.mods.helper.commands.CommandSpawn;
 import lain.mods.helper.network.NetworkManager;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -20,6 +26,7 @@ import com.google.common.cache.RemovalNotification;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -83,6 +90,19 @@ public class LainHelper
     });
 
     @Mod.EventHandler
+    public void handleEvent(FMLServerStartingEvent event)
+    {
+        if (Options.enableHelperCommands)
+        {
+            event.registerServerCommand(new CommandBack());
+            event.registerServerCommand(new CommandHome());
+            event.registerServerCommand(new CommandSetHome());
+            event.registerServerCommand(new CommandSpawn());
+            event.registerServerCommand(new CommandOpenStorage());
+        }
+    }
+
+    @Mod.EventHandler
     public void handleEvent(FMLServerStoppingEvent event)
     {
         stores.invalidateAll();
@@ -122,6 +142,8 @@ public class LainHelper
     @Mod.EventHandler
     public void init(FMLPreInitializationEvent event)
     {
+        Options.loadConfig(new Configuration(event.getSuggestedConfigurationFile()), event.getModLog());
+
         MinecraftForge.EVENT_BUS.register(this);
     }
 
