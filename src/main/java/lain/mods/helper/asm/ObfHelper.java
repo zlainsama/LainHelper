@@ -18,14 +18,16 @@ public class ObfHelper
         return result;
     }
 
-    public static ObfHelper newField(String fieldName, String ownerName)
+    public static ObfHelper newField(String fieldName, String ownerName, String descriptor)
     {
         Validate.notNull(fieldName);
         Validate.notNull(ownerName);
+        Validate.notNull(descriptor);
         ObfHelper result = new ObfHelper();
         result.type = 3;
         result.data[0] = ownerName;
         result.data[1] = fieldName;
+        result.data[2] = descriptor;
         result.transform(!Plugin.runtimeDeobfuscationEnabled);
         return result;
     }
@@ -139,7 +141,7 @@ public class ObfHelper
             case 2:
                 return String.format("ObfHelper:Class{%s}", data[0]);
             case 3:
-                return String.format("ObfHelper:Field{%s/%s}", data[0], data[1]);
+                return String.format("ObfHelper:Field{%s/%s %s}", data[0], data[1], data[2]);
             case 4:
                 return String.format("ObfHelper:Method{%s/%s %s}", data[0], data[1], data[2]);
         }
