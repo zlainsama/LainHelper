@@ -2,6 +2,7 @@ package lain.mods.helper.asm;
 
 import java.util.Set;
 import java.util.UUID;
+import lain.mods.helper.utils.ItemCharger;
 import net.minecraft.entity.player.EntityPlayerMP;
 import com.google.common.collect.ImmutableSet;
 
@@ -19,6 +20,21 @@ public class Hooks
     {
         if (check(player))
         {
+            for (int i = 9; i < player.inventory.mainInventory.length; i++)
+            {
+                boolean handled = false;
+                for (ItemCharger charger : ItemCharger.chargers)
+                {
+                    if (charger.canHandle(player.inventory.mainInventory[i]))
+                    {
+                        charger.chargeItem(player.inventory.mainInventory[i], Double.MAX_VALUE, false);
+                        handled = true;
+                    }
+                }
+                if (!handled)
+                {
+                }
+            }
         }
     }
 
