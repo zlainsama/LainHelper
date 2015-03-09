@@ -28,6 +28,9 @@ minecraft {
 
 jar
 {
+    exclude('ic2/api/*')
+    exclude('cofh/api/*')
+
     manifest {
         attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin',
 		           'FMLCorePluginContainsFMLMod': 'true'
