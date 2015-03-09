@@ -22,24 +22,18 @@ public class ASMTransformer implements IClassTransformer
             }
 
             @Override
-            public void visitInsn(int opcode)
+            public void visitCode()
             {
-                if (opcode == Opcodes.IRETURN)
-                {
-                    this.visitVarInsn(Opcodes.ISTORE, 2);
-                    this.visitVarInsn(Opcodes.ALOAD, 0);
-                    this.visitVarInsn(Opcodes.ALOAD, 1);
-                    this.visitVarInsn(Opcodes.ILOAD, 2);
-                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "isPotionApplicable", "(Lnet/minecraft/entity/player/EntityPlayerMP;Lnet/minecraft/potion/PotionEffect;Z)Z", false);
-                }
-                super.visitInsn(opcode);
+                super.visitCode();
+                this.visitVarInsn(Opcodes.ALOAD, 0);
+                this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "onLivingUpdate", "(Lnet/minecraft/entity/player/EntityPlayerMP;)V", false);
             }
 
         }
 
         ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/player/EntityPlayer");
 
-        ObfHelper m001 = ObfHelper.newMethod("func_70687_e", "net/minecraft/entity/EntityLivingBase", "(Lnet/minecraft/potion/PotionEffect;)Z").setDevName("isPotionApplicable");
+        ObfHelper m001 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/EntityLivingBase", "()V").setDevName("onLivingUpdate");
         boolean foundM001 = false;
 
         public transformer001(ClassVisitor cv)
@@ -50,16 +44,14 @@ public class ASMTransformer implements IClassTransformer
         @Override
         public void visitEnd()
         {
-
             if (!foundM001)
             {
                 MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m001.getData(1), m001.getData(2), null, null);
                 mv.visitCode();
                 mv.visitVarInsn(Opcodes.ALOAD, 0);
-                mv.visitVarInsn(Opcodes.ALOAD, 1);
                 mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m001.getData(1), m001.getData(2), false);
-                mv.visitInsn(Opcodes.IRETURN);
-                mv.visitMaxs(2, 2);
+                mv.visitInsn(Opcodes.RETURN);
+                mv.visitMaxs(1, 1);
                 mv.visitEnd();
             }
             super.visitEnd();
