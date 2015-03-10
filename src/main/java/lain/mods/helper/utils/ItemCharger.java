@@ -19,13 +19,15 @@ public abstract class ItemCharger
         List<ItemCharger> list = Lists.newArrayList();
         try
         {
-            ElectricItem.class.getName();
-            IBackupElectricItemManager.class.getName();
-            IElectricItem.class.getName();
-            IElectricItemManager.class.getName();
-
             list.add(new ItemCharger()
             {
+
+                {
+                    ElectricItem.class.getName();
+                    IBackupElectricItemManager.class.getName();
+                    IElectricItem.class.getName();
+                    IElectricItemManager.class.getName();
+                }
 
                 public boolean canHandle(ItemStack stack)
                 {
@@ -53,10 +55,13 @@ public abstract class ItemCharger
         }
         try
         {
-            IEnergyContainerItem.class.getName();
 
             list.add(new ItemCharger()
             {
+
+                {
+                    IEnergyContainerItem.class.getName();
+                }
 
                 public boolean canHandle(ItemStack stack)
                 {

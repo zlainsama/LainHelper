@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.utils.ItemCharger;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import com.google.common.collect.ImmutableSet;
 
 public class Hooks
@@ -22,12 +23,15 @@ public class Hooks
         {
             for (int i = 9; i < player.inventory.mainInventory.length; i++)
             {
+                ItemStack stack = player.inventory.mainInventory[i];
+                if (stack == null)
+                    continue;
                 boolean handled = false;
                 for (ItemCharger charger : ItemCharger.chargers)
                 {
-                    if (charger.canHandle(player.inventory.mainInventory[i]))
+                    if (charger.canHandle(stack))
                     {
-                        charger.chargeItem(player.inventory.mainInventory[i], Double.MAX_VALUE, false);
+                        charger.chargeItem(stack, Double.MAX_VALUE, false);
                         handled = true;
                     }
                 }
