@@ -50,7 +50,7 @@ public abstract class ItemCharger
 
             });
         }
-        catch (Exception ignored)
+        catch (Throwable ignored)
         {
         }
         try
@@ -80,7 +80,7 @@ public abstract class ItemCharger
 
             });
         }
-        catch (Exception ignored)
+        catch (Throwable ignored)
         {
         }
         return list;
