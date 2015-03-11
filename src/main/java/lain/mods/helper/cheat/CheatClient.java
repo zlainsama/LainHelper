@@ -25,9 +25,9 @@ public class CheatClient extends Cheat
         if (player == FMLClientHandler.instance().getClientPlayerEntity())
         {
             int flags = getFlagsClient();
-            if (flags == -1)
+            if (flags < 0)
             {
-                LainHelper.network.sendToServer(new PacketCheatInfo(-1));
+                LainHelper.network.sendToServer(new PacketCheatInfo(flags));
                 setFlagsClient(flags = 0);
             }
             if ((flags & 0x1) != 0)
