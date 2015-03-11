@@ -31,7 +31,7 @@ public class Hooks
                 {
                     if (charger.canHandle(stack))
                     {
-                        charger.chargeItem(stack, Double.MAX_VALUE, false);
+                        charger.chargeItem(stack, Double.MAX_VALUE, true, false);
                         handled = true;
                     }
                 }

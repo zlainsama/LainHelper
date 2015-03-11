@@ -36,14 +36,14 @@ public abstract class ItemCharger
                     return stack != null && stack.getItem() instanceof IElectricItem;
                 }
 
-                public double chargeItem(ItemStack stack, double energy, boolean simulate)
+                public double chargeItem(ItemStack stack, double energy, boolean ignoreTransferLimit, boolean simulate)
                 {
                     if (ElectricItem.manager == null)
                         return 0D;
                     if (stack != null && stack.getItem() instanceof IElectricItem)
                     {
                         IElectricItem eitem = (IElectricItem) stack.getItem();
-                        return ElectricItem.manager.charge(stack, energy, eitem.getTier(stack), false, simulate);
+                        return ElectricItem.manager.charge(stack, energy, eitem.getTier(stack), ignoreTransferLimit, simulate);
                     }
                     return 0D;
                 }
@@ -68,12 +68,26 @@ public abstract class ItemCharger
                     return stack != null && stack.getItem() instanceof IEnergyContainerItem;
                 }
 
-                public double chargeItem(ItemStack stack, double energy, boolean simulate)
+                public double chargeItem(ItemStack stack, double energy, boolean ignoreTransferLimit, boolean simulate)
                 {
                     if (stack != null && stack.getItem() instanceof IEnergyContainerItem)
                     {
                         IEnergyContainerItem ecitem = (IEnergyContainerItem) stack.getItem();
-                        return (double) ecitem.receiveEnergy(stack, (int) energy, simulate);
+                        if (!ignoreTransferLimit)
+                            return (double) ecitem.receiveEnergy(stack, (int) energy, simulate);
+                        int m = (int) energy;
+                        int n = m;
+                        int c = 0;
+                        do
+                        {
+                            int d = ecitem.receiveEnergy(stack, n, simulate);
+                            n -= d;
+                            c++;
+                            if (d <= 0)
+                                break;
+                        }
+                        while (n > 0 && c < 0xFFFF);
+                        return (double) (m - n);
                     }
                     return 0D;
                 }
@@ -93,7 +107,7 @@ public abstract class ItemCharger
         return false;
     }
 
-    public double chargeItem(ItemStack stack, double energy, boolean simulate)
+    public double chargeItem(ItemStack stack, double energy, boolean ignoreTransferLimit, boolean simulate)
     {
         return 0D;
     }
