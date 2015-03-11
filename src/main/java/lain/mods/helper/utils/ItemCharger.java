@@ -86,7 +86,7 @@ public abstract class ItemCharger
                             if (d <= 0)
                                 break;
                         }
-                        while (n > 0 && c < 0xFFFF);
+                        while (n > 0 && c < 0xFFF);
                         return (double) (m - n);
                     }
                     return 0D;
