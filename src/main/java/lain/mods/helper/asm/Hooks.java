@@ -8,7 +8,7 @@ public class Hooks
 
     public static void onLivingUpdate(EntityPlayer player)
     {
-        Cheat.onLivingUpdate(player);
+        Cheat.INSTANCE.onLivingUpdate(player);
     }
 
 }

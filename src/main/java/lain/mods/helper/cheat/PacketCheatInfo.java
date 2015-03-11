@@ -1,36 +1,48 @@
 package lain.mods.helper.cheat;
 
+import lain.mods.helper.LainHelper;
+import lain.mods.helper.network.NetworkPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
-import lain.mods.helper.network.NetworkPacket;
 
 public class PacketCheatInfo extends NetworkPacket
 {
 
+    int flags;
+
+    public PacketCheatInfo()
+    {
+        this(-1);
+    }
+
+    public PacketCheatInfo(int flags)
+    {
+        this.flags = flags;
+    }
+
     @Override
     public void handlePacketClient()
     {
-        // TODO Auto-generated method stub
-        
+        Cheat.INSTANCE.setFlagsClient(flags);
     }
 
     @Override
     public void handlePacketServer(EntityPlayerMP player)
     {
+        if (flags == -1)
+            LainHelper.network.sendTo(new PacketCheatInfo(Cheat.INSTANCE.getFlags(player)), player);
     }
 
     @Override
     public void readFromBuffer(PacketBuffer buf)
     {
-        // TODO Auto-generated method stub
-        
+        flags = buf.readInt();
     }
 
     @Override
     public void writeToBuffer(PacketBuffer buf)
     {
-        // TODO Auto-generated method stub
-        
+        buf.writeInt(flags);
     }
 
 }

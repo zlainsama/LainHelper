@@ -3,6 +3,7 @@ package lain.mods.helper;
 import java.io.File;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import lain.mods.helper.cheat.Cheat;
 import lain.mods.helper.commands.CommandBack;
 import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
@@ -29,6 +30,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 
 @Mod(modid = "LainHelper", useMetadata = true)
 public class LainHelper
@@ -89,6 +91,12 @@ public class LainHelper
 
     });
 
+    @SubscribeEvent
+    public void handleEvent(FMLNetworkEvent.ClientConnectedToServerEvent event)
+    {
+        Cheat.INSTANCE.setFlagsClient(-1);
+    }
+
     @Mod.EventHandler
     public void handleEvent(FMLServerStartingEvent event)
     {
@@ -145,6 +153,9 @@ public class LainHelper
         Options.loadConfig(new Configuration(event.getSuggestedConfigurationFile()), event.getModLog());
 
         MinecraftForge.EVENT_BUS.register(this);
+
+        if (Cheat.INSTANCE == null)
+            throw new RuntimeException();
     }
 
 }
