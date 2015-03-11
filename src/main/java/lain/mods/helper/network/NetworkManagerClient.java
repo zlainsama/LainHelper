@@ -12,7 +12,7 @@ public class NetworkManagerClient extends NetworkManager
     @SubscribeEvent
     public void handleEvent(FMLNetworkEvent.ClientCustomPacketEvent event) throws InstantiationException, IllegalAccessException
     {
-        PacketBuffer buf = (PacketBuffer) event.packet.payload();
+        PacketBuffer buf = new PacketBuffer(event.packet.payload());
         int id = buf.readInt();
         Class<? extends NetworkPacket> clazz = REGISTRY.get(id);
         if (clazz != null)
