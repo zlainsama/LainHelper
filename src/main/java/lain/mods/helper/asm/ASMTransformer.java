@@ -26,12 +26,12 @@ public class ASMTransformer implements IClassTransformer
             {
                 super.visitCode();
                 this.visitVarInsn(Opcodes.ALOAD, 0);
-                this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "onLivingUpdate", "(Lnet/minecraft/entity/player/EntityPlayerMP;)V", false);
+                this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "onLivingUpdate", "(Lnet/minecraft/entity/player/EntityPlayer;)V", false);
             }
 
         }
 
-        ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/player/EntityPlayer");
+        ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/EntityLivingBase");
 
         ObfHelper m001 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/EntityLivingBase", "()V").setDevName("onLivingUpdate");
         boolean foundM001 = false;
@@ -73,7 +73,7 @@ public class ASMTransformer implements IClassTransformer
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes)
     {
-        if ("net.minecraft.entity.player.EntityPlayerMP".equals(transformedName))
+        if ("net.minecraft.entity.player.EntityPlayer".equals(transformedName))
             return transform001(bytes);
         return bytes;
     }

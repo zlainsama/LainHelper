@@ -3,6 +3,7 @@ package lain.mods.helper.asm;
 import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.utils.ItemCharger;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import com.google.common.collect.ImmutableSet;
@@ -17,7 +18,7 @@ public class Hooks
         return false;
     }
 
-    public static void onLivingUpdate(EntityPlayerMP player)
+    public static void onLivingUpdate(EntityPlayer player)
     {
         if (check(player))
         {
