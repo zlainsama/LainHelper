@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.network.NetworkManager;
 import lain.mods.helper.utils.ItemCharger;
+import lain.mods.helper.utils.ItemRepairer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -47,15 +48,33 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
-                for (int i = 0; i < 5; i++)
+                if (player.isEntityAlive())
                 {
-                    ItemStack stack = player.getEquipmentInSlot(i);
-                    if (stack == null)
-                        continue;
-                    for (ItemCharger charger : ItemCharger.chargers)
+                    for (int i = 0; i < 5; i++)
                     {
-                        if (charger.canHandle(stack))
-                            charger.chargeItem(stack, Double.MAX_VALUE, true, false);
+                        ItemStack stack = player.getEquipmentInSlot(i);
+                        if (stack == null)
+                            continue;
+                        boolean handled = false;
+                        for (ItemCharger charger : ItemCharger.chargers)
+                        {
+                            if (charger.canHandle(stack))
+                            {
+                                charger.chargeItem(stack, Double.MAX_VALUE, true, false);
+                                handled = true;
+                            }
+                        }
+                        if (!handled)
+                        {
+                            for (ItemRepairer repairer : ItemRepairer.repairers)
+                            {
+                                if (repairer.canHandle(stack))
+                                {
+                                    repairer.repairItem(stack, Double.MAX_VALUE, false);
+                                    handled = true;
+                                }
+                            }
+                        }
                     }
                 }
             }

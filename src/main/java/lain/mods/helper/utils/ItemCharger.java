@@ -29,23 +29,23 @@ public abstract class ItemCharger
                     IElectricItemManager.class.getName();
                 }
 
+                @Override
                 public boolean canHandle(ItemStack stack)
                 {
-                    if (ElectricItem.manager == null)
-                        return false;
-                    return stack != null && stack.getItem() instanceof IElectricItem;
+                    if (ElectricItem.manager != null && stack != null && stack.getItem() instanceof IElectricItem)
+                        return true;
+                    return super.canHandle(stack);
                 }
 
+                @Override
                 public double chargeItem(ItemStack stack, double energy, boolean ignoreTransferLimit, boolean simulate)
                 {
-                    if (ElectricItem.manager == null)
-                        return 0D;
-                    if (stack != null && stack.getItem() instanceof IElectricItem)
+                    if (ElectricItem.manager != null && stack != null && stack.getItem() instanceof IElectricItem)
                     {
                         IElectricItem eitem = (IElectricItem) stack.getItem();
                         return ElectricItem.manager.charge(stack, energy, eitem.getTier(stack), ignoreTransferLimit, simulate);
                     }
-                    return 0D;
+                    return super.chargeItem(stack, energy, ignoreTransferLimit, simulate);
                 }
 
             });
@@ -63,11 +63,15 @@ public abstract class ItemCharger
                     IEnergyContainerItem.class.getName();
                 }
 
+                @Override
                 public boolean canHandle(ItemStack stack)
                 {
-                    return stack != null && stack.getItem() instanceof IEnergyContainerItem;
+                    if (stack != null && stack.getItem() instanceof IEnergyContainerItem)
+                        return true;
+                    return super.canHandle(stack);
                 }
 
+                @Override
                 public double chargeItem(ItemStack stack, double energy, boolean ignoreTransferLimit, boolean simulate)
                 {
                     if (stack != null && stack.getItem() instanceof IEnergyContainerItem)
@@ -89,7 +93,7 @@ public abstract class ItemCharger
                         while (n > 0 && c < 0xFFFF);
                         return (double) (m - n);
                     }
-                    return 0D;
+                    return super.chargeItem(stack, energy, ignoreTransferLimit, simulate);
                 }
 
             });
