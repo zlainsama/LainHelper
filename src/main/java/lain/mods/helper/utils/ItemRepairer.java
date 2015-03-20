@@ -24,7 +24,7 @@ public abstract class ItemRepairer
                     if (stack != null)
                     {
                         NBTTagCompound data = stack.getTagCompound();
-                        if (data != null && (data = data.getCompoundTag("GT.ToolStats")) != null)
+                        if (data != null && data.hasKey("GT.ToolStats") && (data = data.getCompoundTag("GT.ToolStats")) != null)
                         {
                             if (!data.getBoolean("Electric"))
                                 return true;
@@ -39,7 +39,7 @@ public abstract class ItemRepairer
                     if (stack != null)
                     {
                         NBTTagCompound data = stack.getTagCompound();
-                        if (data != null && (data = data.getCompoundTag("GT.ToolStats")) != null)
+                        if (data != null && data.hasKey("GT.ToolStats") && (data = data.getCompoundTag("GT.ToolStats")) != null)
                         {
                             if (!data.getBoolean("Electric"))
                             {
@@ -74,7 +74,7 @@ public abstract class ItemRepairer
                     if (stack != null)
                     {
                         NBTTagCompound data = stack.getTagCompound();
-                        if (data != null && (data = data.getCompoundTag("InfiTool")) != null)
+                        if (data != null && data.hasKey("InfiTool") && (data = data.getCompoundTag("InfiTool")) != null)
                         {
                             if (!data.hasKey("Energy"))
                                 return true;
@@ -89,7 +89,7 @@ public abstract class ItemRepairer
                     if (stack != null)
                     {
                         NBTTagCompound data = stack.getTagCompound();
-                        if (data != null && (data = data.getCompoundTag("InfiTool")) != null)
+                        if (data != null && data.hasKey("InfiTool") && (data = data.getCompoundTag("InfiTool")) != null)
                         {
                             if (!data.hasKey("Energy"))
                             {
