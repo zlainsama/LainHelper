@@ -14,9 +14,15 @@ public class CommandSharedStorage extends GeneralHelperCommand
     IChatComponent msgNotPlayer = new ChatComponentTranslation("LH_NotPlayer", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
 
     @Override
-    public String getCommandName()
+    public void execute(ICommandSender par1, String[] par2)
     {
-        return "sharedstorage";
+        if (par1 instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP) par1;
+            player.displayGUIChest(SharedStorage.getInventory());
+        }
+        else
+            par1.addChatMessage(msgNotPlayer);
     }
 
     @Override
@@ -26,15 +32,9 @@ public class CommandSharedStorage extends GeneralHelperCommand
     }
 
     @Override
-    public void processCommand(ICommandSender par1, String[] par2)
+    public String getName()
     {
-        if (par1 instanceof EntityPlayerMP)
-        {
-            EntityPlayerMP player = (EntityPlayerMP) par1;
-            player.displayGUIChest(SharedStorage.getInventory());
-        }
-        else
-            par1.addChatMessage(msgNotPlayer);
+        return "sharedstorage";
     }
 
 }

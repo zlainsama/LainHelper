@@ -1,7 +1,7 @@
 package lain.mods.helper.asm;
 
 import java.util.Map;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.Name("LainHelper")
 @IFMLLoadingPlugin.MCVersion("")

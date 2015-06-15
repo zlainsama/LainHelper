@@ -2,8 +2,8 @@ package lain.mods.helper.utils;
 
 import java.io.File;
 import net.minecraft.server.MinecraftServer;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class MinecraftUtils
 {

@@ -7,7 +7,7 @@ public abstract class GeneralHelperCommand extends CommandBase
 {
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender par1)
+    public boolean canCommandSenderUse(ICommandSender par1)
     {
         return true;
     }

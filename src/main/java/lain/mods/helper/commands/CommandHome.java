@@ -19,19 +19,7 @@ public class CommandHome extends GeneralHelperCommand
     IChatComponent msgHomeDone = new ChatComponentTranslation("LH_HomeDone", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
 
     @Override
-    public String getCommandName()
-    {
-        return "home";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender par1)
-    {
-        return "LH_Home_Usage";
-    }
-
-    @Override
-    public void processCommand(ICommandSender par1, String[] par2)
+    public void execute(ICommandSender par1, String[] par2)
     {
         if (par1 instanceof EntityPlayerMP)
         {
@@ -59,6 +47,18 @@ public class CommandHome extends GeneralHelperCommand
         }
         else
             par1.addChatMessage(msgNotPlayer);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender par1)
+    {
+        return "LH_Home_Usage";
+    }
+
+    @Override
+    public String getName()
+    {
+        return "home";
     }
 
 }

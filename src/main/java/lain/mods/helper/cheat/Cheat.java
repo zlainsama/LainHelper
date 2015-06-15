@@ -3,13 +3,11 @@ package lain.mods.helper.cheat;
 import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.network.NetworkManager;
-import lain.mods.helper.utils.ItemCharger;
-import lain.mods.helper.utils.ItemRepairer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.FoodStats;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Cheat
 {
@@ -50,32 +48,10 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        ItemStack stack = player.getEquipmentInSlot(i);
-                        if (stack == null)
-                            continue;
-                        boolean handled = false;
-                        for (ItemCharger charger : ItemCharger.chargers)
-                        {
-                            if (charger.canHandle(stack))
-                            {
-                                charger.chargeItem(stack, Double.MAX_VALUE, true, false);
-                                handled = true;
-                            }
-                        }
-                        if (!handled)
-                        {
-                            for (ItemRepairer repairer : ItemRepairer.repairers)
-                            {
-                                if (repairer.canHandle(stack))
-                                {
-                                    repairer.repairItem(stack, Double.MAX_VALUE, false);
-                                    handled = true;
-                                }
-                            }
-                        }
-                    }
+                    FoodStats food = player.getFoodStats();
+                    food.addStats(-food.getFoodLevel(), 0.0F);
+                    food.addStats(10, 20.0F);
+                    food.addStats(8, 0.0F);
                 }
             }
         }

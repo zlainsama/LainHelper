@@ -12,7 +12,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class Teleporter
 {
@@ -89,7 +89,7 @@ public class Teleporter
             {
                 EntityPlayerMP mp = (EntityPlayerMP) ent;
                 mp.dimension = newD;
-                mp.playerNetServerHandler.sendPacket(new S07PacketRespawn(mp.dimension, mp.worldObj.difficultySetting, mp.worldObj.getWorldInfo().getTerrainType(), mp.theItemInWorldManager.getGameType()));
+                mp.playerNetServerHandler.sendPacket(new S07PacketRespawn(mp.dimension, mp.worldObj.getDifficulty(), mp.worldObj.getWorldInfo().getTerrainType(), mp.theItemInWorldManager.getGameType()));
                 oldW.removePlayerEntityDangerously(mp);
                 // mp.isDead = false;
             }

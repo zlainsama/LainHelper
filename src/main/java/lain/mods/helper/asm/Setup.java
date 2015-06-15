@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import net.minecraftforge.fml.relauncher.IFMLCallHook;
 import LZMA.LzmaInputStream;
 import com.google.common.base.Charsets;
 import com.google.common.collect.BiMap;
@@ -12,7 +13,6 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteSource;
 import com.google.common.io.LineProcessor;
-import cpw.mods.fml.relauncher.IFMLCallHook;
 
 public class Setup implements IFMLCallHook
 {

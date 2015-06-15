@@ -10,7 +10,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommandSpawn extends GeneralHelperCommand
 {
@@ -19,19 +19,7 @@ public class CommandSpawn extends GeneralHelperCommand
     IChatComponent msgSpawnDone = new ChatComponentTranslation("LH_SpawnDone", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
 
     @Override
-    public String getCommandName()
-    {
-        return "spawn";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender par1)
-    {
-        return "LH_Spawn_Usage";
-    }
-
-    @Override
-    public void processCommand(ICommandSender par1, String[] par2)
+    public void execute(ICommandSender par1, String[] par2)
     {
         if (par1 instanceof EntityPlayerMP)
         {
@@ -54,6 +42,18 @@ public class CommandSpawn extends GeneralHelperCommand
         }
         else
             par1.addChatMessage(msgNotPlayer);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender par1)
+    {
+        return "LH_Spawn_Usage";
+    }
+
+    @Override
+    public String getName()
+    {
+        return "spawn";
     }
 
 }

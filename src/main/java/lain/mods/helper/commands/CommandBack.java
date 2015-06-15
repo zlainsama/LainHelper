@@ -19,19 +19,7 @@ public class CommandBack extends GeneralHelperCommand
     IChatComponent msgBackDone = new ChatComponentTranslation("LH_BackDone", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
 
     @Override
-    public String getCommandName()
-    {
-        return "back";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender par1)
-    {
-        return "LH_Back_Usage";
-    }
-
-    @Override
-    public void processCommand(ICommandSender par1, String[] par2)
+    public void execute(ICommandSender par1, String[] par2)
     {
         if (par1 instanceof EntityPlayerMP)
         {
@@ -59,6 +47,18 @@ public class CommandBack extends GeneralHelperCommand
         }
         else
             par1.addChatMessage(msgNotPlayer);
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender par1)
+    {
+        return "LH_Back_Usage";
+    }
+
+    @Override
+    public String getName()
+    {
+        return "back";
     }
 
 }

@@ -2,7 +2,7 @@ package lain.mods.helper.utils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 
 public class PositionData
 {
@@ -15,14 +15,14 @@ public class PositionData
     {
     }
 
-    public PositionData(ChunkCoordinates par1)
+    public PositionData(BlockPos par1)
     {
-        this.x = (double) par1.posX + 0.5D;
-        this.y = (double) par1.posY + 0.5D;
-        this.z = (double) par1.posZ + 0.5D;
+        this.x = (double) par1.getX() + 0.5D;
+        this.y = (double) par1.getY() + 0.5D;
+        this.z = (double) par1.getZ() + 0.5D;
     }
 
-    public PositionData(ChunkCoordinates par1, int par2)
+    public PositionData(BlockPos par1, int par2)
     {
         this(par1);
         this.dimension = par2;
@@ -100,7 +100,7 @@ public class PositionData
         if (par2)
         {
             boolean flag = false;
-            while (!par1.worldObj.getCollidingBoundingBoxes(par1, par1.boundingBox).isEmpty())
+            while (!par1.worldObj.getCollidingBoundingBoxes(par1, par1.getEntityBoundingBox()).isEmpty())
             {
                 par1.setPosition(par1.posX, par1.posY + 1.0D, par1.posZ);
                 flag = true;
