@@ -9,6 +9,7 @@ import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSharedStorage;
 import lain.mods.helper.commands.CommandSpawn;
+import lain.mods.helper.handlers.ClientRenderEventHandler;
 import lain.mods.helper.network.NetworkManager;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
@@ -155,6 +156,9 @@ public class LainHelper
 
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+
+        if (event.getSide().isClient())
+            MinecraftForge.EVENT_BUS.register(new ClientRenderEventHandler());
 
         if (Cheat.INSTANCE == null)
             throw new RuntimeException();

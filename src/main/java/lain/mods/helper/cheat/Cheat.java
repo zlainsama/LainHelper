@@ -49,9 +49,11 @@ public class Cheat
                 if (player.isEntityAlive())
                 {
                     FoodStats food = player.getFoodStats();
-                    food.addStats(-food.getFoodLevel(), 0.0F);
-                    food.addStats(10, 20.0F);
-                    food.addStats(8, 0.0F);
+                    {
+                        food.addStats(-food.getFoodLevel(), 0.0F);
+                        food.addStats(10, 20.0F);
+                        food.addStats(8, 0.0F);
+                    }
                 }
             }
         }

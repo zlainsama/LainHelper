@@ -13,6 +13,11 @@ public class CheatClient extends Cheat
     @Override
     public int getFlagsClient()
     {
+        if (c_flags < 0)
+        {
+            LainHelper.network.sendToServer(new PacketCheatInfo(c_flags));
+            c_flags = 0;
+        }
         return c_flags;
     }
 
@@ -24,19 +29,17 @@ public class CheatClient extends Cheat
         if (player == FMLClientHandler.instance().getClientPlayerEntity())
         {
             int flags = getFlagsClient();
-            if (flags < 0)
-            {
-                LainHelper.network.sendToServer(new PacketCheatInfo(flags));
-                setFlagsClient(flags = 0);
-            }
             if ((flags & 0x1) != 0)
             {
                 if (player.isEntityAlive())
                 {
                     FoodStats food = player.getFoodStats();
-                    food.addStats(-food.getFoodLevel(), 0.0F);
-                    food.addStats(10, 20.0F);
-                    food.addStats(8, 0.0F);
+                    if (food != null)
+                    {
+                        food.addStats(-food.getFoodLevel(), 0.0F);
+                        food.addStats(10, 20.0F);
+                        food.addStats(8, 0.0F);
+                    }
                 }
             }
         }
