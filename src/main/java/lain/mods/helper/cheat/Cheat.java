@@ -1,8 +1,11 @@
 package lain.mods.helper.cheat;
 
+import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.UUID;
+import lain.mods.helper.asm.Plugin;
 import lain.mods.helper.network.NetworkManager;
+import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,6 +32,11 @@ public class Cheat
     {
         NetworkManager.registerPacket(PacketCheatInfo.class);
     }
+
+    float swimSpeed = 1.22F;
+    boolean maintainDepth = true;
+
+    private static Field f_isJumping;
 
     public boolean getAquaAffinityModifier(EntityLivingBase player, boolean value)
     {
@@ -81,6 +89,30 @@ public class Cheat
         return value;
     }
 
+    protected boolean isJumping(EntityPlayer player)
+    {
+        if (f_isJumping == null)
+        {
+            try
+            {
+                f_isJumping = EntityLivingBase.class.getDeclaredField(Plugin.isDevelopmentEnvironment ? "isJumping" : "field_70703_bu");
+                f_isJumping.setAccessible(true);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        try
+        {
+            return f_isJumping.getBoolean(player);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void onLivingUpdate(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
@@ -96,7 +128,26 @@ public class Cheat
                         food.addStats(10, 20.0F);
                         food.addStats(8, 0.0F);
                     }
-                    player.setAir(300);
+                    if (player.isInWater())
+                    {
+                        player.setAir(300);
+                        if (swimSpeed != 1.0F && !player.capabilities.isFlying)
+                        {
+                            if (player.motionX > -swimSpeed && player.motionX < swimSpeed)
+                                player.motionX *= swimSpeed * 0.995F;
+                            if (player.motionZ > -swimSpeed && player.motionZ < swimSpeed)
+                                player.motionZ *= swimSpeed * 0.995F;
+                        }
+                        if (maintainDepth)
+                        {
+                            boolean isJumping = isJumping(player);
+                            boolean isSneaking = player.isSneaking();
+                            if (!isSneaking && !isJumping && player.isInsideOfMaterial(Material.water))
+                                player.motionY = 0.0D;
+                            else if (isJumping)
+                                player.motionY *= swimSpeed;
+                        }
+                    }
                 }
             }
         }

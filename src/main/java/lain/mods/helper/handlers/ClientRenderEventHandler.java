@@ -2,6 +2,7 @@ package lain.mods.helper.handlers;
 
 import lain.mods.helper.cheat.Cheat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientRenderEventHandler
@@ -16,8 +17,11 @@ public class ClientRenderEventHandler
             switch (event.type)
             {
                 case FOOD:
-                case AIR:
                     event.setCanceled(true);
+                    break;
+                case AIR:
+                    if (FMLClientHandler.instance().getClientPlayerEntity().isInWater())
+                        event.setCanceled(true);
                     break;
                 default:
                     break;
