@@ -1,7 +1,6 @@
 package lain.mods.helper.cheat;
 
 import lain.mods.helper.LainHelper;
-import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -86,22 +85,6 @@ public class CheatClient extends Cheat
                     if (player.isInWater())
                     {
                         player.setAir(300);
-                        if (swimSpeed != 1.0F && !player.capabilities.isFlying)
-                        {
-                            if (player.motionX > -swimSpeed && player.motionX < swimSpeed)
-                                player.motionX *= swimSpeed * 0.995F;
-                            if (player.motionZ > -swimSpeed && player.motionZ < swimSpeed)
-                                player.motionZ *= swimSpeed * 0.995F;
-                        }
-                        if (maintainDepth)
-                        {
-                            boolean isJumping = isJumping(player);
-                            boolean isSneaking = player.isSneaking();
-                            if (!isSneaking && !isJumping && player.isInsideOfMaterial(Material.water))
-                                player.motionY = 0.0D;
-                            else if (isJumping)
-                                player.motionY *= swimSpeed;
-                        }
                     }
                 }
             }
