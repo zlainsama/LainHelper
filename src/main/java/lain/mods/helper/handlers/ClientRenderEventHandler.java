@@ -10,11 +10,18 @@ public class ClientRenderEventHandler
     @SubscribeEvent
     public void handleEvent(RenderGameOverlayEvent.Pre event)
     {
-        if (event.type == RenderGameOverlayEvent.ElementType.FOOD)
+        int flags = Cheat.INSTANCE.getFlagsClient();
+        if ((flags & 0x1) != 0)
         {
-            int flags = Cheat.INSTANCE.getFlagsClient();
-            if ((flags & 0x1) != 0)
-                event.setCanceled(true);
+            switch (event.type)
+            {
+                case FOOD:
+                case AIR:
+                    event.setCanceled(true);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
