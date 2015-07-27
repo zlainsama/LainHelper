@@ -16,9 +16,6 @@ public class ClientRenderEventHandler
         {
             switch (event.type)
             {
-                case FOOD:
-                    event.setCanceled(true);
-                    break;
                 case AIR:
                     if (FMLClientHandler.instance().getClientPlayerEntity().isInWater())
                         event.setCanceled(true);

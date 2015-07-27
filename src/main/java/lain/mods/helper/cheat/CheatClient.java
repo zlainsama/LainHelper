@@ -5,7 +5,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.FoodStats;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class CheatClient extends Cheat
@@ -75,13 +74,6 @@ public class CheatClient extends Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    FoodStats food = player.getFoodStats();
-                    if (food != null)
-                    {
-                        food.addStats(-food.getFoodLevel(), 0.0F);
-                        food.addStats(10, 20.0F);
-                        food.addStats(8, 0.0F);
-                    }
                     if (player.isInWater())
                     {
                         player.setAir(300);
