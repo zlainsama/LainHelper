@@ -1,9 +1,9 @@
 package lain.mods.helper.cheat;
 
+import io.netty.buffer.ByteBuf;
 import lain.mods.helper.LainHelper;
 import lain.mods.helper.network.NetworkPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.PacketBuffer;
 
 public class PacketCheatInfo extends NetworkPacket
 {
@@ -34,13 +34,13 @@ public class PacketCheatInfo extends NetworkPacket
     }
 
     @Override
-    public void readFromBuffer(PacketBuffer buf)
+    public void readFromBuffer(ByteBuf buf)
     {
         flags = buf.readInt();
     }
 
     @Override
-    public void writeToBuffer(PacketBuffer buf)
+    public void writeToBuffer(ByteBuf buf)
     {
         buf.writeInt(flags);
     }

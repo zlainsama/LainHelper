@@ -3,9 +3,6 @@ package lain.mods.helper.cheat;
 import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.network.NetworkManager;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -29,32 +26,6 @@ public class Cheat
         NetworkManager.registerPacket(PacketCheatInfo.class);
     }
 
-    public boolean getAquaAffinityModifier(EntityLivingBase player, boolean value)
-    {
-        if (player instanceof EntityPlayerMP)
-        {
-            int flags = getFlags((EntityPlayerMP) player);
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.aquaAffinity.getMaxLevel() > 0;
-            }
-        }
-        return value;
-    }
-
-    public int getDepthStriderModifier(Entity player, int value)
-    {
-        if (player instanceof EntityPlayerMP)
-        {
-            int flags = getFlags((EntityPlayerMP) player);
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.depthStrider.getMaxLevel();
-            }
-        }
-        return value;
-    }
-
     public int getFlags(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
@@ -67,19 +38,6 @@ public class Cheat
         return 0;
     }
 
-    public int getRespiration(Entity player, int value)
-    {
-        if (player instanceof EntityPlayerMP)
-        {
-            int flags = getFlags((EntityPlayerMP) player);
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.respiration.getMaxLevel();
-            }
-        }
-        return value;
-    }
-
     public void onLivingUpdate(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
@@ -89,10 +47,9 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
+                    player.getFoodStats().addStats(1, 1.0F);
                     if (player.isInWater())
-                    {
                         player.setAir(300);
-                    }
                 }
             }
         }

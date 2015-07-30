@@ -9,7 +9,6 @@ import lain.mods.helper.commands.CommandHome;
 import lain.mods.helper.commands.CommandSetHome;
 import lain.mods.helper.commands.CommandSharedStorage;
 import lain.mods.helper.commands.CommandSpawn;
-import lain.mods.helper.handlers.ClientRenderEventHandler;
 import lain.mods.helper.network.NetworkManager;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
@@ -22,7 +21,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
@@ -64,8 +62,7 @@ public class LainHelper
         return stores.getUnchecked(file);
     }
 
-    @SidedProxy(serverSide = "lain.mods.helper.network.NetworkManager", clientSide = "lain.mods.helper.network.NetworkManagerClient")
-    public static NetworkManager network;
+    public static NetworkManager network = new NetworkManager("LainHelper");
 
     private static final LoadingCache<File, DataStorage> stores = CacheBuilder.newBuilder().expireAfterAccess(30L, TimeUnit.MINUTES).removalListener(new RemovalListener<File, DataStorage>()
     {
@@ -156,9 +153,6 @@ public class LainHelper
 
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-
-        if (event.getSide().isClient())
-            MinecraftForge.EVENT_BUS.register(new ClientRenderEventHandler());
 
         if (Cheat.INSTANCE == null)
             throw new RuntimeException();
