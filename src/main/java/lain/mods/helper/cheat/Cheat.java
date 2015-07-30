@@ -2,7 +2,7 @@ package lain.mods.helper.cheat;
 
 import java.util.Set;
 import java.util.UUID;
-import lain.mods.helper.network.NetworkManager;
+import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -23,7 +23,7 @@ public class Cheat
 
     static
     {
-        NetworkManager.registerPacket(PacketCheatInfo.class);
+        LainHelper.network.registerPacket(PacketCheatInfo.class);
     }
 
     public int getFlags(EntityPlayer player)
