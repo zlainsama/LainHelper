@@ -44,7 +44,7 @@ public class NetworkManager
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, NetworkPacket msg) throws Exception
         {
-            if (((Side) ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get()).isServer())
+            if (ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get().isServer())
                 msg.handlePacketServer(((NetHandlerPlayServer) ctx.channel().attr(NetworkRegistry.NET_HANDLER).get()).playerEntity);
             else
                 msg.handlePacketClient();
@@ -65,9 +65,9 @@ public class NetworkManager
     {
         if (packet != null && player != null)
         {
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).writeAndFlush(packet);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+            channels.get(Side.SERVER).writeAndFlush(packet);
         }
     }
 
@@ -75,8 +75,8 @@ public class NetworkManager
     {
         if (packet != null)
         {
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).writeAndFlush(packet);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+            channels.get(Side.SERVER).writeAndFlush(packet);
         }
     }
 
@@ -84,9 +84,9 @@ public class NetworkManager
     {
         if (packet != null && point != null)
         {
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).writeAndFlush(packet);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
+            channels.get(Side.SERVER).writeAndFlush(packet);
         }
     }
 
@@ -94,9 +94,9 @@ public class NetworkManager
     {
         if (packet != null)
         {
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimensionId);
-            ((FMLEmbeddedChannel) channels.get(Side.SERVER)).writeAndFlush(packet);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
+            channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimensionId);
+            channels.get(Side.SERVER).writeAndFlush(packet);
         }
     }
 
@@ -104,8 +104,8 @@ public class NetworkManager
     {
         if (packet != null)
         {
-            ((FMLEmbeddedChannel) channels.get(Side.CLIENT)).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-            ((FMLEmbeddedChannel) channels.get(Side.CLIENT)).writeAndFlush(packet);
+            channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+            channels.get(Side.CLIENT).writeAndFlush(packet);
         }
     }
 
