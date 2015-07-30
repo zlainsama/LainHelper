@@ -26,7 +26,7 @@ public class Cheat
 
     static
     {
-        LainHelper.network.registerPacket(PacketCheatInfo.class);
+        LainHelper.network.registerPacket(240, PacketCheatInfo.class);
     }
 
     public boolean getAquaAffinityModifier(EntityLivingBase player, boolean value)

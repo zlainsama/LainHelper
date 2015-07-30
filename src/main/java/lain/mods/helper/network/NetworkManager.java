@@ -23,9 +23,9 @@ public class NetworkManager
             channel.pipeline().addAfter(channel.findChannelHandlerNameForType(codec.getClass()), "NetworkPacketHandler", handler);
     }
 
-    public void registerPacket(Class<? extends NetworkPacket> packetClass)
+    public void registerPacket(int discriminator, Class<? extends NetworkPacket> packetClass)
     {
-        codec.addDiscriminator(packetClass.getName().hashCode(), packetClass);
+        codec.addDiscriminator(discriminator, packetClass);
     }
 
     public void sendTo(NetworkPacket packet, EntityPlayerMP player)
