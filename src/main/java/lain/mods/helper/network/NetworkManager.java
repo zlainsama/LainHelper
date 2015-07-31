@@ -26,7 +26,7 @@ public class NetworkManager
     public void registerPacket(int discriminator, Class<? extends NetworkPacket> packetClass)
     {
         if (discriminator < 0 || discriminator > 255)
-            throw new RuntimeException("Invalid discriminator, valid range: 0-255.");
+            throw new IllegalArgumentException("Invalid discriminator, valid range: 0-255.");
         codec.addDiscriminator(discriminator, packetClass);
     }
 
