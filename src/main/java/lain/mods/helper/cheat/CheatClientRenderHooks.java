@@ -15,6 +15,7 @@ public class CheatClientRenderHooks
             switch (event.type)
             {
                 case FOOD:
+                case AIR:
                     event.setCanceled(true);
                     break;
                 default:

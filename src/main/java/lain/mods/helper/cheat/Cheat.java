@@ -77,13 +77,20 @@ public class Cheat
                     if (food != null)
                         food.addStats(10 - food.getFoodLevel(), Float.MAX_VALUE);
 
+                    int air = player.getAir();
+                    if (air < 100)
+                    {
+                        air += 200;
+                        player.setAir(air);
+                    }
+
                     if (player.ticksExisted % 10 == 0)
                     {
                         float health = player.getHealth();
                         float maxhealth = player.getMaxHealth();
                         if (health < maxhealth)
                         {
-                            health += maxhealth * 0.05;
+                            health += maxhealth * 0.1F;
                             if (health > maxhealth)
                                 health = maxhealth;
                             player.setHealth(health);

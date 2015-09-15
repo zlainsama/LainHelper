@@ -42,6 +42,13 @@ public class CheatClient extends Cheat
                     FoodStats food = player.getFoodStats();
                     if (food != null)
                         food.addStats(10 - food.getFoodLevel(), Float.MAX_VALUE);
+
+                    int air = player.getAir();
+                    if (air < 100)
+                    {
+                        air += 200;
+                        player.setAir(air);
+                    }
                 }
             }
         }
