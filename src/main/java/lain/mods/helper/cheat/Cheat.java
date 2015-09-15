@@ -3,11 +3,12 @@ package lain.mods.helper.cheat;
 import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.LainHelper;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.FoodStats;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
 
@@ -23,23 +24,11 @@ public class Cheat
 
     public static final Cheat INSTANCE = FMLCommonHandler.instance().getSide().isClient() ? new CheatClient() : new Cheat();
     private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
+    private static final UUID _MODIFIER = UUID.fromString("c0d922c2-2d2f-423d-9a32-57f8ea57a86a");
 
     static
     {
         LainHelper.network.registerPacket(240, PacketCheatInfo.class);
-    }
-
-    public boolean getAquaAffinityModifier(EntityLivingBase player, boolean value)
-    {
-        if (player instanceof EntityPlayerMP)
-        {
-            int flags = getFlags((EntityPlayerMP) player);
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.aquaAffinity.getMaxLevel() > 0;
-            }
-        }
-        return value;
     }
 
     public int getFlags(EntityPlayer player)
@@ -54,19 +43,6 @@ public class Cheat
         return 0;
     }
 
-    public int getRespiration(Entity player, int value)
-    {
-        if (player instanceof EntityPlayerMP)
-        {
-            int flags = getFlags((EntityPlayerMP) player);
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.respiration.getMaxLevel();
-            }
-        }
-        return value;
-    }
-
     public void onLivingUpdate(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
@@ -76,9 +52,43 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    player.getFoodStats().addStats(1, 1.0F);
-                    if (player.isInWater())
-                        player.setAir(300);
+                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+                    AttributeModifier am = iai.getModifier(_MODIFIER);
+                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.5D))
+                    {
+                        iai.removeModifier(am);
+                        am = null;
+                    }
+                    if (am == null)
+                    {
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.5D, 2);
+                        iai.applyModifier(am);
+
+                        float health = player.getHealth();
+                        float maxhealth = player.getMaxHealth();
+                        if (health > maxhealth)
+                        {
+                            health = maxhealth;
+                            player.setHealth(health);
+                        }
+                    }
+
+                    FoodStats food = player.getFoodStats();
+                    if (food != null)
+                        food.addStats(10 - food.getFoodLevel(), Float.MAX_VALUE);
+
+                    if (player.ticksExisted % 10 == 0)
+                    {
+                        float health = player.getHealth();
+                        float maxhealth = player.getMaxHealth();
+                        if (health < maxhealth)
+                        {
+                            health += maxhealth * 0.05;
+                            if (health > maxhealth)
+                                health = maxhealth;
+                            player.setHealth(health);
+                        }
+                    }
                 }
             }
         }

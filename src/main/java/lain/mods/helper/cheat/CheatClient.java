@@ -1,10 +1,8 @@
 package lain.mods.helper.cheat;
 
 import lain.mods.helper.LainHelper;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -18,19 +16,6 @@ public class CheatClient extends Cheat
         MinecraftForge.EVENT_BUS.register(new CheatClientRenderHooks());
     }
 
-    public boolean getAquaAffinityModifier(EntityLivingBase player, boolean value)
-    {
-        if (player == FMLClientHandler.instance().getClientPlayerEntity())
-        {
-            int flags = getFlagsClient();
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.aquaAffinity.getMaxLevel() > 0;
-            }
-        }
-        return super.getAquaAffinityModifier(player, value);
-    }
-
     @Override
     public int getFlagsClient()
     {
@@ -40,19 +25,6 @@ public class CheatClient extends Cheat
             c_flags = 0;
         }
         return c_flags;
-    }
-
-    public int getRespiration(Entity player, int value)
-    {
-        if (player == FMLClientHandler.instance().getClientPlayerEntity())
-        {
-            int flags = getFlagsClient();
-            if ((flags & 0x1) != 0)
-            {
-                return Enchantment.respiration.getMaxLevel();
-            }
-        }
-        return super.getRespiration(player, value);
     }
 
     @Override
@@ -67,9 +39,9 @@ public class CheatClient extends Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    player.getFoodStats().addStats(1, 1.0F);
-                    if (player.isInWater())
-                        player.setAir(300);
+                    FoodStats food = player.getFoodStats();
+                    if (food != null)
+                        food.addStats(10 - food.getFoodLevel(), Float.MAX_VALUE);
                 }
             }
         }

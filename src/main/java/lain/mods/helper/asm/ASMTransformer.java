@@ -70,82 +70,11 @@ public class ASMTransformer implements IClassTransformer
 
     }
 
-    class transformer002 extends ClassVisitor
-    {
-
-        class method001 extends MethodVisitor
-        {
-
-            public method001(MethodVisitor mv)
-            {
-                super(Opcodes.ASM5, mv);
-            }
-
-            @Override
-            public void visitInsn(int opcode)
-            {
-                if (opcode == Opcodes.IRETURN)
-                {
-                    this.visitVarInsn(Opcodes.ISTORE, 1);
-                    this.visitVarInsn(Opcodes.ALOAD, 0);
-                    this.visitVarInsn(Opcodes.ILOAD, 1);
-                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "getAquaAffinityModifier", "(Lnet/minecraft/entity/EntityLivingBase;Z)Z", false);
-                }
-                super.visitInsn(opcode);
-            }
-
-        }
-
-        class method002 extends MethodVisitor
-        {
-
-            public method002(MethodVisitor mv)
-            {
-                super(Opcodes.ASM5, mv);
-            }
-
-            @Override
-            public void visitInsn(int opcode)
-            {
-                if (opcode == Opcodes.IRETURN)
-                {
-                    this.visitVarInsn(Opcodes.ISTORE, 1);
-                    this.visitVarInsn(Opcodes.ALOAD, 0);
-                    this.visitVarInsn(Opcodes.ILOAD, 1);
-                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "getRespiration", "(Lnet/minecraft/entity/Entity;I)I", false);
-                }
-                super.visitInsn(opcode);
-            }
-
-        }
-
-        ObfHelper m001 = ObfHelper.newMethod("func_77510_g", "net/minecraft/enchantment/EnchantmentHelper", "(Lnet/minecraft/entity/EntityLivingBase;)Z").setDevName("getAquaAffinityModifier");
-        ObfHelper m002 = ObfHelper.newMethod("func_180319_a", "net/minecraft/enchantment/EnchantmentHelper", "(Lnet/minecraft/entity/Entity;)I").setDevName("getRespiration");
-
-        public transformer002(ClassVisitor cv)
-        {
-            super(Opcodes.ASM5, cv);
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions)
-        {
-            if (m001.match(name, desc))
-                return new method001(super.visitMethod(access, name, desc, signature, exceptions));
-            if (m002.match(name, desc))
-                return new method002(super.visitMethod(access, name, desc, signature, exceptions));
-            return super.visitMethod(access, name, desc, signature, exceptions);
-        }
-
-    }
-
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes)
     {
         if ("net.minecraft.entity.player.EntityPlayer".equals(transformedName))
             return transform001(bytes);
-        if ("net.minecraft.enchantment.EnchantmentHelper".equals(transformedName))
-            return transform002(bytes);
         return bytes;
     }
 
@@ -154,14 +83,6 @@ public class ASMTransformer implements IClassTransformer
         ClassReader classReader = new ClassReader(bytes);
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classReader.accept(new transformer001(classWriter), ClassReader.EXPAND_FRAMES);
-        return classWriter.toByteArray();
-    }
-
-    private byte[] transform002(byte[] bytes)
-    {
-        ClassReader classReader = new ClassReader(bytes);
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        classReader.accept(new transformer002(classWriter), ClassReader.EXPAND_FRAMES);
         return classWriter.toByteArray();
     }
 
