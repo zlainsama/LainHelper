@@ -84,6 +84,9 @@ public class Cheat
                         player.setAir(air);
                     }
 
+                    if (player.fallDistance > 1.0F)
+                        player.fallDistance = 1.0F;
+
                     if (player.ticksExisted % 10 == 0)
                     {
                         float health = player.getHealth();
