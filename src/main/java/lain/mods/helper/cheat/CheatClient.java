@@ -52,6 +52,9 @@ public class CheatClient extends Cheat
 
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
+
+                    for (int potion : _IMMUNE)
+                        player.removePotionEffectClient(potion);
                 }
             }
         }

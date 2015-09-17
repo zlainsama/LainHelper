@@ -1,5 +1,6 @@
 package lain.mods.helper.cheat;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.LainHelper;
@@ -8,8 +9,10 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 public class Cheat
@@ -23,8 +26,9 @@ public class Cheat
     }
 
     public static final Cheat INSTANCE = FMLCommonHandler.instance().getSide().isClient() ? new CheatClient() : new Cheat();
-    private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
-    private static final UUID _MODIFIER = UUID.fromString("c0d922c2-2d2f-423d-9a32-57f8ea57a86a");
+    protected static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
+    protected static final UUID _MODIFIER = UUID.fromString("c0d922c2-2d2f-423d-9a32-57f8ea57a86a");
+    protected static final List<Integer> _IMMUNE = ImmutableList.of(Potion.poison.getId(), Potion.wither.getId(), Potion.hunger.getId(), Potion.confusion.getId(), Potion.blindness.getId());
 
     static
     {
@@ -86,6 +90,9 @@ public class Cheat
 
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
+
+                    for (int potion : _IMMUNE)
+                        player.removePotionEffect(potion);
 
                     if (player.ticksExisted % 10 == 0)
                     {
