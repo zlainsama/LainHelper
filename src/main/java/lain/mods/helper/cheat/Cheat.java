@@ -100,7 +100,7 @@ public class Cheat
                         float maxhealth = player.getMaxHealth();
                         if (health < maxhealth)
                         {
-                            health += maxhealth * 0.1F;
+                            health += Math.max(maxhealth * 0.1F, 1.0F);;
                             if (health > maxhealth)
                                 health = maxhealth;
                             player.setHealth(health);
