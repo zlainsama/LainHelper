@@ -3,7 +3,7 @@ package lain.mods.helper;
 import java.util.concurrent.TimeUnit;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.DataStorageAttachment;
-import lain.mods.helper.utils.Messenger.Message;
+import lain.mods.helper.utils.Message;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ public class SharedStorage
         private void clearInventory()
         {
             for (int i = 0; i < getSizeInventory(); i++)
-                setInventorySlotContents(i, null);
+                setInventorySlotContents(i, ItemStack.EMPTY);
         }
 
         @Override
@@ -40,7 +40,7 @@ public class SharedStorage
                 NBTTagCompound itemdata = items.getCompoundTagAt(i);
                 int slot = itemdata.getByte("Slot") & 0xFF;
                 if ((slot >= 0) && (slot < getSizeInventory()))
-                    setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(itemdata));
+                    setInventorySlotContents(slot, new ItemStack(itemdata));
             }
         }
 
@@ -51,7 +51,7 @@ public class SharedStorage
             for (int i = 0; i < getSizeInventory(); i++)
             {
                 ItemStack item = getStackInSlot(i);
-                if (item != null)
+                if (!item.isEmpty())
                 {
                     NBTTagCompound itemdata = new NBTTagCompound();
                     itemdata.setByte("Slot", (byte) i);
