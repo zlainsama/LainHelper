@@ -49,6 +49,7 @@ public class ASMTransformer implements IClassTransformer
                     this.visitVarInsn(Opcodes.ILOAD, 1);
                     this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "isInvisible", "(Lnet/minecraft/entity/player/EntityPlayer;Z)Z", false);
                 }
+                super.visitInsn(opcode);
             };
 
         }
@@ -71,6 +72,7 @@ public class ASMTransformer implements IClassTransformer
                     this.visitVarInsn(Opcodes.FLOAD, 1);
                     this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "getArmorVisibility", "(Lnet/minecraft/entity/player/EntityPlayer;F)F", false);
                 }
+                super.visitInsn(opcode);
             };
 
         }
@@ -159,7 +161,7 @@ public class ASMTransformer implements IClassTransformer
     private byte[] transform001(byte[] bytes)
     {
         ClassReader classReader = new ClassReader(bytes);
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classReader.accept(new transformer001(classWriter), ClassReader.EXPAND_FRAMES);
         return classWriter.toByteArray();
     }
