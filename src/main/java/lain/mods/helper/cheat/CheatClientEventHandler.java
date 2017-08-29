@@ -27,6 +27,7 @@ public class CheatClientEventHandler
         {
             switch (event.getType())
             {
+                case ARMOR:
                 case FOOD:
                 case AIR:
                     event.setCanceled(true);

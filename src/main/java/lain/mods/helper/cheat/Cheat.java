@@ -99,8 +99,29 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
+                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
                     AttributeModifier am = iai.getModifier(_MODIFIER);
+                    if (am != null && (am.getOperation() != 1 || am.getAmount() != -0.7D))
+                    {
+                        iai.removeModifier(am);
+                        am = null;
+                    }
+                    if (am == null)
+                    {
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.7D, 1);
+                        am.setSaved(false);
+                        iai.applyModifier(am);
+
+                        float health = player.getHealth();
+                        float maxhealth = player.getMaxHealth();
+                        if (health > maxhealth)
+                        {
+                            health = maxhealth;
+                            player.setHealth(health);
+                        }
+                    }
+                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
+                    am = iai.getModifier(_MODIFIER);
                     if (am != null && (am.getOperation() != 2 || am.getAmount() != 0.3D))
                     {
                         iai.removeModifier(am);
