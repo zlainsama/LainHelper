@@ -60,7 +60,8 @@ public class Teleporter extends net.minecraft.world.Teleporter
         {
             EntityPlayerMP p = (EntityPlayerMP) ent;
             s.getPlayerList().transferPlayerToDimension(p, dimension, new Teleporter(newW, px, py, pz));
-            if (oldD == 1 && p.isEntityAlive())
+            p.addExperienceLevel(0);
+            if (oldD == 1)
             {
                 newW.spawnEntity(p);
                 newW.updateEntityWithOptionalForce(p, false);
