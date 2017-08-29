@@ -1,7 +1,10 @@
 package lain.mods.helper.cheat;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -53,8 +56,12 @@ public class CheatClient extends Cheat
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
 
-                    for (int potion : _IMMUNE)
-                        player.removePotionEffectClient(potion);
+                    Collection<Potion> toRemovePotionEffects = new ArrayList<Potion>();
+                    player.getActivePotionEffects().forEach(p -> {
+                        if (p.getPotion().isBadEffect())
+                            toRemovePotionEffects.add(p.getPotion());
+                    });
+                    toRemovePotionEffects.forEach(p -> player.removePotionEffect(p));
                 }
             }
         }

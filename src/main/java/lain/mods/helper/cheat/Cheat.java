@@ -1,6 +1,7 @@
 package lain.mods.helper.cheat;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import lain.mods.helper.LainHelper;
@@ -12,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 public class Cheat
@@ -28,7 +28,6 @@ public class Cheat
     public static final Cheat INSTANCE = FMLCommonHandler.instance().getSide().isClient() ? new CheatClient() : new Cheat();
     protected static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
     protected static final UUID _MODIFIER = UUID.fromString("c0d922c2-2d2f-423d-9a32-57f8ea57a86a");
-    protected static final List<Integer> _IMMUNE = ImmutableList.of(Potion.poison.getId(), Potion.wither.getId(), Potion.hunger.getId(), Potion.confusion.getId(), Potion.blindness.getId());
 
     static
     {
@@ -56,7 +55,7 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth);
+                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
                     AttributeModifier am = iai.getModifier(_MODIFIER);
                     if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.5D))
                     {
@@ -91,8 +90,12 @@ public class Cheat
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
 
-                    for (int potion : _IMMUNE)
-                        player.removePotionEffect(potion);
+                    Collection<Potion> toRemovePotionEffects = new ArrayList<Potion>();
+                    player.getActivePotionEffects().forEach(p -> {
+                        if (p.getPotion().isBadEffect())
+                            toRemovePotionEffects.add(p.getPotion());
+                    });
+                    toRemovePotionEffects.forEach(p -> player.removePotionEffect(p));
 
                     if (player.ticksExisted % 10 == 0)
                     {
@@ -100,7 +103,7 @@ public class Cheat
                         float maxhealth = player.getMaxHealth();
                         if (health < maxhealth)
                         {
-                            health += Math.max(maxhealth * 0.1F, 1.0F);;
+                            health += Math.max(maxhealth * 0.1F, 1.0F);
                             if (health > maxhealth)
                                 health = maxhealth;
                             player.setHealth(health);

@@ -12,7 +12,7 @@ public class CheatClientRenderHooks
         int flags = Cheat.INSTANCE.getFlagsClient();
         if ((flags & 0x1) != 0)
         {
-            switch (event.type)
+            switch (event.getType())
             {
                 case FOOD:
                 case AIR:
