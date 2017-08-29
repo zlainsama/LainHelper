@@ -24,7 +24,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -88,12 +87,6 @@ public class LainHelper
         }
 
     });
-
-    @SubscribeEvent
-    public void handleEvent(FMLNetworkEvent.ClientConnectedToServerEvent event)
-    {
-        Cheat.INSTANCE.setFlagsClient(-1);
-    }
 
     @Mod.EventHandler
     public void handleEvent(FMLServerStartingEvent event)
