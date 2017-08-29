@@ -16,7 +16,7 @@ public class CheatClient extends Cheat
 
     static
     {
-        MinecraftForge.EVENT_BUS.register(new CheatClientEventHandler());
+        MinecraftForge.EVENT_BUS.register(new CheatClientRenderHooks());
     }
 
     @Override
