@@ -42,7 +42,8 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
-                return amount *= 0.3F;
+                if (!source.isDamageAbsolute())
+                    amount *= 0.36;
             }
         }
         return amount;
@@ -95,37 +96,42 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
+                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
                     AttributeModifier am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.7D))
+                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 6D))
                     {
                         iai.removeModifier(am);
                         am = null;
                     }
                     if (am == null)
                     {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.7D, 2);
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 6D, 0);
                         am.setSaved(false);
                         iai.applyModifier(am);
-
-                        float health = player.getHealth();
-                        float maxhealth = player.getMaxHealth();
-                        if (health > maxhealth)
-                        {
-                            health = maxhealth;
-                            player.setHealth(health);
-                        }
                     }
-                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
+                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR);
                     am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 2 || am.getAmount() != 0.3D))
+                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 20D))
                     {
                         iai.removeModifier(am);
                         am = null;
                     }
                     if (am == null)
                     {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 0.3D, 2);
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 20D, 0);
+                        am.setSaved(false);
+                        iai.applyModifier(am);
+                    }
+                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS);
+                    am = iai.getModifier(_MODIFIER);
+                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 8D))
+                    {
+                        iai.removeModifier(am);
+                        am = null;
+                    }
+                    if (am == null)
+                    {
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 8D, 0);
                         am.setSaved(false);
                         iai.applyModifier(am);
                     }
