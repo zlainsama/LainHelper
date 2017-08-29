@@ -56,6 +56,8 @@ public class CheatClient extends Cheat
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
 
+                    player.capabilities.allowFlying = true;
+
                     Collection<Potion> toRemovePotionEffects = new ArrayList<Potion>();
                     player.getActivePotionEffects().forEach(p -> {
                         if (p.getPotion().isBadEffect())
