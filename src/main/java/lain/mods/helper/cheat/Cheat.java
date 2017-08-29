@@ -44,9 +44,9 @@ public class Cheat
             if ((flags & 0x1) != 0)
             {
                 if (!source.isUnblockable())
-                    amount *= CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
+                    amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                 if (!source.isDamageAbsolute())
-                    amount *= CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
+                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
             }
         }
         return amount;
