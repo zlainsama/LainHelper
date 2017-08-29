@@ -19,7 +19,6 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -32,7 +31,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
-@Mod(modid = "LainHelper", useMetadata = true)
+@Mod(modid = "lainhelper", useMetadata = true, acceptedMinecraftVersions = "[1.12.1]")
 public class LainHelper
 {
 
@@ -118,18 +117,18 @@ public class LainHelper
     @SubscribeEvent
     public void handleEvent(LivingDeathEvent event)
     {
-        if (event.entityLiving instanceof EntityPlayerMP)
+        if (event.getEntityLiving() instanceof EntityPlayerMP)
         {
-            PlayerData.get((EntityPlayerMP) event.entityLiving).setLastPosition(new PositionData(event.entityLiving));
+            PlayerData.get((EntityPlayerMP) event.getEntityLiving()).setLastPosition(new PositionData(event.getEntityLiving()));
         }
     }
 
     @SubscribeEvent
     public void handleEvent(PlayerEvent.SaveToFile event)
     {
-        if (event.entityPlayer instanceof EntityPlayerMP)
+        if (event.getEntityPlayer() instanceof EntityPlayerMP)
         {
-            DataStorage store = getPlayerDataStorage(event.entityPlayer.getUniqueID(), false);
+            DataStorage store = getPlayerDataStorage(event.getEntityPlayer().getUniqueID(), false);
             if (store != null)
                 store.save();
         }
@@ -138,7 +137,7 @@ public class LainHelper
     @SubscribeEvent
     public void handleEvent(WorldEvent.Save event)
     {
-        if (!event.world.isRemote && event.world.provider.getDimensionId() == 0)
+        if (!event.getWorld().isRemote && event.getWorld().provider.getDimension() == 0)
         {
             DataStorage store = getWorldDataStorage(false);
             if (store != null)
@@ -152,7 +151,7 @@ public class LainHelper
         Options.loadConfig(new Configuration(event.getSuggestedConfigurationFile()), event.getModLog());
 
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
+        // FMLCommonHandler.instance().bus().register(this);
 
         if (Cheat.INSTANCE == null)
             throw new RuntimeException();
