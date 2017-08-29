@@ -66,7 +66,7 @@ public class Teleporter extends net.minecraft.world.Teleporter
             {
                 newW.spawnEntity(p);
                 newW.updateEntityWithOptionalForce(p, false);
-                LainHelper.ticksKeepEndLoaded = 20; // to let DragonFightManager think a full second
+                LainHelper.ticksKeepEndLoaded = 100; // to let DragonFightManager think
             }
         }
         else
