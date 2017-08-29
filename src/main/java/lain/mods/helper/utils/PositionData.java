@@ -2,7 +2,7 @@ package lain.mods.helper.utils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public class PositionData
 {
@@ -100,9 +100,9 @@ public class PositionData
         if (par2)
         {
             boolean flag = false;
-            while (!par1.worldObj.getCollidingBoundingBoxes(par1, par1.getEntityBoundingBox()).isEmpty())
+            while (!par1.world.getCollisionBoxes(par1, par1.getEntityBoundingBox()).isEmpty())
             {
-                par1.setPosition(par1.posX, par1.posY + 1.0D, par1.posZ);
+                par1.setPosition(par1.posX, par1.posY + 0.5D, par1.posZ);
                 flag = true;
             }
             if (flag)
