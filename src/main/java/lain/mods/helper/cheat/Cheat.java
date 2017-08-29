@@ -11,6 +11,7 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
@@ -32,6 +33,19 @@ public class Cheat
     static
     {
         LainHelper.network.registerPacket(240, PacketCheatInfo.class);
+    }
+
+    public float applyDamageReduction(EntityPlayer player, DamageSource source, float amount)
+    {
+        if (player instanceof EntityPlayerMP)
+        {
+            int flags = getFlags(player);
+            if ((flags & 0x1) != 0)
+            {
+                return amount *= 0.3F;
+            }
+        }
+        return amount;
     }
 
     public float getArmorVisibility(EntityPlayer player, float result)
@@ -115,32 +129,6 @@ public class Cheat
                         am.setSaved(false);
                         iai.applyModifier(am);
                     }
-                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR);
-                    am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 6D))
-                    {
-                        iai.removeModifier(am);
-                        am = null;
-                    }
-                    if (am == null)
-                    {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 6D, 0);
-                        am.setSaved(false);
-                        iai.applyModifier(am);
-                    }
-                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS);
-                    am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 4D))
-                    {
-                        iai.removeModifier(am);
-                        am = null;
-                    }
-                    if (am == null)
-                    {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 4D, 0);
-                        am.setSaved(false);
-                        iai.applyModifier(am);
-                    }
 
                     FoodStats food = player.getFoodStats();
                     if (food != null)
@@ -152,6 +140,7 @@ public class Cheat
                         air += 200;
                         player.setAir(air);
                     }
+                    player.extinguish();
 
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
@@ -171,7 +160,7 @@ public class Cheat
                         float maxhealth = player.getMaxHealth();
                         if (health < maxhealth)
                         {
-                            health += Math.max(maxhealth * 0.2F, 1.0F);
+                            health += Math.max(maxhealth * 0.05F, 1.0F);
                             if (health > maxhealth)
                                 health = maxhealth;
                             player.setHealth(health);

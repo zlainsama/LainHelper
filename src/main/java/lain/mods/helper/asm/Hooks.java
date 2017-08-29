@@ -2,9 +2,15 @@ package lain.mods.helper.asm;
 
 import lain.mods.helper.cheat.Cheat;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
 
 public class Hooks
 {
+
+    public static float applyDamageReduction(EntityPlayer player, DamageSource source, float amount)
+    {
+        return Cheat.INSTANCE.applyDamageReduction(player, source, amount);
+    }
 
     public static float getArmorVisibility(EntityPlayer player, float result)
     {

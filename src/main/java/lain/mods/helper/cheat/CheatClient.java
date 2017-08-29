@@ -52,6 +52,7 @@ public class CheatClient extends Cheat
                         air += 200;
                         player.setAir(air);
                     }
+                    player.extinguish();
 
                     if (player.fallDistance > 1.0F)
                         player.fallDistance = 1.0F;
