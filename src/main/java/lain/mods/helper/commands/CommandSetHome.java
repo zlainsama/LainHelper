@@ -2,50 +2,46 @@ package lain.mods.helper.commands;
 
 import lain.mods.helper.Options;
 import lain.mods.helper.PlayerData;
+import lain.mods.helper.utils.Message;
 import lain.mods.helper.utils.PositionData;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextFormatting;
 
 public class CommandSetHome extends GeneralHelperCommand
 {
 
-    IChatComponent msgNotPlayer = new ChatComponentTranslation("LH_NotPlayer", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
-    IChatComponent msgSetHomeDone = new ChatComponentTranslation("LH_SetHomeDone", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
-    IChatComponent msgOverworldHomeOnly = new ChatComponentTranslation("LH_OverworldHomeOnly", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
-
     @Override
-    public void execute(ICommandSender par1, String[] par2)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException
     {
-        if (par1 instanceof EntityPlayerMP)
+        if (sender instanceof EntityPlayerMP)
         {
-            EntityPlayerMP player = (EntityPlayerMP) par1;
+            EntityPlayerMP player = (EntityPlayerMP) sender;
             PositionData pos = new PositionData(player)/* .align() */;
             if (!Options.overworldHomeOnly || pos.dimension == 0)
             {
                 PlayerData.get(player).setHomePosition(pos);
-                par1.addChatMessage(msgSetHomeDone);
+                sender.sendMessage(Message.msgSetHomeDone.convert(TextFormatting.GREEN));
             }
             else
-                par1.addChatMessage(msgOverworldHomeOnly);
+                sender.sendMessage(Message.msgOverworldHomeOnly.convert(TextFormatting.RED));
         }
         else
-            par1.addChatMessage(msgNotPlayer);
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender par1)
-    {
-        return "LH_SetHome_Usage";
+            sender.sendMessage(Message.msgNotPlayer.convert(TextFormatting.RED));
     }
 
     @Override
     public String getName()
     {
         return "sethome";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender)
+    {
+        return Message.msgSetHomeUsage.key;
     }
 
 }

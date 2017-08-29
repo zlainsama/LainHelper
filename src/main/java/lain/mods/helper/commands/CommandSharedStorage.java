@@ -1,40 +1,38 @@
 package lain.mods.helper.commands;
 
 import lain.mods.helper.SharedStorage;
+import lain.mods.helper.utils.Message;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextFormatting;
 
 public class CommandSharedStorage extends GeneralHelperCommand
 {
 
-    IChatComponent msgNotPlayer = new ChatComponentTranslation("LH_NotPlayer", new Object[0]).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_RED));
-
     @Override
-    public void execute(ICommandSender par1, String[] par2)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException
     {
-        if (par1 instanceof EntityPlayerMP)
+        if (sender instanceof EntityPlayerMP)
         {
-            EntityPlayerMP player = (EntityPlayerMP) par1;
+            EntityPlayerMP player = (EntityPlayerMP) sender;
             player.displayGUIChest(SharedStorage.getInventory());
         }
         else
-            par1.addChatMessage(msgNotPlayer);
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender par1)
-    {
-        return "LH_SharedStorage_Usage";
+            sender.sendMessage(Message.msgNotPlayer.convert(TextFormatting.RED));
     }
 
     @Override
     public String getName()
     {
         return "sharedstorage";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender)
+    {
+        return Message.msgSharedStorageUsage.key;
     }
 
 }

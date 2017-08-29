@@ -3,6 +3,7 @@ package lain.mods.helper;
 import java.util.concurrent.TimeUnit;
 import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.DataStorageAttachment;
+import lain.mods.helper.utils.Messenger.Message;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -74,7 +75,7 @@ public class SharedStorage
         @Override
         public IInventory load(DataStorage store) throws Exception
         {
-            InventoryStorage inv = new InventoryStorage("LH_SharedStorage_Title", false, 54);
+            InventoryStorage inv = new InventoryStorage(Message.msgSharedStorageTitle.key, false, 54);
             store.registerAttachmentObject("SharedStorage", inv);
             return inv;
         }

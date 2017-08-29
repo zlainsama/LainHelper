@@ -1,4 +1,5 @@
 ﻿LH_NotPlayer=You need to join the game to do so.
+LH_TeleportationFailed=Teleportation Failed.
 LH_LastPosNotFound=There is no last position to teleport.
 LH_BackDone=Teleported to last position.
 LH_HomeNotFound=There is no home position to teleport.

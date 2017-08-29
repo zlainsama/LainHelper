@@ -1,4 +1,5 @@
 ﻿LH_NotPlayer=你需要加入游戏才能这么做.
+LH_TeleportationFailed=传送失败.
 LH_LastPosNotFound=不存在上一个位置.
 LH_BackDone=传送到了上一个位置.
 LH_HomeNotFound=不存在家.

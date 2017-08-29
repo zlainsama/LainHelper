@@ -89,14 +89,16 @@ public class PositionData
         pitch = par1.getFloat("pitch");
     }
 
-    public void teleportEntity(Entity par1)
+    public boolean teleportEntity(Entity par1)
     {
-        teleportEntity(par1, false);
+        return teleportEntity(par1, false);
     }
 
-    public void teleportEntity(Entity par1, boolean par2)
+    public boolean teleportEntity(Entity par1, boolean par2)
     {
-        Teleporter.teleport(par1, dimension, x, y, z, yaw, pitch, 0, 0, 0);
+        if (Teleporter.teleport(par1, dimension, x, y, z, yaw, pitch, 0, 0, 0) == null)
+            return false;
+
         if (par2)
         {
             boolean flag = false;
@@ -108,6 +110,8 @@ public class PositionData
             if (flag)
                 Teleporter.teleport(par1, -999, par1.posX, par1.posY, par1.posZ, par1.rotationYaw, par1.rotationPitch, 0, 0, 0);
         }
+
+        return true;
     }
 
     public void writeToNBT(NBTTagCompound par1)
