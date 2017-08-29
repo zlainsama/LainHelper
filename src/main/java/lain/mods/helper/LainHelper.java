@@ -14,16 +14,19 @@ import lain.mods.helper.utils.DataStorage;
 import lain.mods.helper.utils.MinecraftUtils;
 import lain.mods.helper.utils.PositionData;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -61,6 +64,8 @@ public class LainHelper
     }
 
     public static NetworkManager network = new NetworkManager("LainHelper");
+
+    public static int ticksKeepEndLoaded = 0;
 
     private static final LoadingCache<File, DataStorage> stores = CacheBuilder.newBuilder().expireAfterAccess(30L, TimeUnit.MINUTES).removalListener(new RemovalListener<File, DataStorage>()
     {
@@ -124,6 +129,27 @@ public class LainHelper
             DataStorage store = getPlayerDataStorage(event.getEntityPlayer().getUniqueID(), false);
             if (store != null)
                 store.save();
+        }
+    }
+
+    @SubscribeEvent
+    public void handleEvent(ServerTickEvent event)
+    {
+        if (ticksKeepEndLoaded > 0)
+        {
+            ticksKeepEndLoaded -= 1;
+
+            WorldServer w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(1);
+            if (w != null)
+            {
+                for (int i = -8; i <= 8; ++i)
+                {
+                    for (int j = -8; j <= 8; ++j)
+                    {
+                        w.getChunkFromChunkCoords(i, j);
+                    }
+                }
+            }
         }
     }
 

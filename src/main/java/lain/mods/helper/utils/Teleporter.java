@@ -1,5 +1,6 @@
 package lain.mods.helper.utils;
 
+import lain.mods.helper.LainHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -65,6 +66,7 @@ public class Teleporter extends net.minecraft.world.Teleporter
             {
                 newW.spawnEntity(p);
                 newW.updateEntityWithOptionalForce(p, false);
+                LainHelper.ticksKeepEndLoaded = 20; // to let DragonFightManager think a full second
             }
         }
         else
