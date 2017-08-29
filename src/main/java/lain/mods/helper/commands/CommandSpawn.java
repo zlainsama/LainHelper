@@ -8,7 +8,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -22,7 +24,11 @@ public class CommandSpawn extends GeneralHelperCommand
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
             PositionData last = new PositionData(player);
-            PositionData target = new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSpawnPoint(), 0);
+            WorldServer w = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
+            BlockPos sp = w.getSpawnPoint();
+            while (w.getBlockState(sp).isFullCube())
+                sp = sp.up(2);
+            PositionData target = new PositionData(sp, 0);
             PlayerTeleportationEvent event = new PlayerTeleportationEvent(player, target);
             if (MinecraftForge.EVENT_BUS.post(event))
             {
@@ -35,7 +41,7 @@ public class CommandSpawn extends GeneralHelperCommand
             {
                 target = event.target;
                 PlayerData.get(player).setLastPosition(last);
-                if (target.teleportEntity(player, true))
+                if (target.teleportEntity(player))
                     sender.sendMessage(Message.msgSpawnDone.convert(TextFormatting.GREEN));
                 else
                     sender.sendMessage(Message.msgTeleportationFailed.convert(TextFormatting.RED));

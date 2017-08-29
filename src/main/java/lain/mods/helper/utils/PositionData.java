@@ -91,27 +91,7 @@ public class PositionData
 
     public boolean teleportEntity(Entity par1)
     {
-        return teleportEntity(par1, false);
-    }
-
-    public boolean teleportEntity(Entity par1, boolean par2)
-    {
-        if (Teleporter.teleport(par1, dimension, x, y, z, yaw, pitch, 0, 0, 0) == null)
-            return false;
-
-        if (par2)
-        {
-            boolean flag = false;
-            while (!par1.world.getCollisionBoxes(par1, par1.getEntityBoundingBox()).isEmpty())
-            {
-                par1.setPosition(par1.posX, par1.posY + 0.5D, par1.posZ);
-                flag = true;
-            }
-            if (flag)
-                Teleporter.teleport(par1, -999, par1.posX, par1.posY, par1.posZ, par1.rotationYaw, par1.rotationPitch, 0, 0, 0);
-        }
-
-        return true;
+        return Teleporter.teleport(par1, dimension, x, y, z, yaw, pitch, 0, 0, 0) != null;
     }
 
     public void writeToNBT(NBTTagCompound par1)
