@@ -31,10 +31,58 @@ public class ASMTransformer implements IClassTransformer
 
         }
 
+        class method002 extends MethodVisitor
+        {
+
+            public method002(MethodVisitor mv)
+            {
+                super(Opcodes.ASM5, mv);
+            }
+
+            @Override
+            public void visitInsn(int opcode)
+            {
+                if (opcode == Opcodes.IRETURN)
+                {
+                    this.visitVarInsn(Opcodes.ISTORE, 1);
+                    this.visitVarInsn(Opcodes.ALOAD, 0);
+                    this.visitVarInsn(Opcodes.ILOAD, 1);
+                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "isInvisible", "(Lnet/minecraft/entity/player/EntityPlayer;Z)Z", false);
+                }
+            };
+
+        }
+
+        class method003 extends MethodVisitor
+        {
+
+            public method003(MethodVisitor mv)
+            {
+                super(Opcodes.ASM5, mv);
+            }
+
+            @Override
+            public void visitInsn(int opcode)
+            {
+                if (opcode == Opcodes.FRETURN)
+                {
+                    this.visitVarInsn(Opcodes.FSTORE, 1);
+                    this.visitVarInsn(Opcodes.ALOAD, 0);
+                    this.visitVarInsn(Opcodes.FLOAD, 1);
+                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "getArmorVisibility", "(Lnet/minecraft/entity/player/EntityPlayer;F)F", false);
+                }
+            };
+
+        }
+
         ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/EntityLivingBase");
 
-        ObfHelper m001 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/EntityLivingBase", "()V").setDevName("onLivingUpdate");
+        ObfHelper m001 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/player/EntityPlayer", "()V").setDevName("onLivingUpdate");
         boolean foundM001 = false;
+        ObfHelper m002 = ObfHelper.newMethod("func_82150_aj", "net/minecraft/entity/player/EntityPlayer", "()Z").setDevName("isInvisible");
+        boolean foundM002 = false;
+        ObfHelper m003 = ObfHelper.newMethod("func_82243_bO", "net/minecraft/entity/player/EntityPlayer", "()F").setDevName("getArmorVisibility");
+        boolean foundM003 = false;
 
         public transformer001(ClassVisitor cv)
         {
@@ -54,6 +102,26 @@ public class ASMTransformer implements IClassTransformer
                 mv.visitMaxs(1, 1);
                 mv.visitEnd();
             }
+            if (!foundM002)
+            {
+                MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m002.getData(1), m002.getData(2), null, null);
+                mv.visitCode();
+                mv.visitVarInsn(Opcodes.ALOAD, 0);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m002.getData(1), m002.getData(2), false);
+                mv.visitInsn(Opcodes.IRETURN);
+                mv.visitMaxs(1, 1);
+                mv.visitEnd();
+            }
+            if (!foundM003)
+            {
+                MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m003.getData(1), m003.getData(2), null, null);
+                mv.visitCode();
+                mv.visitVarInsn(Opcodes.ALOAD, 0);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m003.getData(1), m003.getData(2), false);
+                mv.visitInsn(Opcodes.FRETURN);
+                mv.visitMaxs(1, 1);
+                mv.visitEnd();
+            }
             super.visitEnd();
         }
 
@@ -64,6 +132,16 @@ public class ASMTransformer implements IClassTransformer
             {
                 foundM001 = true;
                 return new method001(super.visitMethod(access, name, desc, signature, exceptions));
+            }
+            if (m002.match(name, desc))
+            {
+                foundM002 = true;
+                return new method002(super.visitMethod(access, name, desc, signature, exceptions));
+            }
+            if (m003.match(name, desc))
+            {
+                foundM003 = true;
+                return new method003(super.visitMethod(access, name, desc, signature, exceptions));
             }
             return super.visitMethod(access, name, desc, signature, exceptions);
         }
@@ -81,7 +159,7 @@ public class ASMTransformer implements IClassTransformer
     private byte[] transform001(byte[] bytes)
     {
         ClassReader classReader = new ClassReader(bytes);
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         classReader.accept(new transformer001(classWriter), ClassReader.EXPAND_FRAMES);
         return classWriter.toByteArray();
     }

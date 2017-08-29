@@ -34,6 +34,19 @@ public class Cheat
         LainHelper.network.registerPacket(240, PacketCheatInfo.class);
     }
 
+    public float getArmorVisibility(EntityPlayer player, float result)
+    {
+        if (player instanceof EntityPlayerMP)
+        {
+            int flags = getFlags(player);
+            if ((flags & 0x1) != 0)
+            {
+                return 0F;
+            }
+        }
+        return result;
+    }
+
     public int getFlags(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
@@ -44,6 +57,19 @@ public class Cheat
     public int getFlagsClient()
     {
         return 0;
+    }
+
+    public boolean isInvisible(EntityPlayer player, boolean result)
+    {
+        if (player instanceof EntityPlayerMP)
+        {
+            int flags = getFlags(player);
+            if ((flags & 0x1) != 0)
+            {
+                return true;
+            }
+        }
+        return result;
     }
 
     public void onLivingUpdate(EntityPlayer player)
