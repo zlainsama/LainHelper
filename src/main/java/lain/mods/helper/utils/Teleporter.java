@@ -59,8 +59,8 @@ public class Teleporter extends net.minecraft.world.Teleporter
         if (ent instanceof EntityPlayerMP)
         {
             EntityPlayerMP p = (EntityPlayerMP) ent;
-            s.getPlayerList().transferPlayerToDimension(p, dimension, new Teleporter(newW, px, py, pz));
             p.addExperienceLevel(0);
+            s.getPlayerList().transferPlayerToDimension(p, dimension, new Teleporter(newW, px, py, pz));
             if (oldD == 1)
             {
                 newW.spawnEntity(p);
@@ -104,29 +104,12 @@ public class Teleporter extends net.minecraft.world.Teleporter
     }
 
     @Override
-    public boolean makePortal(Entity ent)
-    {
-        return true;
-    }
-
-    @Override
-    public boolean placeInExistingPortal(Entity ent, float yaw)
-    {
-        return true;
-    }
-
-    @Override
     public void placeInPortal(Entity ent, float yaw)
     {
         world.getBlockState(new BlockPos(x, y, z));
         ent.setPosition(x, y, z);
         ent.motionX = ent.motionY = ent.motionZ = 0D;
         ent.fallDistance = 0F;
-    }
-
-    @Override
-    public void removeStalePortalLocations(long worldTime)
-    {
     }
 
 }
