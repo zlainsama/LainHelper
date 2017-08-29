@@ -91,6 +91,7 @@ public class Cheat
                     if (am == null)
                     {
                         am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.7D, 2);
+                        am.setSaved(false);
                         iai.applyModifier(am);
 
                         float health = player.getHealth();
@@ -100,6 +101,45 @@ public class Cheat
                             health = maxhealth;
                             player.setHealth(health);
                         }
+                    }
+                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
+                    am = iai.getModifier(_MODIFIER);
+                    if (am != null && (am.getOperation() != 2 || am.getAmount() != 0.3D))
+                    {
+                        iai.removeModifier(am);
+                        am = null;
+                    }
+                    if (am == null)
+                    {
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 0.3D, 2);
+                        am.setSaved(false);
+                        iai.applyModifier(am);
+                    }
+                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR);
+                    am = iai.getModifier(_MODIFIER);
+                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 6D))
+                    {
+                        iai.removeModifier(am);
+                        am = null;
+                    }
+                    if (am == null)
+                    {
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 6D, 0);
+                        am.setSaved(false);
+                        iai.applyModifier(am);
+                    }
+                    iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS);
+                    am = iai.getModifier(_MODIFIER);
+                    if (am != null && (am.getOperation() != 0 || am.getAmount() != 4D))
+                    {
+                        iai.removeModifier(am);
+                        am = null;
+                    }
+                    if (am == null)
+                    {
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), 4D, 0);
+                        am.setSaved(false);
+                        iai.applyModifier(am);
                     }
 
                     FoodStats food = player.getFoodStats();
