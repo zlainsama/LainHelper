@@ -14,6 +14,12 @@ public class CheatClientEventHandler
     }
 
     @SubscribeEvent
+    public void handleEvent(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
+    {
+        Cheat.INSTANCE.setFlagsClient(0);
+    }
+
+    @SubscribeEvent
     public void handleEvent(RenderGameOverlayEvent.Pre event)
     {
         int flags = Cheat.INSTANCE.getFlagsClient();

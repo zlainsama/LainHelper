@@ -12,7 +12,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 public class CheatClient extends Cheat
 {
 
-    int c_flags = -1;
+    int c_flags = 0;
 
     static
     {

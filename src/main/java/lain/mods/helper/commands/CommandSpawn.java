@@ -22,7 +22,7 @@ public class CommandSpawn extends GeneralHelperCommand
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
             PositionData last = new PositionData(player);
-            PositionData target = new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).provider.getRandomizedSpawnPoint(), 0);
+            PositionData target = new PositionData(FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).getSpawnPoint(), 0);
             PlayerTeleportationEvent event = new PlayerTeleportationEvent(player, target);
             if (MinecraftForge.EVENT_BUS.post(event))
             {
