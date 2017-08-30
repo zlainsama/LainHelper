@@ -1,10 +1,8 @@
 package lain.mods.helper.cheat;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Collectors;
 import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -59,12 +57,7 @@ public class CheatClient extends Cheat
 
                     player.capabilities.allowFlying = true;
 
-                    Collection<Potion> toRemovePotionEffects = new ArrayList<Potion>();
-                    player.getActivePotionEffects().forEach(p -> {
-                        if (p.getPotion().isBadEffect())
-                            toRemovePotionEffects.add(p.getPotion());
-                    });
-                    toRemovePotionEffects.forEach(p -> player.removePotionEffect(p));
+                    player.getActivePotionEffects().stream().filter(p -> p.getPotion().isBadEffect()).map(p -> p.getPotion()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
                 }
             }
         }

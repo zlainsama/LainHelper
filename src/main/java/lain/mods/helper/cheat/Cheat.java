@@ -1,9 +1,8 @@
 package lain.mods.helper.cheat;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -12,7 +11,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
@@ -142,12 +140,7 @@ public class Cheat
 
                     player.capabilities.allowFlying = true;
 
-                    Collection<Potion> toRemovePotionEffects = new ArrayList<Potion>();
-                    player.getActivePotionEffects().forEach(p -> {
-                        if (p.getPotion().isBadEffect())
-                            toRemovePotionEffects.add(p.getPotion());
-                    });
-                    toRemovePotionEffects.forEach(p -> player.removePotionEffect(p));
+                    player.getActivePotionEffects().stream().filter(p -> p.getPotion().isBadEffect()).map(p -> p.getPotion()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
 
                     // Stream.concat(StreamSupport.stream(player.getArmorInventoryList().spliterator(), false), IntStream.range(0, player.inventory.getSizeInventory()).filter(InventoryPlayer::isHotbar).mapToObj(player.inventory::getStackInSlot).collect(Collectors.toList()).stream())
                     IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(stack -> !stack.isEmpty()).forEach(stack -> {
