@@ -124,27 +124,24 @@ public class Cheat
                     player.capabilities.allowFlying = true;
 
                     // Stream.concat(StreamSupport.stream(player.getArmorInventoryList().spliterator(), false), IntStream.range(0, player.inventory.getSizeInventory()).filter(InventoryPlayer::isHotbar).mapToObj(player.inventory::getStackInSlot).collect(Collectors.toList()).stream())
-                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).forEach(stack -> {
-                        if (!stack.isEmpty())
+                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(stack -> !stack.isEmpty()).forEach(stack -> {
+                        if (EnumEnchantmentType.BREAKABLE.canEnchantItem(stack.getItem()))
+                            if (stack.isItemDamaged())
+                                stack.setItemDamage(0);
+                        if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
                         {
-                            if (EnumEnchantmentType.BREAKABLE.canEnchantItem(stack.getItem()))
-                                if (stack.isItemDamaged())
-                                    stack.setItemDamage(0);
-                            if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
+                            IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+                            if (cap.canReceive())
                             {
-                                IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                                if (cap.canReceive())
+                                int n = cap.getMaxEnergyStored() - cap.getEnergyStored();
+                                if ((player.inventory.getCurrentItem() != stack && !player.inventory.offHandInventory.contains(stack)) || n < 0 || cap.getEnergyStored() <= 0)
+                                    cap.receiveEnergy(Integer.MAX_VALUE, false);
+                                else if (n > cap.receiveEnergy(n, true))
                                 {
-                                    int n = cap.getMaxEnergyStored() - cap.getEnergyStored();
-                                    if ((player.inventory.getCurrentItem() != stack && !player.inventory.offHandInventory.contains(stack)) || n < 0 || cap.getEnergyStored() == 0)
-                                        cap.receiveEnergy(Integer.MAX_VALUE, false);
-                                    else if (n > cap.receiveEnergy(n, true))
-                                    {
+                                    cap.receiveEnergy(n, false);
+                                    n = cap.getMaxEnergyStored() - cap.getEnergyStored();
+                                    if (n <= cap.receiveEnergy(n, true))
                                         cap.receiveEnergy(n, false);
-                                        n = cap.getMaxEnergyStored() - cap.getEnergyStored();
-                                        if (n <= cap.receiveEnergy(n, true))
-                                            cap.receiveEnergy(n, false);
-                                    }
                                 }
                             }
                         }
