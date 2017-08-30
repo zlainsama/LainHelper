@@ -2,7 +2,6 @@ package lain.mods.helper.cheat;
 
 import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -39,9 +38,6 @@ public class CheatClient extends Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    FoodStats food = player.getFoodStats();
-                    if (food != null)
-                        food.addStats(10 - food.getFoodLevel(), Float.MAX_VALUE);
                 }
             }
         }
