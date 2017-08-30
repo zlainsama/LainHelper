@@ -2,7 +2,9 @@ package lain.mods.helper.cheat;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -10,6 +12,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
 
@@ -97,14 +101,14 @@ public class Cheat
                 {
                     IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
                     AttributeModifier am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.5D))
+                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.7D))
                     {
                         iai.removeModifier(am);
                         am = null;
                     }
                     if (am == null)
                     {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.5D, 2);
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.7D, 2);
                         am.setSaved(false);
                         iai.applyModifier(am);
 
@@ -116,6 +120,35 @@ public class Cheat
                             player.setHealth(health);
                         }
                     }
+
+                    player.capabilities.allowFlying = true;
+
+                    // Stream.concat(StreamSupport.stream(player.getArmorInventoryList().spliterator(), false), IntStream.range(0, player.inventory.getSizeInventory()).filter(InventoryPlayer::isHotbar).mapToObj(player.inventory::getStackInSlot).collect(Collectors.toList()).stream())
+                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).forEach(stack -> {
+                        if (!stack.isEmpty())
+                        {
+                            if (EnumEnchantmentType.BREAKABLE.canEnchantItem(stack.getItem()))
+                                if (stack.isItemDamaged())
+                                    stack.setItemDamage(0);
+                            if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
+                            {
+                                IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+                                if (cap.canReceive())
+                                {
+                                    int n = cap.getMaxEnergyStored() - cap.getEnergyStored();
+                                    if ((player.inventory.getCurrentItem() != stack && !player.inventory.offHandInventory.contains(stack)) || n < 0 || cap.getEnergyStored() == 0)
+                                        cap.receiveEnergy(Integer.MAX_VALUE, false);
+                                    else if (n > cap.receiveEnergy(n, true))
+                                    {
+                                        cap.receiveEnergy(n, false);
+                                        n = cap.getMaxEnergyStored() - cap.getEnergyStored();
+                                        if (n <= cap.receiveEnergy(n, true))
+                                            cap.receiveEnergy(n, false);
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             }
         }

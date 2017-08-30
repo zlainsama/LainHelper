@@ -38,6 +38,7 @@ public class CheatClient extends Cheat
             {
                 if (player.isEntityAlive())
                 {
+                    player.capabilities.allowFlying = true;
                 }
             }
         }
