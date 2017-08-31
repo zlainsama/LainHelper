@@ -153,14 +153,17 @@ public class Cheat
                             if (cap.canReceive())
                             {
                                 int n = cap.getMaxEnergyStored() - cap.getEnergyStored();
-                                if ((player.inventory.getCurrentItem() != stack && !player.inventory.offHandInventory.contains(stack)) || n < 0 || cap.getEnergyStored() <= 0)
-                                    cap.receiveEnergy(Integer.MAX_VALUE, false);
-                                else if (n > cap.receiveEnergy(n, true))
+                                if (n > 0)
                                 {
-                                    cap.receiveEnergy(n, false);
-                                    n = cap.getMaxEnergyStored() - cap.getEnergyStored();
-                                    if (n <= cap.receiveEnergy(n, true))
+                                    if ((player.inventory.getCurrentItem() != stack && !player.inventory.offHandInventory.contains(stack)) || cap.getEnergyStored() <= 0)
                                         cap.receiveEnergy(n, false);
+                                    else if (n > cap.receiveEnergy(n, true))
+                                    {
+                                        cap.receiveEnergy(n, false);
+                                        n = cap.getMaxEnergyStored() - cap.getEnergyStored();
+                                        if (n <= cap.receiveEnergy(n, true))
+                                            cap.receiveEnergy(n, false);
+                                    }
                                 }
                             }
                         }
