@@ -103,14 +103,14 @@ public class Cheat
                 {
                     IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
                     AttributeModifier am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.7D))
+                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.5D))
                     {
                         iai.removeModifier(am);
                         am = null;
                     }
                     if (am == null)
                     {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.7D, 2);
+                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.5D, 2);
                         am.setSaved(false);
                         iai.applyModifier(am);
 
