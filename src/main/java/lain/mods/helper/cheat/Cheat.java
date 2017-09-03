@@ -14,8 +14,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
 
@@ -140,34 +138,13 @@ public class Cheat
 
                     player.capabilities.allowFlying = true;
 
-                    player.getActivePotionEffects().stream().filter(p -> p.getPotion().isBadEffect()).map(p -> p.getPotion()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
+                    player.getActivePotionEffects().stream().map(pe -> pe.getPotion()).filter(p -> p.isBadEffect()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
 
-                    // Stream.concat(StreamSupport.stream(player.getArmorInventoryList().spliterator(), false), IntStream.range(0, player.inventory.getSizeInventory()).filter(InventoryPlayer::isHotbar).mapToObj(player.inventory::getStackInSlot).collect(Collectors.toList()).stream())
-                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(stack -> !stack.isEmpty()).forEach(stack -> {
-                        if (EnumEnchantmentType.BREAKABLE.canEnchantItem(stack.getItem()))
-                            if (stack.isItemDamaged())
-                                stack.setItemDamage(0);
-                        if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
-                        {
-                            IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
-                            if (cap.canReceive())
-                            {
-                                int n = cap.getMaxEnergyStored() - cap.getEnergyStored();
-                                if (n > 0)
-                                {
-                                    if ((player.inventory.getCurrentItem() != stack && !player.inventory.offHandInventory.contains(stack)) || cap.getEnergyStored() <= 0)
-                                        cap.receiveEnergy(n, false);
-                                    else if (n > cap.receiveEnergy(n, true))
-                                    {
-                                        cap.receiveEnergy(n, false);
-                                        n = cap.getMaxEnergyStored() - cap.getEnergyStored();
-                                        if (n <= cap.receiveEnergy(n, true))
-                                            cap.receiveEnergy(n, false);
-                                    }
-                                }
-                            }
-                        }
-                    });
+                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(s -> {
+                        if (!s.isEmpty() && EnumEnchantmentType.BREAKABLE.canEnchantItem(s.getItem()) && s.isItemDamaged())
+                            return true;
+                        return false;
+                    }).forEachOrdered(s -> s.setItemDamage(0));
                 }
             }
         }

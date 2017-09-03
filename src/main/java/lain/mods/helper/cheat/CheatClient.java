@@ -1,7 +1,9 @@
 package lain.mods.helper.cheat;
 
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,7 +59,13 @@ public class CheatClient extends Cheat
 
                     player.capabilities.allowFlying = true;
 
-                    player.getActivePotionEffects().stream().filter(p -> p.getPotion().isBadEffect()).map(p -> p.getPotion()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
+                    player.getActivePotionEffects().stream().map(pe -> pe.getPotion()).filter(p -> p.isBadEffect()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
+
+                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(s -> {
+                        if (!s.isEmpty() && EnumEnchantmentType.BREAKABLE.canEnchantItem(s.getItem()) && s.isItemDamaged())
+                            return true;
+                        return false;
+                    }).forEachOrdered(s -> s.setItemDamage(0));
                 }
             }
         }
