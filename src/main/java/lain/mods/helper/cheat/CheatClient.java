@@ -5,7 +5,6 @@ import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -42,23 +41,6 @@ public class CheatClient extends Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    FoodStats food = player.getFoodStats();
-                    if (food != null)
-                        food.addStats(18 - food.getFoodLevel(), Float.MAX_VALUE);
-
-                    int air = player.getAir();
-                    if (air < 100)
-                    {
-                        air += 200;
-                        player.setAir(air);
-                    }
-                    player.extinguish();
-
-                    if (player.fallDistance > 1.0F)
-                        player.fallDistance = 1.0F;
-
-                    player.capabilities.allowFlying = true;
-
                     player.getActivePotionEffects().stream().map(pe -> pe.getPotion()).filter(p -> p.isBadEffect()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
 
                     IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(s -> {

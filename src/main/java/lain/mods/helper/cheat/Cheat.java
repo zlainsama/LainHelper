@@ -6,14 +6,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.FoodStats;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
 
@@ -99,45 +95,6 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    IAttributeInstance iai = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
-                    AttributeModifier am = iai.getModifier(_MODIFIER);
-                    if (am != null && (am.getOperation() != 2 || am.getAmount() != -0.5D))
-                    {
-                        iai.removeModifier(am);
-                        am = null;
-                    }
-                    if (am == null)
-                    {
-                        am = new AttributeModifier(_MODIFIER, _MODIFIER.toString(), -0.5D, 2);
-                        am.setSaved(false);
-                        iai.applyModifier(am);
-
-                        float health = player.getHealth();
-                        float maxhealth = player.getMaxHealth();
-                        if (health > maxhealth)
-                        {
-                            health = maxhealth;
-                            player.setHealth(health);
-                        }
-                    }
-
-                    FoodStats food = player.getFoodStats();
-                    if (food != null)
-                        food.addStats(18 - food.getFoodLevel(), Float.MAX_VALUE);
-
-                    int air = player.getAir();
-                    if (air < 100)
-                    {
-                        air += 200;
-                        player.setAir(air);
-                    }
-                    player.extinguish();
-
-                    if (player.fallDistance > 1.0F)
-                        player.fallDistance = 1.0F;
-
-                    player.capabilities.allowFlying = true;
-
                     player.getActivePotionEffects().stream().map(pe -> pe.getPotion()).filter(p -> p.isBadEffect()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
 
                     IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(s -> {
