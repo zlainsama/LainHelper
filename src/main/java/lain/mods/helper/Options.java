@@ -61,7 +61,7 @@ public class Options
         }
     }
 
-    public static boolean enableHelperCommands = true;
+    public static boolean enableHelperCommands = false;
     public static boolean overworldHomeOnly = true;
 
 }
