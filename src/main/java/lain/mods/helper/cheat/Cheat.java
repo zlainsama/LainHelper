@@ -2,10 +2,7 @@ package lain.mods.helper.cheat;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
-import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.CombatRules;
@@ -95,13 +92,6 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    player.getActivePotionEffects().stream().map(pe -> pe.getPotion()).filter(p -> p.isBadEffect()).collect(Collectors.toSet()).forEach(player::removePotionEffect);
-
-                    IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(s -> {
-                        if (!s.isEmpty() && EnumEnchantmentType.BREAKABLE.canEnchantItem(s.getItem()) && s.isItemDamaged())
-                            return true;
-                        return false;
-                    }).forEachOrdered(s -> s.setItemDamage(0));
                 }
             }
         }
