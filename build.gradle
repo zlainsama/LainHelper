@@ -25,14 +25,6 @@ minecraft {
     mappings = "snapshot_20170624"
 }
 
-jar
-{
-    manifest {
-        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin',
-		           'FMLCorePluginContainsFMLMod': 'true'
-    }
-}
-
 processResources
 {
     inputs.property "version", project.version
@@ -52,3 +44,63 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+task jarCore(type: Jar) {
+    manifest {
+        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin'
+    }
+    from(sourceSets.main.output) {
+        include '**/asm/**'
+    }
+    classifier = 'core'
+    includeEmptyDirs = false
+}
+
+task signCore(type: SignJar) {
+    onlyIf {
+        project.hasProperty('mcModsStore')
+    }
+
+    if (project.hasProperty('mcModsStore')) {
+        keyStore = project.mcModsStore
+        alias = project.mcModsAlias
+        storePass = project.mcModsStorePass
+        keyPass = project.mcModsKeyPass
+        inputFile = "${buildDir}/libs/${archivesBaseName}-${version}-core.jar"
+        outputFile = "${buildDir}/libs/${archivesBaseName}-${version}-core.jar"
+    }
+}
+
+task repackJar(type: Jar, dependsOn: signCore) {
+    manifest {
+        attributes 'ContainedDeps': "${archivesBaseName}-${version}-core.jar"
+    }
+    from(sourceSets.main.output) {
+        exclude '**/asm/**'
+    }
+    from("${buildDir}/libs") {
+        include "*-${version}-core.jar"
+    }
+}
+
+reobf {
+    jarCore {}
+    repackJar {}
+}
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('mcModsStore')
+    }
+
+    if (project.hasProperty('mcModsStore')) {
+        keyStore = project.mcModsStore
+        alias = project.mcModsAlias
+        storePass = project.mcModsStorePass
+        keyPass = project.mcModsKeyPass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+
+build.dependsOn signJar

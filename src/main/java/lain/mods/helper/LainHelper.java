@@ -33,7 +33,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
-@Mod(modid = "lainhelper", useMetadata = true, acceptedMinecraftVersions = "[1.12.1]")
+@Mod(modid = "lainhelper", useMetadata = true, acceptedMinecraftVersions = "[1.12.1]", certificateFingerprint = "aaaf83332a11df02406e9f266b1b65c1306f0f76")
 public class LainHelper
 {
 
