@@ -66,23 +66,7 @@ jar
     }
 }
 
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    onlyIf {
-        project.hasProperty('mcModsStore')
-    }
-
-    if (project.hasProperty('mcModsStore')) {
-        keyStore = project.mcModsStore
-        alias = project.mcModsAlias
-        storePass = project.mcModsStorePass
-        keyPass = project.mcModsKeyPass
-        inputFile = jar.archivePath
-        outputFile = jar.archivePath
-    }
-}
-
 jar.dependsOn signCoreJar
-build.dependsOn signJar
 
 processResources
 {
@@ -103,3 +87,20 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('mcModsStore')
+    }
+
+    if (project.hasProperty('mcModsStore')) {
+        keyStore = project.mcModsStore
+        alias = project.mcModsAlias
+        storePass = project.mcModsStorePass
+        keyPass = project.mcModsKeyPass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+
+build.dependsOn signJar
