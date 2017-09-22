@@ -25,13 +25,64 @@ minecraft {
     mappings = "snapshot_20170624"
 }
 
+reobf {
+    coreJar {}
+}
+
+task coreJar(type: Jar) {
+    from(sourceSets.main.output) {
+        include '**/asm/**'
+    }
+    manifest {
+        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin'
+    }
+    classifier = 'core'
+    includeEmptyDirs = false
+}
+
+task signCoreJar(type: SignJar, dependsOn: reobfCoreJar) {
+    onlyIf {
+        project.hasProperty('mcModsStore')
+    }
+
+    if (project.hasProperty('mcModsStore')) {
+        keyStore = project.mcModsStore
+        alias = project.mcModsAlias
+        storePass = project.mcModsStorePass
+        keyPass = project.mcModsKeyPass
+        inputFile = coreJar.archivePath
+        outputFile = coreJar.archivePath
+    }
+}
+
 jar
 {
     manifest {
-        attributes 'FMLCorePlugin': 'lain.mods.helper.asm.Plugin',
-		           'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'ContainedDeps': coreJar.archivePath.name
+    }
+    exclude '**/asm/**'
+    from(coreJar.archivePath.absolutePath) {
+        include '*'
     }
 }
+
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('mcModsStore')
+    }
+
+    if (project.hasProperty('mcModsStore')) {
+        keyStore = project.mcModsStore
+        alias = project.mcModsAlias
+        storePass = project.mcModsStorePass
+        keyPass = project.mcModsKeyPass
+        inputFile = jar.archivePath
+        outputFile = jar.archivePath
+    }
+}
+
+jar.dependsOn signCoreJar
+build.dependsOn signJar
 
 processResources
 {
@@ -52,20 +103,3 @@ processResources
         exclude 'mcmod.info'
     }
 }
-
-task signJar(type: SignJar, dependsOn: reobfJar) {
-    onlyIf {
-        project.hasProperty('mcModsStore')
-    }
-
-    if (project.hasProperty('mcModsStore')) {
-        keyStore = project.mcModsStore
-        alias = project.mcModsAlias
-        storePass = project.mcModsStorePass
-        keyPass = project.mcModsKeyPass
-        inputFile = jar.archivePath
-        outputFile = jar.archivePath
-    }
-}
-
-build.dependsOn signJar
