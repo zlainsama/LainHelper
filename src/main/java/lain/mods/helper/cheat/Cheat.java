@@ -92,6 +92,20 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
+                    if (player.ticksExisted % 20 == 0)
+                    {
+                        float maxShield = Math.max(4f, player.getMaxHealth() * 0.4f);
+                        float shield = player.getAbsorptionAmount();
+                        if (shield < maxShield)
+                        {
+                            if (shield < 0f)
+                                shield = 0f;
+                            shield += Math.max(0.5f, maxShield * 0.125f);
+                            if (shield > maxShield)
+                                shield = maxShield;
+                            player.setAbsorptionAmount(shield);
+                        }
+                    }
                 }
             }
         }
