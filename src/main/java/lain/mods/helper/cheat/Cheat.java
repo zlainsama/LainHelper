@@ -40,7 +40,7 @@ public class Cheat
                     amount = CombatRules.getDamageAfterAbsorb(amount, 10F, 2F);
                 // amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                 if (!source.isDamageAbsolute())
-                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, 4F);
+                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, 5F);
                 // amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
             }
         }
