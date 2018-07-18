@@ -37,9 +37,11 @@ public class Cheat
             if ((flags & 0x1) != 0)
             {
                 if (!source.isUnblockable())
-                    amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
+                    amount = CombatRules.getDamageAfterAbsorb(amount, 10F, 2F);
+                // amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                 if (!source.isDamageAbsolute())
-                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
+                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, 4F);
+                // amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
             }
         }
         return amount;
@@ -52,7 +54,7 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
-                return 0F;
+                // return 0F;
             }
         }
         return result;
@@ -77,7 +79,7 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
-                return true;
+                // return true;
             }
         }
         return result;
@@ -92,7 +94,7 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    if (player.ticksExisted % 20 == 0)
+                    if (player.ticksExisted % 40 == 0)
                     {
                         float maxShield = Math.max(4f, player.getMaxHealth() * 0.4f);
                         float shield = player.getAbsorptionAmount();
@@ -100,7 +102,7 @@ public class Cheat
                         {
                             if (shield < 0f)
                                 shield = 0f;
-                            shield += Math.max(0.5f, maxShield * 0.125f);
+                            shield += Math.max(1f, maxShield * 0.25f);
                             if (shield > maxShield)
                                 shield = maxShield;
                             player.setAbsorptionAmount(shield);
