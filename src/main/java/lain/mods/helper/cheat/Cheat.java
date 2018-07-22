@@ -54,7 +54,7 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
-                // return 0F;
+                return 0F;
             }
         }
         return result;
@@ -79,7 +79,7 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
-                // return true;
+                return true;
             }
         }
         return result;
@@ -107,6 +107,8 @@ public class Cheat
                                 shield = maxShield;
                             player.setAbsorptionAmount(shield);
                         }
+
+                        player.addExperience(1);
                     }
                 }
             }
