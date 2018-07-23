@@ -107,8 +107,6 @@ public class Cheat
                                 shield = maxShield;
                             player.setAbsorptionAmount(shield);
                         }
-
-                        player.addExperience(1);
                     }
                 }
             }
