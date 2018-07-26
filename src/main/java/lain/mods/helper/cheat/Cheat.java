@@ -5,8 +5,11 @@ import java.util.UUID;
 import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Enchantments;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
 
@@ -106,6 +109,19 @@ public class Cheat
                             if (shield > maxShield)
                                 shield = maxShield;
                             player.setAbsorptionAmount(shield);
+                        }
+
+                        for (ItemStack item : player.getEquipmentAndArmor())
+                        {
+                            if (!item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged())
+                            {
+                                int damage = item.getItemDamage();
+                                if (damage > 0)
+                                {
+                                    damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.1)));
+                                    item.setItemDamage(damage);
+                                }
+                            }
                         }
                     }
                 }
