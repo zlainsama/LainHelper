@@ -2,6 +2,8 @@ package lain.mods.helper.cheat;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,6 +14,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Streams;
 
 public class Cheat
 {
@@ -111,18 +114,15 @@ public class Cheat
                             player.setAbsorptionAmount(shield);
                         }
 
-                        for (ItemStack item : player.getEquipmentAndArmor())
-                        {
-                            if (!item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged())
+                        Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
+                        IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(item -> !item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged() && !heldItems.contains(item)).forEach(item -> {
+                            int damage = item.getItemDamage();
+                            if (damage > 0)
                             {
-                                int damage = item.getItemDamage();
-                                if (damage > 0)
-                                {
-                                    damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.1)));
-                                    item.setItemDamage(damage);
-                                }
+                                damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.1)));
+                                item.setItemDamage(damage);
                             }
-                        }
+                        });
                     }
                 }
             }
