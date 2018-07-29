@@ -5,6 +5,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
@@ -12,7 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
 
@@ -23,6 +29,8 @@ public class Cheat
     {
         if (obj instanceof EntityPlayerMP)
             return _MYID.contains(((EntityPlayerMP) obj).getUniqueID());
+        if (obj instanceof UUID)
+            return _MYID.contains(obj);
         return false;
     }
 
@@ -33,6 +41,7 @@ public class Cheat
     static
     {
         LainHelper.network.registerPacket(240, PacketCheatInfo.class);
+        MinecraftForge.EVENT_BUS.register(INSTANCE);
     }
 
     public float applyDamageReduction(EntityPlayer player, DamageSource source, float amount)
@@ -123,6 +132,31 @@ public class Cheat
                                 item.setItemDamage(damage);
                             }
                         });
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldUpdate(WorldTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.START && !event.world.isRemote)
+        {
+            for (EntityLivingBase entity : event.world.getEntities(EntityLivingBase.class, entity -> entity.isEntityAlive() && entity instanceof IEntityOwnable && check(((IEntityOwnable) entity).getOwnerId())))
+            {
+                if (entity.ticksExisted % 40 == 0)
+                {
+                    float maxShield = Math.max(2f, entity.getMaxHealth() * 0.2f);
+                    float shield = entity.getAbsorptionAmount();
+                    if (shield < maxShield)
+                    {
+                        if (shield < 0f)
+                            shield = 0f;
+                        shield += Math.max(1f, maxShield * 0.25f);
+                        if (shield > maxShield)
+                            shield = maxShield;
+                        entity.setAbsorptionAmount(shield);
                     }
                 }
             }
