@@ -147,7 +147,7 @@ public class Cheat
             {
                 if (entity.ticksExisted % 40 == 0)
                 {
-                    float maxShield = Math.max(2f, entity.getMaxHealth() * 0.2f);
+                    float maxShield = Math.max(4f, entity.getMaxHealth() * 0.4f);
                     float shield = entity.getAbsorptionAmount();
                     if (shield < maxShield)
                     {
