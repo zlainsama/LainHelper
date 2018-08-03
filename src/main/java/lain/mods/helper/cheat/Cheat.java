@@ -1,5 +1,6 @@
 package lain.mods.helper.cheat;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 
 public class Cheat
@@ -109,6 +113,27 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
+                    if (player.ticksExisted % 20 == 0)
+                    {
+                        List<Potion> toRemove = Lists.newArrayList();
+                        for (PotionEffect pe : player.getActivePotionEffects())
+                            if (pe.getPotion().isBadEffect())
+                                toRemove.add(pe.getPotion());
+                        for (Potion p : toRemove)
+                            player.removePotionEffect(p);
+
+                        if (player.shouldHeal())
+                            player.heal(1.0F);
+
+                        if (player.getAir() < 100)
+                            player.setAir(300);
+
+                        if (player.canEat(false))
+                            player.getFoodStats().addStats(1, 0.3F);
+
+                        player.extinguish();
+                    }
+
                     if (player.ticksExisted % 40 == 0)
                     {
                         float maxShield = Math.max(4f, player.getMaxHealth() * 0.4f);
