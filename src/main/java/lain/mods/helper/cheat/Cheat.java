@@ -138,29 +138,29 @@ public class Cheat
 
                     if (player.ticksExisted % 40 == 0)
                     {
-                        float r = Math.max(0F, Math.min(1F, player.experienceLevel / 120));
+                        float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
 
-                        float maxShield = Math.max(6f, player.getMaxHealth() * (0.3f + (0.7F * r)));
+                        float maxShield = Math.max(6F, player.getMaxHealth() * (0.3F + (0.7F * r)));
                         float shield = player.getAbsorptionAmount();
                         if (shield < maxShield)
                         {
-                            if (shield < 0f)
-                                shield = 0f;
-                            shield += Math.max(1f, maxShield * 0.2f);
+                            if (shield < 0F)
+                                shield = 0F;
+                            shield += Math.max(1F, maxShield * 0.2F);
                             if (shield > maxShield)
                                 shield = maxShield;
                             player.setAbsorptionAmount(shield);
                         }
 
                         if (player.getHealth() < player.getMaxHealth())
-                            player.heal(1.0F);
+                            player.heal(1F);
 
                         Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                         IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(item -> !item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged() && !heldItems.contains(item)).forEach(item -> {
                             int damage = item.getItemDamage();
                             if (damage > 0)
                             {
-                                damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.1)));
+                                damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.2F)));
                                 item.setItemDamage(damage);
                             }
                         });

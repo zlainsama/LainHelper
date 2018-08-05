@@ -26,20 +26,20 @@ public class CheatEventHandler
 
                 if (entity.ticksExisted % 40 == 0)
                 {
-                    float maxShield = Math.max(6f, entity.getMaxHealth() * 0.3f);
+                    float maxShield = Math.max(6F, entity.getMaxHealth() * 0.3F);
                     float shield = entity.getAbsorptionAmount();
                     if (shield < maxShield)
                     {
-                        if (shield < 0f)
-                            shield = 0f;
-                        shield += Math.max(1f, maxShield * 0.2f);
+                        if (shield < 0F)
+                            shield = 0F;
+                        shield += Math.max(1F, maxShield * 0.2F);
                         if (shield > maxShield)
                             shield = maxShield;
                         entity.setAbsorptionAmount(shield);
                     }
 
                     if (entity.getHealth() < entity.getMaxHealth())
-                        entity.heal(1.0F);
+                        entity.heal(1F);
                 }
             }
         }
