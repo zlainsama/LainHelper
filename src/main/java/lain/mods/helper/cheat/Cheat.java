@@ -49,10 +49,10 @@ public class Cheat
             if ((flags & 0x1) != 0)
             {
                 if (!source.isUnblockable())
-                    amount = CombatRules.getDamageAfterAbsorb(amount, 10F, 2F);
+                    amount = CombatRules.getDamageAfterAbsorb(amount, 10F, 4F);
                 // amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                 if (!source.isDamageAbsolute())
-                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, 5F);
+                    amount = CombatRules.getDamageAfterMagicAbsorb(amount, 8F);
                 // amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
             }
         }
@@ -138,17 +138,22 @@ public class Cheat
 
                     if (player.ticksExisted % 40 == 0)
                     {
-                        float maxShield = Math.max(4f, player.getMaxHealth() * 0.4f);
+                        float r = Math.max(0F, Math.min(1F, player.experienceLevel / 120));
+
+                        float maxShield = Math.max(6f, player.getMaxHealth() * (0.3f + (0.7F * r)));
                         float shield = player.getAbsorptionAmount();
                         if (shield < maxShield)
                         {
                             if (shield < 0f)
                                 shield = 0f;
-                            shield += Math.max(1f, maxShield * 0.25f);
+                            shield += Math.max(1f, maxShield * 0.2f);
                             if (shield > maxShield)
                                 shield = maxShield;
                             player.setAbsorptionAmount(shield);
                         }
+
+                        if (player.getHealth() < player.getMaxHealth())
+                            player.heal(1.0F);
 
                         Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                         IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(item -> !item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged() && !heldItems.contains(item)).forEach(item -> {
