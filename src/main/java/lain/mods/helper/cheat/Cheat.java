@@ -1,29 +1,20 @@
 package lain.mods.helper.cheat;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lain.mods.helper.LainHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 
 public class Cheat
@@ -45,7 +36,6 @@ public class Cheat
     static
     {
         LainHelper.network.registerPacket(240, PacketCheatInfo.class);
-        MinecraftForge.EVENT_BUS.register(INSTANCE);
     }
 
     public float applyDamageReduction(EntityPlayer player, DamageSource source, float amount)
@@ -104,6 +94,20 @@ public class Cheat
         return result;
     }
 
+    public boolean isPotionApplicable(EntityPlayer player, PotionEffect effect, boolean result)
+    {
+        if (player instanceof EntityPlayerMP)
+        {
+            int flags = getFlags(player);
+            if ((flags & 0x1) != 0)
+            {
+                if (effect.getPotion().isBadEffect())
+                    return false;
+            }
+        }
+        return result;
+    }
+
     public void onLivingUpdate(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
@@ -115,21 +119,11 @@ public class Cheat
                 {
                     if (player.ticksExisted % 20 == 0)
                     {
-                        List<Potion> toRemove = Lists.newArrayList();
-                        for (PotionEffect pe : player.getActivePotionEffects())
-                            if (pe.getPotion().isBadEffect())
-                                toRemove.add(pe.getPotion());
-                        for (Potion p : toRemove)
-                            player.removePotionEffect(p);
-
-                        if (player.shouldHeal())
-                            player.heal(1.0F);
+                        if (player.canEat(false))
+                            player.getFoodStats().addStats(1, 0.5F);
 
                         if (player.getAir() < 100)
                             player.setAir(300);
-
-                        if (player.canEat(false))
-                            player.getFoodStats().addStats(1, 0.3F);
 
                         player.extinguish();
                     }
@@ -157,31 +151,9 @@ public class Cheat
                                 item.setItemDamage(damage);
                             }
                         });
-                    }
-                }
-            }
-        }
-    }
 
-    @SubscribeEvent
-    public void onWorldUpdate(WorldTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.START && !event.world.isRemote)
-        {
-            for (EntityLivingBase entity : event.world.getEntities(EntityLivingBase.class, entity -> entity.isEntityAlive() && entity instanceof IEntityOwnable && check(((IEntityOwnable) entity).getOwnerId())))
-            {
-                if (entity.ticksExisted % 40 == 0)
-                {
-                    float maxShield = Math.max(4f, entity.getMaxHealth() * 0.4f);
-                    float shield = entity.getAbsorptionAmount();
-                    if (shield < maxShield)
-                    {
-                        if (shield < 0f)
-                            shield = 0f;
-                        shield += Math.max(1f, maxShield * 0.25f);
-                        if (shield > maxShield)
-                            shield = maxShield;
-                        entity.setAbsorptionAmount(shield);
+                        if (player.experienceLevel < 120)
+                            player.addExperience(1);
                     }
                 }
             }

@@ -98,6 +98,30 @@ public class ASMTransformer implements IClassTransformer
 
         }
 
+        class method005 extends MethodVisitor
+        {
+
+            public method005(MethodVisitor mv)
+            {
+                super(Opcodes.ASM5, mv);
+            }
+
+            @Override
+            public void visitInsn(int opcode)
+            {
+                if (opcode == Opcodes.IRETURN)
+                {
+                    this.visitVarInsn(Opcodes.ISTORE, 3);
+                    this.visitVarInsn(Opcodes.ALOAD, 0);
+                    this.visitVarInsn(Opcodes.ALOAD, 1);
+                    this.visitVarInsn(Opcodes.ILOAD, 3);
+                    this.visitMethodInsn(Opcodes.INVOKESTATIC, "lain/mods/helper/asm/Hooks", "isPotionApplicable", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/potion/PotionEffect;Z)Z", false);
+                }
+                super.visitInsn(opcode);
+            };
+
+        }
+
         ObfHelper parent = ObfHelper.newClass("net/minecraft/entity/EntityLivingBase");
 
         ObfHelper m001 = ObfHelper.newMethod("func_70636_d", "net/minecraft/entity/player/EntityPlayer", "()V").setDevName("onLivingUpdate");
@@ -108,6 +132,8 @@ public class ASMTransformer implements IClassTransformer
         boolean foundM003 = false;
         ObfHelper m004 = ObfHelper.newMethod("func_70665_d", "net/minecraft/entity/player/EntityPlayer", "(Lnet/minecraft/util/DamageSource;F)V").setDevName("damageEntity");
         boolean foundM004 = false;
+        ObfHelper m005 = ObfHelper.newMethod("func_70687_e", "net/minecraft/entity/player/EntityPlayer", "(Lnet/minecraft/potion/PotionEffect;)Z").setDevName("isPotionApplicable");
+        boolean foundM005 = false;
 
         public transformer001(ClassVisitor cv)
         {
@@ -159,6 +185,17 @@ public class ASMTransformer implements IClassTransformer
                 mv.visitMaxs(3, 3);
                 mv.visitEnd();
             }
+            if (!foundM005)
+            {
+                MethodVisitor mv = this.visitMethod(Opcodes.ACC_PUBLIC, m005.getData(1), m005.getData(2), null, null);
+                mv.visitCode();
+                mv.visitVarInsn(Opcodes.ALOAD, 0);
+                mv.visitVarInsn(Opcodes.ALOAD, 1);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parent.getData(0), m005.getData(1), m005.getData(2), false);
+                mv.visitInsn(Opcodes.IRETURN);
+                mv.visitMaxs(2, 2);
+                mv.visitEnd();
+            }
             super.visitEnd();
         }
 
@@ -184,6 +221,11 @@ public class ASMTransformer implements IClassTransformer
             {
                 foundM004 = true;
                 return new method004(super.visitMethod(access, name, desc, signature, exceptions));
+            }
+            if (m005.match(name, desc))
+            {
+                foundM005 = true;
+                return new method005(super.visitMethod(access, name, desc, signature, exceptions));
             }
             return super.visitMethod(access, name, desc, signature, exceptions);
         }

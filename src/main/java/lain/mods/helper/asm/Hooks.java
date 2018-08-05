@@ -2,6 +2,7 @@ package lain.mods.helper.asm;
 
 import lain.mods.helper.cheat.Cheat;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Loader;
 
@@ -27,6 +28,13 @@ public class Hooks
         if (DISABLED)
             return result;
         return Cheat.INSTANCE.isInvisible(player, result);
+    }
+
+    public static boolean isPotionApplicable(EntityPlayer player, PotionEffect effect, boolean result)
+    {
+        if (DISABLED)
+            return result;
+        return Cheat.INSTANCE.isPotionApplicable(player, effect, result);
     }
 
     public static void onLivingUpdate(EntityPlayer player)
