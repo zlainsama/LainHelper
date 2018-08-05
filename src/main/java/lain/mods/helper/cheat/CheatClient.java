@@ -2,6 +2,7 @@ package lain.mods.helper.cheat;
 
 import lain.mods.helper.LainHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -27,10 +28,27 @@ public class CheatClient extends Cheat
     }
 
     @Override
+    public boolean isPotionApplicable(EntityPlayer player, PotionEffect effect, boolean result)
+    {
+        if (player == FMLClientHandler.instance().getClientPlayerEntity())
+        {
+            int flags = getFlagsClient();
+            if ((flags & 0x1) != 0)
+            {
+                if (player.isEntityAlive())
+                {
+                    if (effect.getPotion().isBadEffect())
+                        return false;
+                }
+            }
+        }
+
+        return super.isPotionApplicable(player, effect, result);
+    }
+
+    @Override
     public void onLivingUpdate(EntityPlayer player)
     {
-        super.onLivingUpdate(player);
-
         if (player == FMLClientHandler.instance().getClientPlayerEntity())
         {
             int flags = getFlagsClient();
@@ -41,6 +59,8 @@ public class CheatClient extends Cheat
                 }
             }
         }
+
+        super.onLivingUpdate(player);
     }
 
     @Override

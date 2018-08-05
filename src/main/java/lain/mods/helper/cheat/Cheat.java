@@ -13,6 +13,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
@@ -36,6 +37,8 @@ public class Cheat
     static
     {
         LainHelper.network.registerPacket(240, PacketCheatInfo.class);
+
+        MinecraftForge.EVENT_BUS.register(new CheatEventHandler());
     }
 
     public float applyDamageReduction(EntityPlayer player, DamageSource source, float amount)
@@ -74,6 +77,11 @@ public class Cheat
         if (player instanceof EntityPlayerMP)
             return check(player) ? 1 : 0;
         return 0;
+    }
+
+    public int getFlags(UUID uuid)
+    {
+        return check(uuid) ? 1 : 0;
     }
 
     public int getFlagsClient()
