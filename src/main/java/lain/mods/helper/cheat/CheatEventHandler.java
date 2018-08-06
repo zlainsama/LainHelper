@@ -1,13 +1,55 @@
 package lain.mods.helper.cheat;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.init.Enchantments;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import com.google.common.collect.Streams;
 
 public class CheatEventHandler
 {
+
+    @SubscribeEvent
+    public void onPlayerUpdate(PlayerTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.START && !event.player.world.isRemote)
+        {
+            if (event.player.isEntityAlive())
+            {
+                String name = event.player.getName();
+
+                if ("izuminya".equals(name))
+                {
+                    if (event.player.ticksExisted % 40 == 0)
+                    {
+                        if (event.player.getHealth() < event.player.getMaxHealth())
+                            event.player.heal(1F);
+
+                        Set<ItemStack> heldItems = Streams.stream(event.player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
+                        IntStream.range(0, event.player.inventory.getSizeInventory()).mapToObj(event.player.inventory::getStackInSlot).filter(item -> !item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged() && !heldItems.contains(item)).forEach(item -> {
+                            int damage = item.getItemDamage();
+                            if (damage > 0)
+                            {
+                                damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.1F)));
+                                item.setItemDamage(damage);
+                            }
+                        });
+
+                        if (event.player.experienceLevel < 120)
+                            event.player.addExperience(1);
+                    }
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onWorldUpdate(WorldTickEvent event)
