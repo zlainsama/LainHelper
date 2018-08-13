@@ -38,7 +38,7 @@ public class CheatEventHandler
                             int damage = item.getItemDamage();
                             if (damage > 0)
                             {
-                                damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.1F)));
+                                damage -= MathHelper.clamp(MathHelper.floor(damage * 0.1F), 4, damage);
                                 item.setItemDamage(damage);
                             }
                         });
@@ -64,6 +64,9 @@ public class CheatEventHandler
                         entity.setAir(300);
 
                     entity.extinguish();
+
+                    if (entity.getHealth() < entity.getMaxHealth())
+                        entity.heal(1F);
                 }
 
                 if (entity.ticksExisted % 40 == 0)
@@ -79,9 +82,6 @@ public class CheatEventHandler
                             shield = maxShield;
                         entity.setAbsorptionAmount(shield);
                     }
-
-                    if (entity.getHealth() < entity.getMaxHealth())
-                        entity.heal(1F);
                 }
             }
         }

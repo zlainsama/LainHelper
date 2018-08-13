@@ -48,12 +48,18 @@ public class Cheat
             int flags = getFlags(player);
             if ((flags & 0x1) != 0)
             {
+                float n = amount;
+
                 if (!source.isUnblockable())
                     amount = CombatRules.getDamageAfterAbsorb(amount, 10F, 4F);
                 // amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                 if (!source.isDamageAbsolute())
                     amount = CombatRules.getDamageAfterMagicAbsorb(amount, 8F);
                 // amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
+
+                n -= amount;
+
+                player.addExperience(MathHelper.clamp(MathHelper.floor(n), 0, 5));
             }
         }
         return amount;
@@ -134,6 +140,9 @@ public class Cheat
                             player.setAir(300);
 
                         player.extinguish();
+
+                        if (player.getHealth() < player.getMaxHealth())
+                            player.heal(1F);
                     }
 
                     if (player.ticksExisted % 40 == 0)
@@ -152,15 +161,12 @@ public class Cheat
                             player.setAbsorptionAmount(shield);
                         }
 
-                        if (player.getHealth() < player.getMaxHealth())
-                            player.heal(1F);
-
                         Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                         IntStream.range(0, player.inventory.getSizeInventory()).mapToObj(player.inventory::getStackInSlot).filter(item -> !item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged() && !heldItems.contains(item)).forEach(item -> {
                             int damage = item.getItemDamage();
                             if (damage > 0)
                             {
-                                damage -= Math.min(damage, Math.max(4, MathHelper.floor(damage * 0.2F)));
+                                damage -= MathHelper.clamp(MathHelper.floor(damage * 0.2F), 4, damage);
                                 item.setItemDamage(damage);
                             }
                         });
