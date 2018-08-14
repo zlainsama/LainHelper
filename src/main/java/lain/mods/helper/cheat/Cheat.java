@@ -12,9 +12,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import thaumcraft.api.aura.AuraHelper;
+import thaumcraft.api.capabilities.IPlayerWarp;
+import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
 
@@ -173,6 +179,42 @@ public class Cheat
 
                         if (player.experienceLevel < 120)
                             player.addExperience(1);
+                    }
+
+                    if (player.ticksExisted % 200 == 0)
+                    {
+                        if (Loader.isModLoaded("thaumcraft"))
+                        {
+                            try
+                            {
+                                World w = player.world;
+                                BlockPos p = new BlockPos(player);
+
+                                float f = AuraHelper.drainFlux(w, p, MathHelper.clamp(AuraHelper.getFlux(w, p), 0F, 10F), false);
+                                if (f > 0F)
+                                {
+                                    float v = AuraHelper.getVis(w, p);
+                                    float b = AuraHelper.getAuraBase(w, p);
+                                    float c = MathHelper.clamp(f * 0.5F, 0F, v < b ? b - v : 0F);
+
+                                    AuraHelper.addVis(w, p, c);
+                                    player.addExperience(MathHelper.floor(f - c));
+                                }
+
+                                IPlayerWarp warp = ThaumcraftCapabilities.getWarp(player);
+                                int wN = warp.get(IPlayerWarp.EnumWarpType.NORMAL);
+                                int wT = warp.get(IPlayerWarp.EnumWarpType.TEMPORARY);
+                                if (wN > 0 || wT > 0)
+                                {
+                                    warp.reduce(IPlayerWarp.EnumWarpType.NORMAL, MathHelper.clamp(wN, 0, 5));
+                                    warp.reduce(IPlayerWarp.EnumWarpType.TEMPORARY, wT);
+                                    warp.sync((EntityPlayerMP) player);
+                                }
+                            }
+                            catch (Throwable ignored)
+                            {
+                            }
+                        }
                     }
                 }
             }
