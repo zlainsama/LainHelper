@@ -2,7 +2,6 @@ package lain.mods.helper.cheat;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.init.Enchantments;
@@ -34,12 +33,17 @@ public class CheatEventHandler
                             event.player.heal(1F);
 
                         Set<ItemStack> heldItems = Streams.stream(event.player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
-                        IntStream.range(0, event.player.inventory.getSizeInventory()).mapToObj(event.player.inventory::getStackInSlot).filter(item -> !item.isEmpty() && Enchantments.MENDING.canApply(item) && item.isItemDamaged() && !heldItems.contains(item)).forEach(item -> {
-                            int damage = item.getItemDamage();
-                            if (damage > 0)
+                        Cheat.sIn(event.player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
+                            if (Enchantments.MENDING.canApply(item))
                             {
-                                damage -= MathHelper.clamp(MathHelper.floor(damage * 0.1F), 4, damage);
-                                item.setItemDamage(damage);
+                                int damage = item.getItemDamage();
+                                if (damage > 0)
+                                {
+                                    damage -= Math.max(MathHelper.floor(damage * 0.1F), 4);
+                                    if (damage < 0)
+                                        damage = 0;
+                                    item.setItemDamage(damage);
+                                }
                             }
                         });
 
