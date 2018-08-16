@@ -167,20 +167,6 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    if (player.ticksExisted % 20 == 0)
-                    {
-                        if (player.canEat(false))
-                            player.getFoodStats().addStats(1, 0.5F);
-
-                        if (player.getAir() < 100)
-                            player.setAir(300);
-
-                        player.extinguish();
-
-                        if (player.getHealth() < player.getMaxHealth())
-                            player.heal(1F);
-                    }
-
                     if (player.ticksExisted % 40 == 0)
                     {
                         float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
