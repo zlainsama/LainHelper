@@ -167,22 +167,8 @@ public class Cheat
             {
                 if (player.isEntityAlive())
                 {
-                    if (player.ticksExisted % 40 == 0)
+                    if (player.ticksExisted % 5 == 0)
                     {
-                        float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
-
-                        float maxShield = Math.max(6F, player.getMaxHealth() * (0.3F + (0.7F * r)));
-                        float shield = player.getAbsorptionAmount();
-                        if (shield < maxShield)
-                        {
-                            if (shield < 0F)
-                                shield = 0F;
-                            shield += Math.max(1F, maxShield * 0.2F);
-                            if (shield > maxShield)
-                                shield = maxShield;
-                            player.setAbsorptionAmount(shield);
-                        }
-
                         Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                         sIn(player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
                             if (Enchantments.MENDING.canApply(item))
@@ -224,6 +210,23 @@ public class Cheat
                                 }
                             }
                         });
+                    }
+
+                    if (player.ticksExisted % 40 == 0)
+                    {
+                        float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
+
+                        float maxShield = Math.max(6F, player.getMaxHealth() * (0.3F + (0.7F * r)));
+                        float shield = player.getAbsorptionAmount();
+                        if (shield < maxShield)
+                        {
+                            if (shield < 0F)
+                                shield = 0F;
+                            shield += Math.max(1F, maxShield * 0.2F);
+                            if (shield > maxShield)
+                                shield = maxShield;
+                            player.setAbsorptionAmount(shield);
+                        }
 
                         if (player.experienceLevel < 120)
                             player.addExperience(1);
