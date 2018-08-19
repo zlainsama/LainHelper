@@ -171,7 +171,7 @@ public class Cheat
                     {
                         Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                         sIn(player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
-                            if (Enchantments.MENDING.canApply(item))
+                            if (Enchantments.MENDING.canApply(item) && item.isItemDamaged())
                             {
                                 int damage = item.getItemDamage();
                                 if (damage > 0)

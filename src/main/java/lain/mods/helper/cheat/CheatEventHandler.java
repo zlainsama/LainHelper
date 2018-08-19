@@ -34,7 +34,7 @@ public class CheatEventHandler
 
                         Set<ItemStack> heldItems = Streams.stream(event.player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                         Cheat.sIn(event.player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
-                            if (Enchantments.MENDING.canApply(item))
+                            if (Enchantments.MENDING.canApply(item) && item.isItemDamaged())
                             {
                                 int damage = item.getItemDamage();
                                 if (damage > 0)
