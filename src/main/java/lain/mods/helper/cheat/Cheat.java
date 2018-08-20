@@ -26,6 +26,7 @@ import thaumcraft.api.capabilities.IPlayerWarp;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
+import vazkii.botania.api.mana.IManaItem;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import com.google.common.collect.ImmutableSet;
@@ -203,6 +204,26 @@ public class Cheat
                                         int maxCharge = ((IRechargable) item.getItem()).getMaxCharge(item, player);
                                         if (charge < maxCharge)
                                             RechargeHelper.rechargeItemBlindly(item, player, Math.max(MathHelper.floor((maxCharge - charge) * 0.2F), 4));
+                                    }
+                                }
+                                catch (Throwable ignored)
+                                {
+                                }
+                            }
+                            if (fBotania)
+                            {
+                                try
+                                {
+                                    if (item.getItem() instanceof IManaItem)
+                                    {
+                                        IManaItem manaItem = (IManaItem) item.getItem();
+                                        if (manaItem.canReceiveManaFromItem(item, item))
+                                        {
+                                            int mana = manaItem.getMana(item);
+                                            int maxMana = manaItem.getMaxMana(item);
+                                            if (mana < maxMana)
+                                                manaItem.addMana(item, Math.max(MathHelper.floor((maxMana - mana) * 0.2F), 4));
+                                        }
                                     }
                                 }
                                 catch (Throwable ignored)
