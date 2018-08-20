@@ -174,7 +174,7 @@ public class Cheat
                         sIn(player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
                             if (Enchantments.MENDING.canApply(item) && item.isItemDamaged())
                             {
-                                int damage = item.getItemDamage();
+                                int damage = MathHelper.clamp(item.getItemDamage(), 0, Integer.MAX_VALUE);
                                 if (damage > 0)
                                 {
                                     damage -= Math.min(Math.max(MathHelper.floor(damage * 0.2F), 4), damage);
@@ -186,8 +186,8 @@ public class Cheat
                                 IEnergyStorage cap = item.getCapability(CapabilityEnergy.ENERGY, null);
                                 if (cap != null && cap.canReceive())
                                 {
-                                    int energy = cap.getEnergyStored();
-                                    int maxEnergy = cap.getMaxEnergyStored();
+                                    int energy = MathHelper.clamp(cap.getEnergyStored(), 0, Integer.MAX_VALUE);
+                                    int maxEnergy = MathHelper.clamp(cap.getMaxEnergyStored(), 0, Integer.MAX_VALUE);
                                     int diff = maxEnergy - energy;
                                     if (diff > 0)
                                         cap.receiveEnergy(Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4000), diff), false);
@@ -199,8 +199,8 @@ public class Cheat
                                 {
                                     if (item.getItem() instanceof IRechargable)
                                     {
-                                        int charge = RechargeHelper.getCharge(item);
-                                        int maxCharge = ((IRechargable) item.getItem()).getMaxCharge(item, player);
+                                        int charge = MathHelper.clamp(RechargeHelper.getCharge(item), 0, Integer.MAX_VALUE);
+                                        int maxCharge = MathHelper.clamp(((IRechargable) item.getItem()).getMaxCharge(item, player), 0, Integer.MAX_VALUE);
                                         int diff = maxCharge - charge;
                                         if (diff > 0)
                                             RechargeHelper.rechargeItemBlindly(item, player, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
@@ -219,8 +219,8 @@ public class Cheat
                                         IManaItem manaItem = (IManaItem) item.getItem();
                                         if (manaItem.canReceiveManaFromItem(item, item))
                                         {
-                                            int mana = manaItem.getMana(item);
-                                            int maxMana = manaItem.getMaxMana(item);
+                                            int mana = MathHelper.clamp(manaItem.getMana(item), 0, Integer.MAX_VALUE);
+                                            int maxMana = MathHelper.clamp(manaItem.getMaxMana(item), 0, Integer.MAX_VALUE);
                                             int diff = maxMana - mana;
                                             if (diff > 0)
                                                 manaItem.addMana(item, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));

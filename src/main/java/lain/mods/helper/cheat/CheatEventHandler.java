@@ -36,7 +36,7 @@ public class CheatEventHandler
                         Cheat.sIn(event.player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
                             if (Enchantments.MENDING.canApply(item) && item.isItemDamaged())
                             {
-                                int damage = item.getItemDamage();
+                                int damage = MathHelper.clamp(item.getItemDamage(), 0, Integer.MAX_VALUE);
                                 if (damage > 0)
                                 {
                                     damage -= Math.min(Math.max(MathHelper.floor(damage * 0.1F), 4), damage);
