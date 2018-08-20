@@ -177,9 +177,7 @@ public class Cheat
                                 int damage = item.getItemDamage();
                                 if (damage > 0)
                                 {
-                                    damage -= Math.max(MathHelper.floor(damage * 0.2F), 4);
-                                    if (damage < 0)
-                                        damage = 0;
+                                    damage -= Math.min(Math.max(MathHelper.floor(damage * 0.2F), 4), damage);
                                     item.setItemDamage(damage);
                                 }
                             }
@@ -190,8 +188,9 @@ public class Cheat
                                 {
                                     int energy = cap.getEnergyStored();
                                     int maxEnergy = cap.getMaxEnergyStored();
-                                    if (energy < maxEnergy)
-                                        cap.receiveEnergy(Math.max(MathHelper.floor((maxEnergy - energy) * 0.2F), 4000), false);
+                                    int diff = maxEnergy - energy;
+                                    if (diff > 0)
+                                        cap.receiveEnergy(Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4000), diff), false);
                                 }
                             }
                             if (fThaumcraft)
@@ -202,8 +201,9 @@ public class Cheat
                                     {
                                         int charge = RechargeHelper.getCharge(item);
                                         int maxCharge = ((IRechargable) item.getItem()).getMaxCharge(item, player);
-                                        if (charge < maxCharge)
-                                            RechargeHelper.rechargeItemBlindly(item, player, Math.max(MathHelper.floor((maxCharge - charge) * 0.2F), 4));
+                                        int diff = maxCharge - charge;
+                                        if (diff > 0)
+                                            RechargeHelper.rechargeItemBlindly(item, player, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
                                     }
                                 }
                                 catch (Throwable ignored)
@@ -221,8 +221,9 @@ public class Cheat
                                         {
                                             int mana = manaItem.getMana(item);
                                             int maxMana = manaItem.getMaxMana(item);
-                                            if (mana < maxMana)
-                                                manaItem.addMana(item, Math.max(MathHelper.floor((maxMana - mana) * 0.2F), 4));
+                                            int diff = maxMana - mana;
+                                            if (diff > 0)
+                                                manaItem.addMana(item, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
                                         }
                                     }
                                 }
@@ -237,7 +238,7 @@ public class Cheat
                     {
                         float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
 
-                        float maxShield = Math.max(6F, player.getMaxHealth() * (0.3F + (0.7F * r)));
+                        float maxShield = Math.max(6F, player.getMaxHealth() * (0.5F + (0.5F * r)));
                         float shield = player.getAbsorptionAmount();
                         if (shield < maxShield)
                         {

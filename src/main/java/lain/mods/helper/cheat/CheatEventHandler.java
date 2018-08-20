@@ -39,9 +39,7 @@ public class CheatEventHandler
                                 int damage = item.getItemDamage();
                                 if (damage > 0)
                                 {
-                                    damage -= Math.max(MathHelper.floor(damage * 0.1F), 4);
-                                    if (damage < 0)
-                                        damage = 0;
+                                    damage -= Math.min(Math.max(MathHelper.floor(damage * 0.1F), 4), damage);
                                     item.setItemDamage(damage);
                                 }
                             }
