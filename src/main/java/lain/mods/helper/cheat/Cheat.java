@@ -247,8 +247,7 @@ public class Cheat
                     if (player.ticksExisted % 20 == 0)
                     {
                         float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
-
-                        float maxShield = Math.max(6F, player.getMaxHealth() * (0.5F + (0.5F * r)));
+                        float maxShield = Math.max(10F, player.getMaxHealth() * (0.5F + (0.5F * r)));
                         float shield = player.getAbsorptionAmount();
                         if (shield < maxShield)
                         {

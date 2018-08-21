@@ -60,6 +60,19 @@ public class CheatEventHandler
         {
             for (EntityLivingBase entity : event.world.getEntities(EntityLivingBase.class, entity -> entity.isEntityAlive() && entity instanceof IEntityOwnable && Cheat.INSTANCE.getFlags(((IEntityOwnable) entity).getOwnerId()) != 0))
             {
+                if (entity.ticksExisted % 5 == 0)
+                {
+                    float health = entity.getHealth();
+                    float maxHealth = entity.getMaxHealth();
+                    float shield = entity.getAbsorptionAmount();
+                    if (health > 0F && shield > 0F && health < shield && health < maxHealth)
+                    {
+                        float heal = Math.min(Math.min(1F, shield), maxHealth - health);
+                        entity.setHealth(health + heal);
+                        entity.setAbsorptionAmount(shield - heal);
+                    }
+                }
+
                 if (entity.ticksExisted % 20 == 0)
                 {
                     if (entity.getAir() < 100)
@@ -67,21 +80,18 @@ public class CheatEventHandler
 
                     entity.extinguish();
 
-                    if (entity.getHealth() < entity.getMaxHealth())
-                        entity.heal(1F);
-                }
-
-                if (entity.ticksExisted % 40 == 0)
-                {
                     float maxShield = Math.max(6F, entity.getMaxHealth() * 0.3F);
                     float shield = entity.getAbsorptionAmount();
                     if (shield < maxShield)
                     {
                         if (shield < 0F)
                             shield = 0F;
-                        shield += Math.max(1F, maxShield * 0.2F);
-                        if (shield > maxShield)
-                            shield = maxShield;
+                        else
+                        {
+                            shield += Math.max(1F, maxShield * 0.2F);
+                            if (shield > maxShield)
+                                shield = maxShield;
+                        }
                         entity.setAbsorptionAmount(shield);
                     }
                 }
