@@ -281,16 +281,15 @@ public class Cheat
                                     {
                                         BlockPos pp = p.add(xx * 16, 0, zz * 16);
 
-                                        float f = AuraHelper.drainFlux(w, pp, MathHelper.clamp(AuraHelper.getFlux(w, pp), 0F, 10F), false);
+                                        float f = AuraHelper.drainFlux(w, pp, Math.min(10F, AuraHelper.getFlux(w, pp)), false);
                                         if (f > 0F)
-                                        {
-                                            float v = AuraHelper.getVis(w, pp);
-                                            float b = AuraHelper.getAuraBase(w, pp);
-                                            float c = MathHelper.clamp(f * 0.5F, 0F, v < b ? b - v : 0F);
+                                            player.addExperience(MathHelper.floor(f));
 
+                                        float v = AuraHelper.getVis(w, pp) + AuraHelper.getFlux(w, pp);
+                                        float b = AuraHelper.getAuraBase(w, pp) * 1.2F;
+                                        float c = Math.min(10F, v < b ? b - v : 0F);
+                                        if (c > 0F)
                                             AuraHelper.addVis(w, pp, c);
-                                            player.addExperience(MathHelper.floor(f - c));
-                                        }
                                     }
                                 }
 
@@ -299,7 +298,7 @@ public class Cheat
                                 int wT = warp.get(IPlayerWarp.EnumWarpType.TEMPORARY);
                                 if (wN > 0 || wT > 0)
                                 {
-                                    warp.reduce(IPlayerWarp.EnumWarpType.NORMAL, MathHelper.clamp(wN, 0, 5));
+                                    warp.reduce(IPlayerWarp.EnumWarpType.NORMAL, Math.min(10, wN));
                                     warp.reduce(IPlayerWarp.EnumWarpType.TEMPORARY, wT);
                                     warp.sync((EntityPlayerMP) player);
                                 }
