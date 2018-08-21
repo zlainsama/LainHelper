@@ -232,9 +232,19 @@ public class Cheat
                                 }
                             }
                         });
+
+                        float health = player.getHealth();
+                        float maxHealth = player.getMaxHealth();
+                        float shield = player.getAbsorptionAmount();
+                        if (health > 0F && shield > 0F && health < shield && health < maxHealth)
+                        {
+                            float heal = Math.min(Math.min(1F, shield), maxHealth - health);
+                            player.setHealth(health + heal);
+                            player.setAbsorptionAmount(shield - heal);
+                        }
                     }
 
-                    if (player.ticksExisted % 40 == 0)
+                    if (player.ticksExisted % 20 == 0)
                     {
                         float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
 
@@ -244,9 +254,12 @@ public class Cheat
                         {
                             if (shield < 0F)
                                 shield = 0F;
-                            shield += Math.max(1F, maxShield * 0.2F);
-                            if (shield > maxShield)
-                                shield = maxShield;
+                            else
+                            {
+                                shield += Math.max(1F, maxShield * 0.2F);
+                                if (shield > maxShield)
+                                    shield = maxShield;
+                            }
                             player.setAbsorptionAmount(shield);
                         }
 
