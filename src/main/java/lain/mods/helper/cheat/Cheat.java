@@ -286,7 +286,7 @@ public class Cheat
                                             player.addExperience(MathHelper.floor(f));
 
                                         float v = AuraHelper.getVis(w, pp) + AuraHelper.getFlux(w, pp);
-                                        float b = AuraHelper.getAuraBase(w, pp) * 1.2F;
+                                        float b = AuraHelper.getAuraBase(w, pp);
                                         float c = Math.min(10F, v < b ? b - v : 0F);
                                         if (c > 0F)
                                             AuraHelper.addVis(w, pp, c);
