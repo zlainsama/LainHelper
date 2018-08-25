@@ -2,7 +2,6 @@ package lain.mods.helper.cheat;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
@@ -40,14 +39,13 @@ public class CheatCaps implements INBTSerializable<NBTTagCompound>
             initialized = true;
     }
 
-    public void forEach(Predicate<Cheat> filter, Consumer<Cheat> action)
+    public void forEach(Consumer<Cheat> action)
     {
         if (!initialized)
             deserializeNBT(new NBTTagCompound());
 
         for (Cheat cheat : cheats)
-            if (filter.test(cheat))
-                action.accept(cheat);
+            action.accept(cheat);
     }
 
     @Override

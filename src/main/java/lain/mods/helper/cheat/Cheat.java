@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
@@ -29,18 +30,6 @@ public enum Cheat
 
     MasterShield
     {
-
-        @Override
-        public boolean isDamageModifier(boolean attacking)
-        {
-            return !attacking;
-        }
-
-        @Override
-        public boolean isTicker()
-        {
-            return true;
-        }
 
         @Override
         public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
@@ -79,7 +68,7 @@ public enum Cheat
         @Override
         public void tick(Entity owner)
         {
-            if (!owner.isEntityAlive() || owner.world == null || owner.world.isRemote)
+            if (!owner.isEntityAlive())
                 return;
 
             if (owner instanceof EntityPlayer)
@@ -101,8 +90,7 @@ public enum Cheat
 
                 if (player.ticksExisted % 20 == 0)
                 {
-                    float r = MathHelper.clamp(player.experienceLevel / 120F, 0F, 1F);
-                    float maxShield = Math.max(10F, player.getMaxHealth() * (0.5F + (0.5F * r)));
+                    float maxShield = Math.max(10F, player.getMaxHealth());
                     float shield = player.getAbsorptionAmount();
                     if (shield < maxShield)
                     {
@@ -110,7 +98,7 @@ public enum Cheat
                             shield = 0F;
                         else
                         {
-                            shield += Math.max(1F, maxShield * 0.2F);
+                            shield += Math.max(1F, maxShield * 0.1F);
                             if (shield > maxShield)
                                 shield = maxShield;
                         }
@@ -125,12 +113,6 @@ public enum Cheat
     {
 
         @Override
-        public boolean isTicker()
-        {
-            return true;
-        }
-
-        @Override
         public boolean shouldObtain(Entity owner)
         {
             return isMaster(owner);
@@ -139,12 +121,14 @@ public enum Cheat
         @Override
         public void tick(Entity owner)
         {
-            if (!owner.isEntityAlive() || owner.world == null || owner.world.isRemote)
+            if (!owner.isEntityAlive())
                 return;
 
             if (owner instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer) owner;
+
+                player.getActivePotionEffects().stream().filter(effect -> effect.getPotion().isBadEffect()).map(PotionEffect::getPotion).collect(Collectors.toSet()).forEach(player::removePotionEffect);
 
                 if (player.ticksExisted % 5 == 0)
                 {
@@ -215,12 +199,6 @@ public enum Cheat
     {
 
         @Override
-        public boolean isTicker()
-        {
-            return true;
-        }
-
-        @Override
         public boolean shouldObtain(Entity owner)
         {
             return owner instanceof EntityPlayer && "izuminya".equals(owner.getName());
@@ -229,7 +207,7 @@ public enum Cheat
         @Override
         public void tick(Entity owner)
         {
-            if (!owner.isEntityAlive() || owner.world == null || owner.world.isRemote)
+            if (!owner.isEntityAlive())
                 return;
 
             if (owner instanceof EntityPlayer)
@@ -259,12 +237,6 @@ public enum Cheat
     {
 
         @Override
-        public boolean isTicker()
-        {
-            return true;
-        }
-
-        @Override
         public boolean shouldObtain(Entity owner)
         {
             return owner instanceof EntityPlayer && "izuminya".equals(owner.getName());
@@ -273,7 +245,7 @@ public enum Cheat
         @Override
         public void tick(Entity owner)
         {
-            if (!owner.isEntityAlive() || owner.world == null || owner.world.isRemote)
+            if (!owner.isEntityAlive())
                 return;
 
             if (owner instanceof EntityPlayer)
@@ -325,16 +297,6 @@ public enum Cheat
 
     private static final boolean fBaubles = Loader.isModLoaded("baubles");
     private static final boolean fThaumcraft = Loader.isModLoaded("thaumcraft");
-
-    public boolean isDamageModifier(boolean attacking)
-    {
-        return false;
-    }
-
-    public boolean isTicker()
-    {
-        return false;
-    }
 
     public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
     {
