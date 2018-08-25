@@ -16,10 +16,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Loader;
 import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.capabilities.IPlayerWarp;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
+import thaumcraft.api.items.IRechargable;
+import thaumcraft.api.items.RechargeHelper;
+import vazkii.botania.api.mana.IManaItem;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
 import com.google.common.collect.ImmutableSet;
@@ -141,6 +146,56 @@ public enum Cheat
                             {
                                 damage -= Math.min(Math.max(MathHelper.floor(damage * 0.2F), 4), damage);
                                 item.setItemDamage(damage);
+                            }
+                        }
+                        if (item.hasCapability(CapabilityEnergy.ENERGY, null))
+                        {
+                            IEnergyStorage cap = item.getCapability(CapabilityEnergy.ENERGY, null);
+                            if (cap != null && cap.canReceive())
+                            {
+                                int energy = MathHelper.clamp(cap.getEnergyStored(), 0, Integer.MAX_VALUE);
+                                int maxEnergy = MathHelper.clamp(cap.getMaxEnergyStored(), 0, Integer.MAX_VALUE);
+                                int diff = maxEnergy - energy;
+                                if (diff > 0)
+                                    cap.receiveEnergy(Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4000), diff), false);
+                            }
+                        }
+                        if (fThaumcraft)
+                        {
+                            try
+                            {
+                                if (item.getItem() instanceof IRechargable)
+                                {
+                                    int charge = MathHelper.clamp(RechargeHelper.getCharge(item), 0, Integer.MAX_VALUE);
+                                    int maxCharge = MathHelper.clamp(((IRechargable) item.getItem()).getMaxCharge(item, player), 0, Integer.MAX_VALUE);
+                                    int diff = maxCharge - charge;
+                                    if (diff > 0)
+                                        RechargeHelper.rechargeItemBlindly(item, player, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
+                                }
+                            }
+                            catch (Throwable ignored)
+                            {
+                            }
+                        }
+                        if (fBotania)
+                        {
+                            try
+                            {
+                                if (item.getItem() instanceof IManaItem)
+                                {
+                                    IManaItem manaItem = (IManaItem) item.getItem();
+                                    if (manaItem.canReceiveManaFromItem(item, item))
+                                    {
+                                        int mana = MathHelper.clamp(manaItem.getMana(item), 0, Integer.MAX_VALUE);
+                                        int maxMana = MathHelper.clamp(manaItem.getMaxMana(item), 0, Integer.MAX_VALUE);
+                                        int diff = maxMana - mana;
+                                        if (diff > 0)
+                                            manaItem.addMana(item, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
+                                    }
+                                }
+                            }
+                            catch (Throwable ignored)
+                            {
                             }
                         }
                     });
@@ -297,6 +352,7 @@ public enum Cheat
 
     private static final boolean fBaubles = Loader.isModLoaded("baubles");
     private static final boolean fThaumcraft = Loader.isModLoaded("thaumcraft");
+    private static final boolean fBotania = Loader.isModLoaded("botania");
 
     public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
     {
