@@ -41,18 +41,16 @@ public enum Cheat
         {
             if (!attacking)
             {
-                if (owner instanceof EntityPlayer)
+                if (owner instanceof EntityPlayer && amount > 0F)
                 {
                     EntityPlayer player = (EntityPlayer) owner;
 
                     float n = amount;
 
                     if (!source.isUnblockable())
-                        amount = CombatRules.getDamageAfterAbsorb(amount, 10F, 4F);
-                    // amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
+                        amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                     if (!source.isDamageAbsolute())
-                        amount = CombatRules.getDamageAfterMagicAbsorb(amount, 8F);
-                    // amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
+                        amount = CombatRules.getDamageAfterMagicAbsorb(amount, source == DamageSource.FALL ? 20F : 16F);
 
                     n -= amount;
 
