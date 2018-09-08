@@ -1,7 +1,10 @@
 package lain.mods.helper.cheat;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -13,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -55,7 +59,7 @@ public enum Cheat
                     n -= amount;
 
                     if (n > 0F)
-                        player.addExperience(Math.min(10, MathHelper.floor(n)));
+                        player.addExperience(Math.min(20, MathHelper.floor(n)));
                 }
             }
 
@@ -115,6 +119,11 @@ public enum Cheat
     MasterAura
     {
 
+        final Collection<ResourceLocation> _sR = Arrays.asList(new ResourceLocation("thaumcraft", "primordial_pearl"));
+        final Collection<ResourceLocation> _sM = Arrays.asList(new ResourceLocation("botania", "manaMirror"));
+        final Predicate<ItemStack> _fsR = (item) -> _sR.contains(item.getItem().getRegistryName());
+        final Predicate<ItemStack> _fsM = (item) -> _sM.contains(item.getItem().getRegistryName());
+
         @Override
         public boolean shouldObtain(Entity owner)
         {
@@ -137,7 +146,7 @@ public enum Cheat
                 {
                     Set<ItemStack> heldItems = Streams.stream(player.getHeldEquipment()).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
                     sIn(player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
-                        if (Enchantments.MENDING.canApply(item) && item.isItemDamaged())
+                        if (Enchantments.MENDING.canApply(item) && item.isItemDamaged() || _fsR.test(item))
                         {
                             int damage = MathHelper.clamp(item.getItemDamage(), 0, Integer.MAX_VALUE);
                             if (damage > 0)
@@ -182,7 +191,7 @@ public enum Cheat
                                 if (item.getItem() instanceof IManaItem)
                                 {
                                     IManaItem manaItem = (IManaItem) item.getItem();
-                                    if (manaItem.canReceiveManaFromItem(item, item))
+                                    if (manaItem.canReceiveManaFromItem(item, item) || _fsM.test(item))
                                     {
                                         int mana = MathHelper.clamp(manaItem.getMana(item), 0, Integer.MAX_VALUE);
                                         int maxMana = MathHelper.clamp(manaItem.getMaxMana(item), 0, Integer.MAX_VALUE);
