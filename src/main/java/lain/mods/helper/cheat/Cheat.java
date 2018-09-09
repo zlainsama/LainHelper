@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
@@ -28,6 +29,7 @@ import thaumcraft.api.capabilities.IPlayerWarp;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
+import vazkii.botania.api.item.IRelic;
 import vazkii.botania.api.mana.IManaItem;
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
@@ -198,6 +200,18 @@ public enum Cheat
                                         int diff = maxMana - mana;
                                         if (diff > 0)
                                             manaItem.addMana(item, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
+                                    }
+                                }
+                                if (item.getItem() instanceof IRelic)
+                                {
+                                    IRelic relic = (IRelic) item.getItem();
+                                    if (player.getUniqueID().equals((relic.getSoulbindUUID(item))))
+                                    {
+                                        NBTTagCompound tags = item.getTagCompound();
+                                        if (tags == null)
+                                            item.setTagCompound(tags = new NBTTagCompound());
+                                        if (!tags.getBoolean("Botania_keepIvy"))
+                                            tags.setBoolean("Botania_keepIvy", true);
                                     }
                                 }
                             }
