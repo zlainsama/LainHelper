@@ -224,9 +224,6 @@ public enum Cheat
 
                 if (player.ticksExisted % 20 == 0)
                 {
-                    if (player.experienceLevel < 120)
-                        player.addExperience(1);
-
                     if (fThaumcraft)
                     {
                         try
@@ -245,7 +242,7 @@ public enum Cheat
                                         player.addExperience(MathHelper.floor(f));
 
                                     float v = AuraHelper.getVis(w, pp) + AuraHelper.getFlux(w, pp);
-                                    float b = AuraHelper.getAuraBase(w, pp);
+                                    float b = AuraHelper.getAuraBase(w, pp) * 0.9F;
                                     float c = Math.min(1F, v < b ? b - v : 0F);
                                     if (c > 0F)
                                         AuraHelper.addVis(w, pp, c);
@@ -265,6 +262,61 @@ public enum Cheat
                         catch (Throwable ignored)
                         {
                         }
+                    }
+                }
+            }
+        }
+
+    },
+    LesserShield
+    {
+
+        @Override
+        public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
+        {
+            if (!attacking)
+            {
+                if (owner instanceof EntityPlayer && amount > 0F)
+                {
+                    if (!source.isUnblockable())
+                        amount = CombatRules.getDamageAfterAbsorb(amount, 15F, 0F);
+                }
+            }
+
+            return amount;
+        }
+
+        @Override
+        public boolean shouldObtain(Entity owner)
+        {
+            return owner instanceof EntityPlayer && "izuminya".equals(owner.getName());
+        }
+
+        @Override
+        public void tick(Entity owner)
+        {
+            if (!owner.isEntityAlive())
+                return;
+
+            if (owner instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer) owner;
+
+                if (player.ticksExisted % 40 == 0)
+                {
+                    float maxShield = Math.max(10F, player.getMaxHealth());
+                    float shield = player.getAbsorptionAmount();
+                    if (shield < maxShield)
+                    {
+                        if (shield < 0F)
+                            shield = 0F;
+                        else
+                        {
+                            shield += Math.max(1F, maxShield * 0.1F);
+                            if (shield > maxShield)
+                                shield = maxShield;
+                        }
+                        player.setAbsorptionAmount(shield);
                     }
                 }
             }
