@@ -242,7 +242,7 @@ public enum Cheat
                                         player.addExperience(MathHelper.floor(f));
 
                                     float v = AuraHelper.getVis(w, pp) + AuraHelper.getFlux(w, pp);
-                                    float b = AuraHelper.getAuraBase(w, pp) * 0.9F;
+                                    float b = AuraHelper.getAuraBase(w, pp);
                                     float c = Math.min(1F, v < b ? b - v : 0F);
                                     if (c > 0F)
                                         AuraHelper.addVis(w, pp, c);
@@ -279,7 +279,7 @@ public enum Cheat
                 if (owner instanceof EntityPlayer && amount > 0F)
                 {
                     if (!source.isUnblockable())
-                        amount = CombatRules.getDamageAfterAbsorb(amount, 15F, 0F);
+                        amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
                 }
             }
 
