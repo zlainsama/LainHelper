@@ -8,6 +8,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Streams;
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -31,10 +35,6 @@ import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
 import vazkii.botania.api.item.IRelic;
 import vazkii.botania.api.mana.IManaItem;
-import baubles.api.BaublesApi;
-import baubles.api.cap.IBaublesItemHandler;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Streams;
 
 public enum Cheat
 {
@@ -393,6 +393,12 @@ public enum Cheat
 
     };
 
+    private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
+
+    private static final boolean fBaubles = Loader.isModLoaded("baubles");
+    private static final boolean fThaumcraft = Loader.isModLoaded("thaumcraft");
+    private static final boolean fBotania = Loader.isModLoaded("botania");
+
     private static final boolean isMaster(Object obj)
     {
         if (obj instanceof EntityPlayer)
@@ -420,12 +426,6 @@ public enum Cheat
 
         return res;
     }
-
-    private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
-
-    private static final boolean fBaubles = Loader.isModLoaded("baubles");
-    private static final boolean fThaumcraft = Loader.isModLoaded("thaumcraft");
-    private static final boolean fBotania = Loader.isModLoaded("botania");
 
     public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
     {
