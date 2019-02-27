@@ -42,11 +42,11 @@ public enum Cheat
         }
 
         @Override
-        public float modifyVisibility(Entity owner)
+        public double modifyVisibility(Entity owner)
         {
             if (!owner.isEntityAlive())
-                return 1.0F;
-            return 0.0F;
+                return 1.0D;
+            return 0.0D;
         }
 
         @Override
@@ -116,9 +116,9 @@ public enum Cheat
         return amount;
     }
 
-    public float modifyVisibility(Entity owner)
+    public double modifyVisibility(Entity owner)
     {
-        return 1.0F;
+        return 1.0D;
     }
 
     public boolean shouldObtain(Entity owner)
