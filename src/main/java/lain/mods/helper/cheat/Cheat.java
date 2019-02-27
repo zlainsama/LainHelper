@@ -42,6 +42,14 @@ public enum Cheat
         }
 
         @Override
+        public float modifyVisibility(Entity owner)
+        {
+            if (!owner.isEntityAlive())
+                return 1.0F;
+            return 0.0F;
+        }
+
+        @Override
         public boolean shouldObtain(Entity owner)
         {
             return isMaster(owner);
@@ -106,6 +114,11 @@ public enum Cheat
     public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
     {
         return amount;
+    }
+
+    public float modifyVisibility(Entity owner)
+    {
+        return 1.0F;
     }
 
     public boolean shouldObtain(Entity owner)

@@ -1,6 +1,7 @@
 package lain.mods.helper.cheat;
 
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -21,6 +22,13 @@ public class CheatEvents
     {
         if (event.phase == TickEvent.Phase.END && !event.player.world.isRemote && event.player.hasCapability(CheatCaps.CAPABILITY_CHEAT, null))
             event.player.getCapability(CheatCaps.CAPABILITY_CHEAT, null).forEach(cheat -> cheat.tick(event.player));
+    }
+
+    @SubscribeEvent
+    public static void onPlayerVisibilityCheck(PlayerEvent.Visibility event)
+    {
+        if (event.getEntity().hasCapability(CheatCaps.CAPABILITY_CHEAT, null))
+            event.getEntity().getCapability(CheatCaps.CAPABILITY_CHEAT, null).forEach(cheat -> event.modifyVisibility(cheat.modifyVisibility(event.getEntity())));
     }
 
 }
