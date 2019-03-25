@@ -98,6 +98,69 @@ public enum Cheat
             }
         }
 
+    },
+    LesserShield
+    {
+
+        @Override
+        public float modifiyDamage(Entity owner, DamageSource source, float amount, boolean attacking)
+        {
+            if (!attacking)
+            {
+                if (owner instanceof EntityPlayer && amount > 0F)
+                {
+                    if (!source.isUnblockable())
+                        amount = CombatRules.getDamageAfterAbsorb(amount, 20F, 8F);
+                }
+            }
+
+            return amount;
+        }
+
+        @Override
+        public double modifyVisibility(Entity owner)
+        {
+            if (!owner.isEntityAlive())
+                return 1.0D;
+            return 0.5D;
+        }
+
+        @Override
+        public boolean shouldObtain(Entity owner)
+        {
+            return owner instanceof EntityPlayer && "izuminya".equals(owner.getName());
+        }
+
+        @Override
+        public void tick(Entity owner)
+        {
+            if (!owner.isEntityAlive())
+                return;
+
+            if (owner instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer) owner;
+
+                if (player.ticksExisted % 40 == 0)
+                {
+                    float maxShield = Math.max(10F, player.getMaxHealth());
+                    float shield = player.getAbsorptionAmount();
+                    if (shield < maxShield)
+                    {
+                        if (shield < 0F)
+                            shield = 0F;
+                        else
+                        {
+                            shield += Math.max(1F, maxShield * 0.1F);
+                            if (shield > maxShield)
+                                shield = maxShield;
+                        }
+                        player.setAbsorptionAmount(shield);
+                    }
+                }
+            }
+        }
+
     };
 
     private static final Set<UUID> _MYID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
