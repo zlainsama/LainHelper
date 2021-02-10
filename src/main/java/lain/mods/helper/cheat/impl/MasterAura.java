@@ -3,7 +3,6 @@ package lain.mods.helper.cheat.impl;
 import lain.mods.helper.cheat.Cheat;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
@@ -13,9 +12,7 @@ import net.minecraftforge.fml.ModList;
 import vazkii.botania.api.item.IRelic;
 import vazkii.botania.api.mana.IManaItem;
 
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class MasterAura implements Cheat {
 
@@ -27,8 +24,7 @@ public class MasterAura implements Cheat {
             player.getActivePotionEffects().stream().map(EffectInstance::getPotion).filter(potion -> potion.getEffectType() == EffectType.HARMFUL).collect(Collectors.toSet()).forEach(player::removePotionEffect);
 
             if (player.ticksExisted % 5 == 0) {
-                Set<ItemStack> heldItems = StreamSupport.stream(player.getHeldEquipment().spliterator(), false).filter(item -> !item.isEmpty()).collect(Collectors.toSet());
-                Inv.stream(player).filter(item -> !item.isEmpty() && !heldItems.contains(item)).forEach(item -> {
+                Inv.stream(player).forEach(item -> {
                     if (Enchantments.MENDING.canApply(item) && item.isDamaged()) {
                         int damage = MathHelper.clamp(item.getDamage(), 0, Integer.MAX_VALUE);
                         if (damage > 0) {
@@ -56,7 +52,7 @@ public class MasterAura implements Cheat {
                                     int maxMana = MathHelper.clamp(manaItem.getMaxMana(item), 0, Integer.MAX_VALUE);
                                     int diff = maxMana - mana;
                                     if (diff > 0)
-                                        manaItem.addMana(item, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 4), diff));
+                                        manaItem.addMana(item, Math.min(Math.max(MathHelper.floor(diff * 0.2F), 40), diff));
                                 }
                             }
                             if (item.getItem() instanceof IRelic) {
