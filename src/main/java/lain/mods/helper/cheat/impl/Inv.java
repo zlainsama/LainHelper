@@ -10,6 +10,7 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 class Inv {
 
@@ -18,8 +19,8 @@ class Inv {
     static Stream<ItemStack> stream(PlayerEntity player) {
         ItemStack heldItem = player.inventory.getCurrentItem();
         Stream<ItemStack> result = Stream.concat(
-                player.inventory.mainInventory.subList(0, 9).stream().filter(stack -> !stack.isEmpty() && (heldItem.isEmpty() || heldItem != stack)),
-                player.inventory.armorInventory.stream().filter(stack -> !stack.isEmpty())
+                StreamSupport.stream(player.getEquipmentAndArmor().spliterator(), false).filter(stack -> !stack.isEmpty()),
+                player.inventory.mainInventory.subList(0, 9).stream().filter(stack -> !stack.isEmpty() && (heldItem.isEmpty() || heldItem != stack))
         );
 
         if (hasCurios) {
