@@ -1,8 +1,7 @@
 package lain.mods.helper.cheat;
 
 import com.google.common.collect.ImmutableList;
-import lain.mods.helper.cheat.impl.MasterAura;
-import lain.mods.helper.cheat.impl.MasterShield;
+import lain.mods.helper.cheat.impl.MasterEffect;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.List;
@@ -10,8 +9,7 @@ import java.util.List;
 public interface Cheat {
 
     List<Cheat> cheats = ImmutableList.of(
-            new MasterShield(),
-            new MasterAura()
+            new MasterEffect()
     );
 
     void onTick(PlayerEntity player);
