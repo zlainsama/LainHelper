@@ -15,14 +15,14 @@ import java.util.UUID;
 public class MasterEffect implements Cheat {
 
     private static final UUID HealthBoostModifierID = UUID.fromString("195b1f11-fef3-4948-b4b3-1e605fff1a99");
-    private static final AttributeModifier HealthBoostModifier = new AttributeModifier(HealthBoostModifierID, HealthBoostModifierID.toString(), 10.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier HealthBoostModifier = new AttributeModifier(HealthBoostModifierID, HealthBoostModifierID.toString(), 20.0D, AttributeModifier.Operation.ADDITION);
     private static final UUID ArmorToughnessModifierID = UUID.fromString("e2a3ff22-19b2-47f6-b823-fdf9b3dc05fd");
-    private static final AttributeModifier ArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 2.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier ArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 4.0D, AttributeModifier.Operation.ADDITION);
 
     private static void applyEffect(PlayerEntity player, Effect effect, int amplifier) {
         EffectInstance currentEffect = player.getEffect(effect);
         if (currentEffect == null || currentEffect.getAmplifier() < amplifier || currentEffect.getDuration() <= 200)
-            player.addEffect(new EffectInstance(effect, 300, amplifier, false, false));
+            player.addEffect(new EffectInstance(effect, 300, amplifier, true, false));
     }
 
     private static void applyModifier(PlayerEntity player, Attribute attribute, AttributeModifier modifier) {
@@ -45,7 +45,7 @@ public class MasterEffect implements Cheat {
         if (player.isAlive() && Master.test(player)) {
             applyModifier(player, Attributes.MAX_HEALTH, HealthBoostModifier);
             applyModifier(player, Attributes.ARMOR_TOUGHNESS, ArmorToughnessModifier);
-            applyEffect(player, Effects.DAMAGE_BOOST, 0);
+            applyEffect(player, Effects.DAMAGE_BOOST, 1);
             applyEffect(player, Effects.REGENERATION, 0);
             applyEffect(player, Effects.MOVEMENT_SPEED, 0);
         }
