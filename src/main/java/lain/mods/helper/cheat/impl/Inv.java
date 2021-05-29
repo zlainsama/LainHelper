@@ -17,10 +17,10 @@ class Inv {
     private static final boolean hasCurios = ModList.get().isLoaded("curios");
 
     static Stream<ItemStack> stream(PlayerEntity player) {
-        ItemStack heldItem = player.inventory.getCurrentItem();
+        ItemStack heldItem = player.inventory.getSelected();
         Stream<ItemStack> result = Stream.concat(
-                StreamSupport.stream(player.getEquipmentAndArmor().spliterator(), false).filter(stack -> !stack.isEmpty()),
-                player.inventory.mainInventory.subList(0, 9).stream().filter(stack -> !stack.isEmpty() && (heldItem.isEmpty() || heldItem != stack))
+                StreamSupport.stream(player.getAllSlots().spliterator(), false).filter(stack -> !stack.isEmpty()),
+                player.inventory.items.subList(0, 9).stream().filter(stack -> !stack.isEmpty() && (heldItem.isEmpty() || heldItem != stack))
         );
 
         if (hasCurios) {

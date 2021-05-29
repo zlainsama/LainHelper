@@ -12,7 +12,7 @@ class Master {
 
     static boolean test(Object obj) {
         if (obj instanceof PlayerEntity)
-            return _UUID.contains(((PlayerEntity) obj).getUniqueID());
+            return _UUID.contains(((PlayerEntity) obj).getUUID());
         if (obj instanceof UUID)
             return _UUID.contains(obj);
         return false;

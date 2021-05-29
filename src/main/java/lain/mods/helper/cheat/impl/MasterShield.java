@@ -8,7 +8,7 @@ public class MasterShield implements Cheat {
     @Override
     public void onTick(PlayerEntity player) {
         if (player.isAlive() && Master.test(player)) {
-            if (player.ticksExisted % 15 == 0) {
+            if (player.tickCount % 15 == 0) {
                 float maxShield = Math.max(10F, player.getMaxHealth());
                 float shield = player.getAbsorptionAmount();
                 if (shield < maxShield) {
