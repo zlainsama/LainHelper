@@ -29,7 +29,7 @@ public class MasterEffect implements Cheat {
         ModifiableAttributeInstance attr = player.getAttribute(attribute);
         if (attr != null) {
             AttributeModifier currentModifier = attr.getModifier(modifier.getId());
-            if (!modifier.equals(currentModifier)) {
+            if (!isModifierEqual(modifier, currentModifier)) {
                 float oldMaxHealth = player.getMaxHealth();
                 if (currentModifier != null)
                     attr.removeModifier(currentModifier);
@@ -38,6 +38,12 @@ public class MasterEffect implements Cheat {
                     player.setHealth(player.getHealth() * player.getMaxHealth() / oldMaxHealth);
             }
         }
+    }
+
+    private static boolean isModifierEqual(AttributeModifier a, AttributeModifier b) {
+        if (a == b)
+            return true;
+        return a != null && a.equals(b) && a.getOperation() == b.getOperation() && a.getAmount() == b.getAmount();
     }
 
     @Override
