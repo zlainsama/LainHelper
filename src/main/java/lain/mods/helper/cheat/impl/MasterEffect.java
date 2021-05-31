@@ -10,14 +10,13 @@ import java.util.UUID;
 
 public class MasterEffect implements Cheat {
 
-    private static final UUID MasterHealthBoostModifierID = UUID.fromString("195b1f11-fef3-4948-b4b3-1e605fff1a99");
-    private static final AttributeModifier MasterHealthBoostModifier = new AttributeModifier(MasterHealthBoostModifierID, MasterHealthBoostModifierID.toString(), 20.0D, AttributeModifier.Operation.ADDITION);
-    private static final UUID MasterArmorToughnessModifierID = UUID.fromString("e2a3ff22-19b2-47f6-b823-fdf9b3dc05fd");
-    private static final AttributeModifier MasterArmorToughnessModifier = new AttributeModifier(MasterArmorToughnessModifierID, MasterArmorToughnessModifierID.toString(), 4.0D, AttributeModifier.Operation.ADDITION);
-    private static final UUID NormalHealthBoostModifierID = UUID.fromString("c243ebaa-e622-4963-aa46-d34b3924a7d7");
-    private static final AttributeModifier NormalHealthBoostModifier = new AttributeModifier(NormalHealthBoostModifierID, NormalHealthBoostModifierID.toString(), 20.0D, AttributeModifier.Operation.ADDITION);
-    private static final UUID NormalArmorToughnessModifierID = UUID.fromString("c00dd408-2abf-42db-b016-9b01f765aa14");
-    private static final AttributeModifier NormalArmorToughnessModifier = new AttributeModifier(NormalArmorToughnessModifierID, NormalArmorToughnessModifierID.toString(), 4.0D, AttributeModifier.Operation.ADDITION);
+    private static final UUID HealthBoostModifierID = UUID.fromString("6283c886-a389-47e8-93d0-9688e492a5fb");
+    private static final UUID ArmorToughnessModifierID = UUID.fromString("9a789618-6657-409d-a03f-0e1676444d18");
+
+    private static final AttributeModifier MasterHealthBoostModifier = new AttributeModifier(HealthBoostModifierID, HealthBoostModifierID.toString(), 20.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier MasterArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 4.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier NormalHealthBoostModifier = new AttributeModifier(HealthBoostModifierID, HealthBoostModifierID.toString(), 10.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier NormalArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 2.0D, AttributeModifier.Operation.ADDITION);
 
     @Override
     public void onTick(PlayerEntity player) {
@@ -31,7 +30,7 @@ public class MasterEffect implements Cheat {
             } else {
                 PlayerEffects.applyModifier(player, Attributes.MAX_HEALTH, NormalHealthBoostModifier);
                 PlayerEffects.applyModifier(player, Attributes.ARMOR_TOUGHNESS, NormalArmorToughnessModifier);
-                PlayerEffects.applyEffect(player, Effects.DAMAGE_BOOST, 1);
+                PlayerEffects.applyEffect(player, Effects.DAMAGE_BOOST, 0);
                 PlayerEffects.applyEffect(player, Effects.REGENERATION, 0);
                 PlayerEffects.applyEffect(player, Effects.MOVEMENT_SPEED, 0);
             }

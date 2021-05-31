@@ -8,7 +8,7 @@ import java.util.UUID;
 
 class Master {
 
-    private static final Set<UUID> _UUID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("1c83e5b7-40f3-3d29-854d-e922c24bd362"));
+    private static final Set<UUID> _UUID = ImmutableSet.of(UUID.fromString("17d81212-fc40-4920-a19e-173752e9ed49"), UUID.fromString("75a72085-414f-4ab4-b6af-4d933ca37c18"));
 
     static boolean test(Object obj) {
         if (obj instanceof PlayerEntity)
