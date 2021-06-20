@@ -18,8 +18,8 @@ public class MasterEffect implements Cheat {
     private static final AttributeModifier MasterArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 4.0D, AttributeModifier.Operation.ADDITION);
     private static final AttributeModifier MasterArmorModifier = new AttributeModifier(ArmorModifierID, ArmorModifierID.toString(), 12.0D, AttributeModifier.Operation.ADDITION);
     private static final AttributeModifier NormalHealthBoostModifier = new AttributeModifier(HealthBoostModifierID, HealthBoostModifierID.toString(), 20.0D, AttributeModifier.Operation.ADDITION);
-    private static final AttributeModifier NormalArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 2.0D, AttributeModifier.Operation.ADDITION);
-    private static final AttributeModifier NormalArmorModifier = new AttributeModifier(ArmorModifierID, ArmorModifierID.toString(), 8.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier NormalArmorToughnessModifier = new AttributeModifier(ArmorToughnessModifierID, ArmorToughnessModifierID.toString(), 4.0D, AttributeModifier.Operation.ADDITION);
+    private static final AttributeModifier NormalArmorModifier = new AttributeModifier(ArmorModifierID, ArmorModifierID.toString(), 12.0D, AttributeModifier.Operation.ADDITION);
 
     @Override
     public void onTick(PlayerEntity player) {
