@@ -31,7 +31,7 @@ public class MasterEffect implements Cheat {
                 PlayerEffects.applyEffect(player, Effects.DAMAGE_BOOST, 1);
                 PlayerEffects.applyEffect(player, Effects.REGENERATION, 0);
                 PlayerEffects.applyEffect(player, Effects.MOVEMENT_SPEED, 0);
-                PlayerEffects.applyEffect(player, Effects.DAMAGE_RESISTANCE, 0);
+                PlayerEffects.applyEffect(player, Effects.DAMAGE_RESISTANCE, 1);
             } else {
                 PlayerEffects.applyModifier(player, Attributes.MAX_HEALTH, NormalHealthBoostModifier);
                 PlayerEffects.applyModifier(player, Attributes.ARMOR_TOUGHNESS, NormalArmorToughnessModifier);
@@ -39,6 +39,7 @@ public class MasterEffect implements Cheat {
                 PlayerEffects.applyEffect(player, Effects.DAMAGE_BOOST, 0);
                 PlayerEffects.applyEffect(player, Effects.REGENERATION, 0);
                 PlayerEffects.applyEffect(player, Effects.MOVEMENT_SPEED, 0);
+                PlayerEffects.applyEffect(player, Effects.DAMAGE_RESISTANCE, 0);
             }
         }
     }
